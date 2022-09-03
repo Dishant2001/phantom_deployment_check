@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/employee_visit.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans&family=Manrope&family=Poppins:wght@100;400&display=swap" rel="stylesheet">
+    <title>Phantom</title>
+</head>
+<body>
+    <div class="header">
+        <div class="header-left">
+            <div class="heyhere">
+                <span>HeyHere</span>
+            </div>
+            <div>
+                <button class="header-left-button">LIVE JOBS</button>
+            </div>
+        </div>
+        <!-- <div class="header-center">
+            <span>Employers, Start a Video Interview Room. Announce Your Job Openings. Start Interviewing, Right Now</span>
+        </div> -->
+        <div class="header-right">
+            <div class="header-right-span">
+                <span>Employers, Start a Video Interview Room. Announce Your Job Openings. Start Interviewing, Right Now</span>
+            </div>
+            <div class="header-right-btn">
+                <button class="header-right-button">Start a Video Interview Room</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="profile-img">
+
+        <div class="logo">
+    
+        </div>
+    </div>
+
+
+    <div class="hostContainer" id="hostContainer">
+        
+    </div>
+
+
+    <form id="join">
+        <h2>Join Room</h2>
+        <div class="input-container">
+            <input id="name" type="text" name="username" placeholder="Your name" />
+        </div>
+        <div class="input-container">
+            <input id="token" type="text" name="token" placeholder="Auth token" />
+        </div>
+        <button type="button" class="btn-primary" id="join-btn">Join</button>
+    </form>
+    
+
+    <button type="button" class="btn-primary" id="leave-btn">Leave</button>
+
+    <div id="conference" class="conference-section hide">
+        <h2>Conference</h2>
+    
+        <div id="peers-container"></div>
+      </div>
+    
+      <div id="controls" class="control-bar hide">
+        <button id="mute-aud" class="btn-control">Mute</button>
+        <button id="mute-vid" class="btn-control">Hide</button>
+      </div>
+
+
+</body>
+
+<!-- <script type="module" src="https://cdn.skypack.dev/@100mslive/hms-video-store"></script> -->
+<script type="module" src="js/script.js"></script>
+
+</html>
