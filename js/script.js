@@ -91,10 +91,12 @@ let queue = new Queue();
     console.log(role)
   });
 
-  joinBtnGuest.addEventListener("click", () => {
+  joinBtnGuest.addEventListener("click", async() => {
+    const response = await fetch('http://localhost:5000/guestkey',{method:'POST'});
+    const data = await response.json();
     hmsActions.join({
       userName: document.getElementById("name").value,
-      authToken: guest_key,
+      authToken: data['guest_key'],
       settings: {
         isAudioMuted: true,
         isVideoMuted: true
@@ -131,6 +133,7 @@ let queue = new Queue();
   
   // display a tile for each peer in the peer list
   var temp=0
+  var guests=0;
   function renderPeers(peers) {
     peersContainer.innerHTML = "";
   
@@ -144,6 +147,7 @@ let queue = new Queue();
       if(peer.roleName=='host'){
         temp=1;
         hosts[peer.id]=peer;
+        console.log('Host arrived');
         if (peer.videoTrack) {
           const video = h("video", {
                             class: "peer-video" + (peer.isLocal ? " local" : ""),
@@ -180,6 +184,8 @@ let queue = new Queue();
         ele[peer.id]=peer;
         queue.enqueue(ele);
         console.log(queue);
+        ++guests;
+        console.log(`${guests} in the meeting`);
       }
     });
   }
