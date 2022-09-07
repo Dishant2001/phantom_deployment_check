@@ -93,8 +93,8 @@ let queue = new Queue();
   });
 
   joinBtnGuest.addEventListener("click", async() => {
-    const response = await fetch('http://localhost:5000/guestkey',{method:'POST'});
-    const data = await response.json();
+    // const response = await fetch('http://localhost:5000/guestkey',{method:'POST'});
+    // const data = await response.json();
     hmsActions.join({
       userName: document.getElementById("name").value,
       // authToken: data['guest_key'],
