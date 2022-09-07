@@ -80,7 +80,8 @@ let queue = new Queue();
   joinBtn.addEventListener("click", () => {
     hmsActions.join({
       userName: document.getElementById("name").value,
-      authToken: host_key,
+      // authToken: host_key,
+      authToken:'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3Nfa…yNzV9.Fi_NMbubkeuurMC3GJ6fPI8YDz_OeyxrgAPGJoRU8Uo',
       settings: {
         isAudioMuted: false,
         isVideoMuted: false
@@ -96,7 +97,8 @@ let queue = new Queue();
     const data = await response.json();
     hmsActions.join({
       userName: document.getElementById("name").value,
-      authToken: data['guest_key'],
+      // authToken: data['guest_key'],
+      authToken:'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3Nfa…zIwfQ.zaUxNHaqxfBindJf9Q_xSLD6S1eXYLwy8PXwBNXWL2U',
       settings: {
         isAudioMuted: true,
         isVideoMuted: true
@@ -182,10 +184,12 @@ let queue = new Queue();
       else{
         var ele={}
         ele[peer.id]=peer;
-        queue.enqueue(ele);
-        console.log(queue);
-        ++guests;
-        console.log(`${guests} in the meeting`);
+        if(!queue.items.includes(ele)){
+          queue.enqueue(ele);
+          console.log(queue);
+          guests=guests+1;
+          console.log(`${guests} in the meeting`);
+      }
       }
     });
   }
