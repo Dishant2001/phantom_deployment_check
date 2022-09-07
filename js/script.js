@@ -177,8 +177,58 @@ let queue = new Queue();
               peer.name + (peer.isLocal ? " (You)" : "")
             )
           );
+
+          const controlContainer = h(
+            "div",
+            {
+              class:"controls",
+              style:"position: absolute;top:82%;margin:auto;display: flex;flex-direction: row;justify-content: space-around;background:none;width: 70%;height: 10%;z-index: 0;justify-content:space-around;"
+            },
+            h(
+              "div",
+              {
+                id:"setting",
+                style:"margin:auto;display: inline-block;background-color: #FAFAFB;height: 80%;aspect-ratio:1;z-index: 0;border-radius:20px;"
+              },
+              "settings"
+            ),
+            h(
+              "div",
+              {
+                id:"mic",
+                style:"margin:auto;display: inline-block;background-color: #FAFAFB;height: 80%;aspect-ratio:1;z-index: 0;border-radius:20px;"
+              },
+              "mic"
+            ),
+            h(
+              "div",
+              {
+                id:"call",
+                style:"margin:auto;display: inline-block;background-color: #4C67F4;height: 100%;aspect-ratio:1;z-index: 0;border-radius:25px;"
+              },
+              "call"
+            ),
+            h(
+              "div",
+              {
+                id:"video",
+                style:"margin:auto;display: inline-block;background-color: #FAFAFB;height: 80%;aspect-ratio:1;z-index: 0;border-radius:20px;"
+              },
+              "video"
+            ),
+            h(
+              "div",
+              {
+                id:"chat",
+                style:"margin:auto;display: inline-block;background-color: #FAFAFB;height: 80%;aspect-ratio:1;z-index: 0;border-radius:20px;"
+              },
+              "chat"
+            )
+          );
+
     
           peersContainer.append(peerContainer);
+          peersContainer.append(controlContainer);
         }
       }
       else{
@@ -189,6 +239,23 @@ let queue = new Queue();
           console.log(queue);
           guests=guests+1;
           console.log(`${guests} in the meeting`);
+          console.log(peer);
+          const peerContainer = h(
+            "div",
+            {
+              class: "peer-container"
+            },
+            h(
+              "div",
+              {
+                class: "peer-name"
+              },
+              peer.name + (peer.isLocal ? " (You)" : "") + `  ${peer.id}`
+            )
+          );
+    
+          peersContainer.append(peerContainer);
+          
       }
       }
     });
@@ -294,42 +361,42 @@ hmsStore.subscribe(renderPeers, selectPeers);
   //   console.log(guests);
   // }
   
-  // function onConnection(isConnected) {
-  //   if (isConnected) {
-  //     form.classList.add("hide");
-  //     conference.classList.remove("hide");
-  //     leaveBtn.classList.remove("hide");
-  //     controls.classList.remove("hide");
-  //   } else {
-  //     form.classList.remove("hide");
-  //     conference.classList.add("hide");
-  //     leaveBtn.classList.add("hide");
-  //     controls.classList.add("hide");
-  //   }
-  // }
+  function onConnection(isConnected) {
+    if (isConnected) {
+      form.classList.add("hide");
+      conference.classList.remove("hide");
+      leaveBtn.classList.remove("hide");
+      controls.classList.remove("hide");
+    } else {
+      form.classList.remove("hide");
+      conference.classList.add("hide");
+      leaveBtn.classList.add("hide");
+      controls.classList.add("hide");
+    }
+  }
   
   // // reactive state - renderPeers is called whenever there is a change in the peer-list
   // hmsStore.subscribe(renderPeers, selectPeers);
   
   // // listen to the connection state
-  // hmsStore.subscribe(onConnection, selectIsConnectedToRoom);
+  hmsStore.subscribe(onConnection, selectIsConnectedToRoom);
   
-  // muteAud.addEventListener("click", () => {
-  //   const audioEnabled = !hmsStore.getState(selectIsLocalAudioEnabled);
+  muteAud.addEventListener("click", () => {
+    const audioEnabled = !hmsStore.getState(selectIsLocalAudioEnabled);
   
-  //   hmsActions.setLocalAudioEnabled(audioEnabled);
+    hmsActions.setLocalAudioEnabled(audioEnabled);
   
-  //   muteAud.textContent = audioEnabled ? "Mute" : "Unmute";
-  // });
+    muteAud.textContent = audioEnabled ? "Mute" : "Unmute";
+  });
   
-  // muteVid.addEventListener("click", () => {
-  //   const videoEnabled = !hmsStore.getState(selectIsLocalVideoEnabled);
+  muteVid.addEventListener("click", () => {
+    const videoEnabled = !hmsStore.getState(selectIsLocalVideoEnabled);
   
-  //   hmsActions.setLocalVideoEnabled(videoEnabled);
+    hmsActions.setLocalVideoEnabled(videoEnabled);
   
-  //   muteVid.textContent = videoEnabled ? "Hide" : "Unhide";
+    muteVid.textContent = videoEnabled ? "Hide" : "Unhide";
   
-  //   // Re-render video tile
-  //   renderPeers();
-  // });
+    // Re-render video tile
+    renderPeers();
+  });
   

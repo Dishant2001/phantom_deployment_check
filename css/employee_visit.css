@@ -150,6 +150,7 @@ button{
 }
 
 .hostContainer{
+    position: relative;
     margin: auto;
     margin-top: 100px;
     z-index: -100;
@@ -162,7 +163,35 @@ button{
     border: none;
     border-radius: 24px;
     background:none;
+    align-items: center;
 }
+
+.controls{
+    display: none;
+}
+
+/* .controls{
+    position: absolute;
+    top:82%;
+    /* left:35.5%; */
+    /* margin: auto; */
+    /* display: flex; */
+    /* flex-direction: row; */
+    /* justify-content: space-around; */
+    /* margin-left: auto; */
+    /* background: none; */
+    /* background:none; */
+    /* width: 70%; */
+    /* height: 10%; */
+    /* z-index: 0; */
+/* } */
+
+/* #call{
+    display: inline-block;
+    background-color: #4C67F4;
+    height: 100%;
+    z-index: 0;
+} */
 
 
 @media only screen and (max-width: 660px){
