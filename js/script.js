@@ -12,27 +12,94 @@ import {
   hmsManager.triggerOnSubscribe();
   const hmsStore = hmsManager.getStore();
   const hmsActions = hmsManager.getHMSActions();
-  
-  
+    
   
   // HTML elements
   const form = document.getElementById("join");
   const joinBtn = document.getElementById("join-btn");
+  const joinBtnGuest = document.getElementById('join-btn-guest');
   const conference = document.getElementById("conference");
   const peersContainer = document.getElementById("hostContainer");
+  const startRoomBtn = document.getElementById('header-right-btn');
   const leaveBtn = document.getElementById("leave-btn");
   const muteAud = document.getElementById("mute-aud");
   const muteVid = document.getElementById("mute-vid");
   const controls = document.getElementById("controls");
 
+
+
+  class Queue {
+    constructor() {
+        this.items = [];
+    }
+    
+    enqueue(element) {
+        return this.items.push(element);
+    }
+    
+    dequeue() {
+        if(this.items.length > 0) {
+            return this.items.shift();
+        }
+    }
+    
+    peek() {
+        return this.items[this.items.length - 1];
+    }
+    
+    isEmpty(){
+       return this.items.length == 0;
+    }
+   
+    size(){
+        return this.items.length;
+    }
+ 
+    clear(){
+        this.items = [];
+    }
+}
+
+let queue = new Queue();
+
+
   var hosts={};
   var guests={};
+  var host_key='',guest_key='',token='';
+
+  startRoomBtn.addEventListener("click",async() => {
+    const response = await fetch('http://3.17.29.80/room',{method:'POST'});
+    const data = await response.json();
+    console.log(data);
+    host_key=data['host_key'];
+    guest_key=data['guest_key'];
+    token=data['token'];
+  });
   
   // Joining the room
   joinBtn.addEventListener("click", () => {
     hmsActions.join({
       userName: document.getElementById("name").value,
-      authToken: document.getElementById("token").value
+      authToken: host_key,
+      settings: {
+        isAudioMuted: false,
+        isVideoMuted: false
+    },
+    rememberDeviceSelection: true,
+    });
+    const role = hmsStore.getState(selectLocalPeerRole);
+    console.log(role)
+  });
+
+  joinBtnGuest.addEventListener("click", () => {
+    hmsActions.join({
+      userName: document.getElementById("name").value,
+      authToken: guest_key,
+      settings: {
+        isAudioMuted: true,
+        isVideoMuted: true
+    },
+    rememberDeviceSelection: true,
     });
     const role = hmsStore.getState(selectLocalPeerRole);
     console.log(role)
@@ -63,6 +130,7 @@ import {
   }
   
   // display a tile for each peer in the peer list
+  var temp=0
   function renderPeers(peers) {
     peersContainer.innerHTML = "";
   
@@ -70,92 +138,188 @@ import {
       // this allows us to make peer list an optional argument
       peers = hmsStore.getState(selectPeers);
     }
-    console.log(peers);
+  
     peers.forEach((peer) => {
-        if(peer['roleName']=='host'){
-            hosts[peer['id']]=peer;
 
-            if (peer.videoTrack) {
-                const video = h("video", {
-                  class: "peer-video" + (peer.isLocal ? " local" : ""),
-                  autoplay: true, // if video doesn't play we'll see a blank tile
-                  muted: true,
-                  playsinline: true,
-                  style:"transform: scale(-1, 1); filter: FlipH;max-width:100%;aspect-ratio:16/9;object-fit:cover;z-index:-100;border-radius: 24px;margin-top:100px"
-                });
+      if(peer.roleName=='host'){
+        temp=1;
+        hosts[peer.id]=peer;
+        if (peer.videoTrack) {
+          const video = h("video", {
+                            class: "peer-video" + (peer.isLocal ? " local" : ""),
+                            autoplay: true, // if video doesn't play we'll see a blank tile
+                            muted: true,
+                            playsinline: true,
+                            style:"transform: scale(-1, 1); filter: FlipH;max-width:100%;aspect-ratio:16/9;object-fit:cover;z-index:-100;border-radius: 24px;margin-top:100px"
+                          });
+    
+          // this method takes a track ID and attaches that video track to a given
+          // <video> element
+          hmsActions.attachVideo(peer.videoTrack, video);
+    
+          const peerContainer = h(
+            "div",
+            {
+              class: "peer-container"
+            },
+            video,
+            h(
+              "div",
+              {
+                class: "peer-name"
+              },
+              peer.name + (peer.isLocal ? " (You)" : "")
+            )
+          );
+    
+          peersContainer.append(peerContainer);
+        }
+      }
+      else{
+        var ele={}
+        ele[peer.id]=peer;
+        queue.enqueue(ele);
+        console.log(queue);
+      }
+    });
+  }
+
+// subscribe to the peers, so render is called whenever there is a change like peer join and leave
+hmsStore.subscribe(renderPeers, selectPeers);
+
+
+
+
+  var temp=0
+  // function renderPeers(peers) {
+  //   peersContainer.innerHTML = "";
+  
+  //   if (!peers) {
+  //     // this allows us to make peer list an optional argument
+  //     peers = hmsStore.getState(selectPeers);
+  //   }
+  //   peers.forEach((peer) => {
+  //       if(peer['roleName']=='host' && temp==0){
+  //           hosts[peer['id']]=peer;
+  //           temp=1;
+            
+  //           if (peer.videoTrack) {
+  //             // console.log('Yahan aaya');
+  //               const video = h("video", {
+  //                 class: "peer-video" + (peer.isLocal ? " local" : ""),
+  //                 autoplay: true, // if video doesn't play we'll see a blank tile
+  //                 muted: true,
+  //                 playsinline: true,
+  //                 style:"transform: scale(-1, 1); filter: FlipH;max-width:100%;aspect-ratio:16/9;object-fit:cover;z-index:-100;border-radius: 24px;margin-top:100px"
+  //               });
         
           
-                // this method takes a track ID and attaches that video track to a given
-                // <video> element
-                hmsActions.attachVideo(peer.videoTrack, video);
+  //               // this method takes a track ID and attaches that video track to a given
+  //               // <video> element
+  //               hmsActions.attachVideo(peer.videoTrack, video);
           
-                const peerContainer = h(
-                  "div",
-                  {
-                    class: "peer-container"
-                  },
-                  video,
-                  h(
-                    "div",
-                    {
-                      class: "peer-name"
-                    },
-                    peer.name + (peer.isLocal ? " (You)" : "")
-                  )
-                );
+  //               const peerContainer = h(
+  //                 "div",
+  //                 {
+  //                   class: "peer-container"
+  //                 },
+  //                 video,
+  //                 h(
+  //                   "div",
+  //                   {
+  //                     class: "peer-name"
+  //                   },
+  //                   peer.name + (peer.isLocal ? " (You)" : "")
+  //                 )
+  //               );
           
-                peersContainer.append(peerContainer);
-              }
+  //               peersContainer.append(peerContainer);
+  //             }
 
-        }
-        else if(peer['roleName']=='guest'){
-            guests[peer['id']]=peer;
-            const videoEnabled = !hmsStore.getState(selectIsLocalVideoEnabled);
-            hmsActions.setLocalVideoEnabled(videoEnabled);
-        }
+  //       }
+  //       else if(peer['roleName']=='guest'){
+  //           guests[peer['id']]=peer;
+  //           const videoEnabled = !hmsStore.getState(selectIsLocalVideoEnabled);
+  //           hmsActions.setLocalVideoEnabled(videoEnabled);
+  //       }
+
+  //       // Object.values(hosts).forEach((peer)=>{
+  //       //   if (peer.videoTrack) {
+  //       //     const video = h("video", {
+  //       //       class: "peer-video" + (peer.isLocal ? " local" : ""),
+  //       //       autoplay: true, // if video doesn't play we'll see a blank tile
+  //       //       muted: true,
+  //       //       playsinline: true,
+  //       //       style:"transform: scale(-1, 1); filter: FlipH;max-width:100%;aspect-ratio:16/9;object-fit:cover;z-index:-100;border-radius: 24px;margin-top:100px"
+  //       //     });
+    
       
-    });
+  //       //     // this method takes a track ID and attaches that video track to a given
+  //       //     // <video> element
+  //       //     hmsActions.attachVideo(peer.videoTrack, video);
+      
+  //       //     const peerContainer = h(
+  //       //       "div",
+  //       //       {
+  //       //         class: "peer-container"
+  //       //       },
+  //       //       video,
+  //       //       h(
+  //       //         "div",
+  //       //         {
+  //       //           class: "peer-name"
+  //       //         },
+  //       //         peer.name + (peer.isLocal ? " (You)" : "")
+  //       //       )
+  //       //     );
+      
+  //       //     peersContainer.append(peerContainer);
+  //       //   }
 
-    console.log(hosts);
-    console.log(guests);
-  }
+  //       // })
+      
+  //   });
+
+  //   console.log(hosts);
+  //   console.log(guests);
+  // }
   
-  function onConnection(isConnected) {
-    if (isConnected) {
-      form.classList.add("hide");
-      conference.classList.remove("hide");
-      leaveBtn.classList.remove("hide");
-      controls.classList.remove("hide");
-    } else {
-      form.classList.remove("hide");
-      conference.classList.add("hide");
-      leaveBtn.classList.add("hide");
-      controls.classList.add("hide");
-    }
-  }
+  // function onConnection(isConnected) {
+  //   if (isConnected) {
+  //     form.classList.add("hide");
+  //     conference.classList.remove("hide");
+  //     leaveBtn.classList.remove("hide");
+  //     controls.classList.remove("hide");
+  //   } else {
+  //     form.classList.remove("hide");
+  //     conference.classList.add("hide");
+  //     leaveBtn.classList.add("hide");
+  //     controls.classList.add("hide");
+  //   }
+  // }
   
-  // reactive state - renderPeers is called whenever there is a change in the peer-list
-  hmsStore.subscribe(renderPeers, selectPeers);
+  // // reactive state - renderPeers is called whenever there is a change in the peer-list
+  // hmsStore.subscribe(renderPeers, selectPeers);
   
-  // listen to the connection state
-  hmsStore.subscribe(onConnection, selectIsConnectedToRoom);
+  // // listen to the connection state
+  // hmsStore.subscribe(onConnection, selectIsConnectedToRoom);
   
-  muteAud.addEventListener("click", () => {
-    const audioEnabled = !hmsStore.getState(selectIsLocalAudioEnabled);
+  // muteAud.addEventListener("click", () => {
+  //   const audioEnabled = !hmsStore.getState(selectIsLocalAudioEnabled);
   
-    hmsActions.setLocalAudioEnabled(audioEnabled);
+  //   hmsActions.setLocalAudioEnabled(audioEnabled);
   
-    muteAud.textContent = audioEnabled ? "Mute" : "Unmute";
-  });
+  //   muteAud.textContent = audioEnabled ? "Mute" : "Unmute";
+  // });
   
-  muteVid.addEventListener("click", () => {
-    const videoEnabled = !hmsStore.getState(selectIsLocalVideoEnabled);
+  // muteVid.addEventListener("click", () => {
+  //   const videoEnabled = !hmsStore.getState(selectIsLocalVideoEnabled);
   
-    hmsActions.setLocalVideoEnabled(videoEnabled);
+  //   hmsActions.setLocalVideoEnabled(videoEnabled);
   
-    muteVid.textContent = videoEnabled ? "Hide" : "Unhide";
+  //   muteVid.textContent = videoEnabled ? "Hide" : "Unhide";
   
-    // Re-render video tile
-    renderPeers();
-  });
+  //   // Re-render video tile
+  //   renderPeers();
+  // });
   
