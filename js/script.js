@@ -68,7 +68,7 @@ let queue = new Queue();
   var host_key='',guest_key='',token='';
 
   startRoomBtn.addEventListener("click",async() => {
-    const response = await fetch('http://3.17.29.80/room',{method:'POST'});
+    const response = await fetch('http://localhost:5000/room',{method:'POST'});
     const data = await response.json();
     console.log(data);
     host_key=data['host_key'];
