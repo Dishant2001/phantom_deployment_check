@@ -156,7 +156,7 @@ let queue = new Queue();
                             autoplay: true, // if video doesn't play we'll see a blank tile
                             muted: true,
                             playsinline: true,
-                            style:"transform: scale(-1, 1); filter: FlipH;max-width:100%;aspect-ratio:16/9;object-fit:cover;z-index:-100;border-radius: 24px;margin-top:100px"
+                            style:"transform: scale(-1, 1); filter: FlipH;width:100%;aspect-ratio:16/9;object-fit:cover;z-index:-100;border-radius: 24px;margin-top:100px"
                           });
     
           // this method takes a track ID and attaches that video track to a given
