@@ -38,7 +38,7 @@ import {
         return this.items.push(element);
       else{
         for(var i=0;i<this.items.length;++i){
-          if(Object.values(this.items[i])[0].joinedAt.getTime()>Object.values(element)[0].joinedAt.getTime()){
+          if(Object.values(this.items[i])[0].joinedAt.slice(15,24)>Object.values(element)[0].joinedAt.slice(15,24)){
             this.items.splice(i,0,element);
           }
         }
