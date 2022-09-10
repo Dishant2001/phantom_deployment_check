@@ -58,6 +58,14 @@ import {
     clear(){
         this.items = [];
     }
+
+    search(id){
+      for(var i=0;i<this.items.length;++i){
+        if(Object.keys(this.items[i])[0]==id)
+          return false;
+      }
+      return true;
+    }
 }
 
 let queue = new Queue();
@@ -134,6 +142,7 @@ let queue = new Queue();
   }
   
   // display a tile for each peer in the peer list
+
   var temp=0
   var guests=0;
   function renderPeers(peers) {
@@ -234,7 +243,7 @@ let queue = new Queue();
       else{
         var ele={}
         ele[peer.id]=peer;
-        if(!queue.items.includes(ele)){
+        if(!queue.search(peer.id)){
           queue.enqueue(ele);
           console.log(queue);
           guests=guests+1;
@@ -250,7 +259,7 @@ let queue = new Queue();
               {
                 class: "peer-name"
               },
-              peer.name + (peer.isLocal ? " (You)" : "") + `  ${peer.id} `+'Joined at: '+ `${new Date()}`
+              peer.name + (peer.isLocal ? " (You)" : "") + `  ${peer.id} `+'Joined at: '+ `${peer.joinedAt}`
             )
           );
     
