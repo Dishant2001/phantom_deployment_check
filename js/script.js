@@ -62,9 +62,9 @@ import {
     search(id){
       for(var i=0;i<this.items.length;++i){
         if(Object.keys(this.items[i])[0]==id)
-          return false;
+          return true;
       }
-      return true;
+      return false;
     }
 }
 
