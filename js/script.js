@@ -42,8 +42,8 @@ import {
           if(String(Object.values(this.items[i])[0].joinedAt).slice(15,24)>String(Object.values(element)[0].joinedAt).slice(15,24)){
             break;
           }
-          this.items.splice(i,0,element);
-          console.log('this.items:  ',this.items)
+          return this.items.splice(i,0,element);
+          // console.log('this.items:  ',this.items)
         }
       }
     }
