@@ -34,11 +34,12 @@ import {
     }
     
     enqueue(element) {
+      console.log(String(Object.values(element)[0].joinedAt));
       if (this.items.length==0)
         return this.items.push(element);
       else{
         for(var i=0;i<this.items.length;++i){
-          if(Object.values(this.items[i])[0].joinedAt.slice(15,24)>Object.values(element)[0].joinedAt.slice(15,24)){
+          if(String(Object.values(this.items[i])[0].joinedAt).slice(15,24)>String(Object.values(element)[0].joinedAt).slice(15,24)){
             this.items.splice(i,0,element);
           }
         }
