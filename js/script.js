@@ -147,6 +147,7 @@ let queue = new Queue();
   var guests=0;
   function renderPeers(peers) {
     peersContainer.innerHTML = "";
+    queue.clear();
   
     if (!peers) {
       // this allows us to make peer list an optional argument
@@ -268,6 +269,39 @@ let queue = new Queue();
       }
       }
     });
+    if(peers.length!=0 && queue.size()!=0){
+      console.log(queue.peek());
+      var top_guest=Object.values(queue.peek())[0];
+      console.log(top_guest);
+      if (top_guest.videoTrack) {
+        const video_guest = h("video", {
+                          class: "peer-video" + (top_guest.isLocal ? " local" : ""),
+                          autoplay: true, // if video doesn't play we'll see a blank tile
+                          muted: true,
+                          playsinline: true,
+                          style:"transform: scale(-1, 1); filter: FlipH;width:100%;aspect-ratio:16/9;object-fit:cover;z-index:-100;border-radius: 24px;margin-top:100px"
+                        });
+                      
+                        hmsActions.attachVideo(top_guest.videoTrack, video_guest);
+                        const peerContainer = h(
+                          "div",
+                          {
+                            class: "peer-container"
+                          },
+                          video_guest,
+                          h(
+                            "div",
+                            {
+                              class: "peer-name"
+                            },
+                            top_guest.name + (top_guest.isLocal ? " (You)" : "")
+                          )
+                        );
+                        peersContainer.append(peerContainer);
+                      }
+    }
+
+
   }
 
 // subscribe to the peers, so render is called whenever there is a change like peer join and leave
