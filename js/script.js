@@ -34,13 +34,14 @@ import {
     }
     
     enqueue(element) {
-      console.log(String(Object.values(element)[0].joinedAt));
+      console.log(String(Object.values(element)[0].joinedAt).slice(15,24));
       if (this.items.length==0)
         return this.items.push(element);
       else{
         for(var i=0;i<this.items.length;++i){
           if(String(Object.values(this.items[i])[0].joinedAt).slice(15,24)>String(Object.values(element)[0].joinedAt).slice(15,24)){
             this.items.splice(i,0,element);
+            console.log('this.items:  ',this.items)
           }
         }
       }
