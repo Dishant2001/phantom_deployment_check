@@ -43,7 +43,6 @@ import {
             break;
           }
           return this.items.splice(i,0,element);
-          // console.log('this.items:  ',this.items)
         }
       }
     }
