@@ -34,7 +34,15 @@ import {
     }
     
     enqueue(element) {
+      if (this.items.length==0)
         return this.items.push(element);
+      else{
+        for(var i=0;i<this.items.length;++i){
+          if(Object.values(this.items[i])[0].joinedAt.getTime()>Object.values(element)[0].getTime()){
+            this.items.splice(i,0,element);
+          }
+        }
+      }
     }
     
     dequeue() {
