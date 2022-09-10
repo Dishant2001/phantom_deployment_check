@@ -250,7 +250,7 @@ let queue = new Queue();
               {
                 class: "peer-name"
               },
-              peer.name + (peer.isLocal ? " (You)" : "") + `  ${peer.id}`
+              peer.name + (peer.isLocal ? " (You)" : "") + `  ${peer.id} `+'Joined at: '+ `${new Date()}`
             )
           );
     
