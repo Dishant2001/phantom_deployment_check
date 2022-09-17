@@ -20,6 +20,7 @@ import {
   const joinBtnGuest = document.getElementById('join-btn-guest');
   const conference = document.getElementById("conference");
   const peersContainer = document.getElementById("hostContainer");
+  const queueContainer = document.getElementById("queue");
   const startRoomBtn = document.getElementById('header-right-btn');
   const leaveBtn = document.getElementById("leave-btn");
   const muteAud = document.getElementById("mute-aud");
@@ -157,6 +158,7 @@ let queue = new Queue();
   var guests=0;
   function renderPeers(peers) {
     peersContainer.innerHTML = "";
+    queueContainer.innerHTML="";
     queue.clear();
   
     if (!peers) {
@@ -307,7 +309,25 @@ let queue = new Queue();
                             top_guest.name + (top_guest.isLocal ? " (You)" : "")
                           )
                         );
+
+
+                        const queueEle = h(
+                          "div",
+                          {
+                            class:"queue-ele"
+                          },
+                          h(
+                            "span",
+                            {
+                              
+                            },
+                            top_guest.name[0]
+                          )
+                        );
+
+
                         peersContainer.append(peerContainer);
+                        queueContainer.append(queueEle);
                       }
     }
 
