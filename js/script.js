@@ -99,7 +99,7 @@ let queue = new Queue();
     hmsActions.join({
       userName: document.getElementById("name").value,
       // authToken: host_key,
-      authToken:"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3Nfa2V5IjoiNjMxMmVmZjdiMWU3ODBlNzhjM2NlZDI0IiwidHlwZSI6ImFwcCIsInZlcnNpb24iOjIsInJvb21faWQiOiI2MzE2ZTFjM2IxZTc4MGU3OGMzZDFkY2YiLCJ1c2VyX2lkIjoidTEiLCJyb2xlIjoiaG9zdCIsImp0aSI6IjkwMjRhYjU0LTdmMjItNDAxMC04ZTUxLTQ3NWM1OTMxZjg4YyIsImV4cCI6MTY2Mjg3NDAwMywiaWF0IjoxNjYyNzg3NjAzLCJuYmYiOjE2NjI3ODc2MDN9.gzw0bfMQQlS_6e4Np5OGeISN9Bulrm6LzCSfzR8dRnQ",
+      authToken:"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3Nfa2V5IjoiNjMxMmVmZjdiMWU3ODBlNzhjM2NlZDI0IiwidHlwZSI6ImFwcCIsInZlcnNpb24iOjIsInJvb21faWQiOiI2MzE2ZTFjM2IxZTc4MGU3OGMzZDFkY2YiLCJ1c2VyX2lkIjoidTEiLCJyb2xlIjoiaG9zdCIsImp0aSI6ImI0OTY0OThhLTU0ZWQtNDcwZC04NjUwLTBhYTlhZWM5YzIwNSIsImV4cCI6MTY2MzQ3OTU4NywiaWF0IjoxNjYzMzkzMTg3LCJuYmYiOjE2NjMzOTMxODd9.RJb5sf8fpkxAYopohCeSauX_5I4px83ag-RjsyKmCsI",
       settings: {
         isAudioMuted: false,
         isVideoMuted: false
@@ -116,7 +116,7 @@ let queue = new Queue();
     hmsActions.join({
       userName: document.getElementById("name").value,
       // authToken: data['guest_key'],
-      authToken:'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3Nfa2V5IjoiNjMxMmVmZjdiMWU3ODBlNzhjM2NlZDI0IiwidHlwZSI6ImFwcCIsInZlcnNpb24iOjIsInJvb21faWQiOiI2MzE2ZTFjM2IxZTc4MGU3OGMzZDFkY2YiLCJ1c2VyX2lkIjoidTIiLCJyb2xlIjoiZ3Vlc3QiLCJqdGkiOiIwMmYxZDY2OC1kNzAyLTRmNDItOGQ2MS03N2RlNWI4YTcwMGQiLCJleHAiOjE2NjI4NzQwMDMsImlhdCI6MTY2Mjc4NzYwMywibmJmIjoxNjYyNzg3NjAzfQ.2nPlKUQW802flxn-nwVQ0IYdDwji8i21IXI9lsAEj-Q',
+      authToken:'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3Nfa2V5IjoiNjMxMmVmZjdiMWU3ODBlNzhjM2NlZDI0IiwidHlwZSI6ImFwcCIsInZlcnNpb24iOjIsInJvb21faWQiOiI2MzE2ZTFjM2IxZTc4MGU3OGMzZDFkY2YiLCJ1c2VyX2lkIjoidTIiLCJyb2xlIjoiZ3Vlc3QiLCJqdGkiOiJhYmRjOTYwZS1iYjQyLTRlODgtYmVlMS0yZGJiNmQwNzJlMjciLCJleHAiOjE2NjM0Nzk1ODcsImlhdCI6MTY2MzM5MzE4NywibmJmIjoxNjYzMzkzMTg3fQ.HUafFmrqucvkoNhCZ3vD97d-pUft7OglyCRlLuTC8qk',
       settings: {
         isAudioMuted: true,
         isVideoMuted: true
