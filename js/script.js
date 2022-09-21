@@ -358,7 +358,7 @@ function renderPeers(peers) {
     console.log(queue.peek());
     var top_guest = Object.values(queue.peek())[0];
     console.log(top_guest);
-    if (top_guest.videoTrack&&confirm('Join the meet')==true) {
+    if (top_guest.videoTrack) {
       const video_guest = h("video", {
         class: "peer-video" + (top_guest.isLocal ? " local" : ""),
         autoplay: true, // if video doesn't play we'll see a blank tile
@@ -400,7 +400,8 @@ function renderPeers(peers) {
       );
 
       peersContainer.innerHTML="";
-      peersContainer.append(peerContainer);
+      if(top_guest.isLocal&&confirm("Host is inviting you inside"))
+        peersContainer.append(peerContainer);
     }
     for (var i = 0; i < queue.size(); ++i) {
       var ith_guest = Object.values(queue.items[i])[0];
