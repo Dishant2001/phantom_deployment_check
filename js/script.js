@@ -310,8 +310,7 @@ function renderPeers(peers) {
             },
             video
           ),
-            controlContainer,
-            hostControls
+            controlContainer
         );
 
         
