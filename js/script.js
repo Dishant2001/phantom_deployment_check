@@ -155,6 +155,28 @@ function h(tag, attrs = {}, ...children) {
 
 // display a tile for each peer in the peer list
 
+function buttonControl(){
+  const mic=document.getElementById('mic');
+  const call=document.getElementById('call');
+  const cam=document.getElementById('video');
+  mic.addEventListener('click',()=>{
+    const audioEnabled = !hmsStore.getState(selectIsLocalAudioEnabled);
+    hmsActions.setLocalAudioEnabled(audioEnabled);
+    mic.style.backgroundColor=audioEnabled?"#fafafb":"#ff3459";
+  });
+
+  cam.addEventListener('click',()=>{
+    const videoEnabled = !hmsStore.getState(selectIsLocalVideoEnabled);
+    hmsActions.setLocalVideoEnabled(videoEnabled);
+    cam.style.backgroundColor=videoEnabled?"#fafafb":"#ff3459";
+    renderPeers();
+  });
+
+  call.addEventListener('click',()=>{
+    leaveRoom();
+  });
+}
+
 var temp = 0
 var guests = 0;
 function renderPeers(peers) {
@@ -189,7 +211,13 @@ function renderPeers(peers) {
         id: "setting",
         style: "margin:auto;display: flex;background-color: #FAFAFB;height: 80%;aspect-ratio:1;z-index: 0;border-radius:15px;"
       },
-      "s"
+      h(
+        "img",
+        {
+          src:"img/setting.png",
+          style:"margin:auto;width:50%;"
+        }
+      )
     ),
     h(
       "div",
@@ -197,7 +225,13 @@ function renderPeers(peers) {
         id: "mic",
         style: "margin:auto;display: flex;background-color: #FAFAFB;height: 80%;aspect-ratio:1;z-index: 0;border-radius:15px;"
       },
-      "m"
+      h(
+        "img",
+        {
+          src:"img/mic.png",
+          style:"margin:auto;width:50%;"
+        }
+      )
     ),
     h(
       "div",
@@ -205,7 +239,13 @@ function renderPeers(peers) {
         id: "call",
         style: "margin:auto;display: flex;background-color: #4C67F4;height: 100%;aspect-ratio:1;z-index: 0;border-radius:23px;"
       },
-      "c"
+      h(
+        "img",
+        {
+          src:"img/receiver.png",
+          style:"margin:auto;width:50%;"
+        }
+      )
     ),
     h(
       "div",
@@ -213,7 +253,13 @@ function renderPeers(peers) {
         id: "video",
         style: "margin:auto;display: flex;background-color: #FAFAFB;height: 80%;aspect-ratio:1;z-index: 0;border-radius:15px;"
       },
-      "v"
+      h(
+        "img",
+        {
+          src:"img/cam.png",
+          style:"margin:auto;width:50%;"
+        }
+      )
     ),
     h(
       "div",
@@ -221,7 +267,13 @@ function renderPeers(peers) {
         id: "chat",
         style: "margin:auto;display: flex;background-color: #FAFAFB;height: 80%;aspect-ratio:1;z-index: 0;border-radius:15px;"
       },
-      "c"
+      h(
+        "img",
+        {
+          src:"img/chat.png",
+          style:"margin:auto;width:50%;"
+        }
+      )
     )
   );
 
@@ -263,37 +315,67 @@ function renderPeers(peers) {
           h(
             "div",
             {
-              id:"remove-person"
+              id:"remove-person",
             },
-            'R'
+            h(
+              "img",
+              {
+                src:"img/out.png",
+                style:"margin:auto;width:50%;"
+              }
+            )
           ),
           h(
             "div",
             {
               id:"add-person"
             },
-            'A'
+            h(
+              "img",
+              {
+                src:"img/person.png",
+                style:"margin:auto;width:50%;"
+              }
+            )
           ),
           h(
             "div",
             {
               id:"chat"
             },
-            'C'
+            h(
+              "img",
+              {
+                src:"img/chat.png",
+                style:"margin:auto;width:50%;"
+              }
+            )
           ),
           h(
             "div",
             {
               id:"q-close"
             },
-            'Q'
+            h(
+              "img",
+              {
+                src:"img/Q.png",
+                style:"margin:auto;width:50%;"
+              }
+            )
           ),
           h(
             "div",
             {
               id:"coffee-break"
             },
-            'C'
+            h(
+              "img",
+              {
+                src:"img/coffee.png",
+                style:"margin:auto;width:50%;"
+              }
+            )
           )
         );
 
@@ -339,6 +421,8 @@ function renderPeers(peers) {
           console.log("Currently interviewd: ",currrently_in);
         });
 
+        buttonControl();
+
 
       }
     }
@@ -359,13 +443,26 @@ function renderPeers(peers) {
     var top_guest = Object.values(queue.peek())[0];
     console.log(top_guest);
     if (top_guest.videoTrack) {
-      const video_guest = h("video", {
-        class: "peer-video" + (top_guest.isLocal ? " local" : ""),
-        autoplay: true, // if video doesn't play we'll see a blank tile
-        muted: true,
-        playsinline: true,
-        style: "position:absolute;top:0;margin:auto;transform: scale(-1, 1);"+top_guest.isLocal? "filter: FlipH;":""+"width:100%;aspect-ratio:16/9;object-fit:cover;z-index:-100;border-radius: 24px;"
-      });
+      var video_guest;
+      if(top_guest.isLocal){
+        video_guest = h("video", {
+          class: "peer-video" + (top_guest.isLocal ? " local" : ""),
+          autoplay: true, // if video doesn't play we'll see a blank tile
+          muted: true,
+          playsinline: true,
+          style: "position:absolute;top:0;margin:auto;transform: scale(-1, 1);filter: FlipH;width:100%;aspect-ratio:16/9;object-fit:cover;z-index:-100;border-radius: 24px;"
+        });
+      }
+      else{
+        video_guest = h("video", {
+          class: "peer-video" + (top_guest.isLocal ? " local" : ""),
+          autoplay: true, // if video doesn't play we'll see a blank tile
+          muted: true,
+          playsinline: true,
+          style: "position:absolute;top:0;margin:auto;transform: scale(-1, 1);width:100%;aspect-ratio:16/9;object-fit:cover;z-index:-100;border-radius: 24px;"
+        });
+      }
+      
 
       hmsActions.attachVideo(top_guest.videoTrack, video_guest);
       var temp_arr=[];
@@ -402,6 +499,8 @@ function renderPeers(peers) {
       peersContainer.innerHTML="";
       // if(top_guest.isLocal&&confirm("Host is inviting you inside"))
         peersContainer.append(peerContainer);
+
+        buttonControl();
     }
     for (var i = 0; i < queue.size(); ++i) {
       var ith_guest = Object.values(queue.items[i])[0];
@@ -424,6 +523,14 @@ function renderPeers(peers) {
     }
   }
 
+  // const mic=document.getElementById('mic');
+  // const call=document.getElementById('call');
+  // const cam=document.getElementById('video');
+  // mic.addEventListener('click',()=>{
+  //   const audioEnabled = !hmsStore.getState(selectIsLocalAudioEnabled);
+  //   hmsActions.setLocalAudioEnabled(audioEnabled);
+  //   mic.style.backgroundColor="#fafafb"?"#ff3459":"#fafafb";
+  // });
 
 }
 

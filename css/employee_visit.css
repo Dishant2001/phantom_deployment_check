@@ -8,6 +8,7 @@
 header{
     position: sticky;
     top: 0;
+    z-index: 200;
 }
 
 .header{
@@ -201,11 +202,19 @@ button{
 .hostControls div{
     display: flex;
     margin: auto;
-    padding: 1em;
-    width: 1%;
+    /* padding: 1em; */
+    width: 6%;
     aspect-ratio: 1/1;
     background-color: #FAFAFB;
     border-radius: 15px;
+    cursor: pointer;
+}
+#remove-person{
+    background-color: #ff3459;
+}
+
+.controls div{
+    cursor: pointer;
 }
 
 .queue{
