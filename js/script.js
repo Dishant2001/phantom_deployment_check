@@ -250,7 +250,7 @@ function renderPeers(peers) {
           "div",
           {
             class: "peer-container",
-            style:"position:relative;width:100%;height:100%;display:flex;justify-content:center;align-items:center;"
+            style:"display:flex;flex-direction:row;position:relative;width:100%;height:100%;display:flex;justify-content:center;align-items:center;"
           },
           video,
           h(
@@ -306,13 +306,20 @@ function renderPeers(peers) {
       });
 
       hmsActions.attachVideo(top_guest.videoTrack, video_guest);
+      var temp_arr=[];
+      if(top_guest.isLocal){
+        temp_arr=[video,video_guest];
+      }
+      else{
+        temp_arr=[video_guest,video];
+      }
       const peerContainer = h(
         "div",
         {
           class: "peer-container",
           style:"position:relative;width:100%;height:100%;display:flex;justify-content:center;align-items:center;"
         },
-        video_guest,
+        temp_arr[0],
         h(
           "div",
           {
@@ -325,7 +332,7 @@ function renderPeers(peers) {
           {
             class:"guestContainer",
           },
-          video
+          temp_arr[1]
         ),
           controlContainer
       );
