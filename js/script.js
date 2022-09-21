@@ -227,11 +227,28 @@ function renderPeers(peers) {
 
   var hosts={};
   var countHost=0;
+  var hostVideoTracks=[];
 
   peers.forEach((peer)=>{
-    if(peer.roleName=='host')
-      ++countHost;
+    if(peer.roleName=='host'){
+      ++countHost;  
+    }
   });
+
+  peers.forEach((peer)=>{
+    if(peer.roleName=='host'){
+      if (peer.videoTrack) {
+        video = h("video", {
+          class: "peer-video" + (peer.isLocal ? " local" : ""),
+          autoplay: true, // if video doesn't play we'll see a blank tile
+          muted: true,
+          playsinline: true,
+          style: "display:inline-flex;position:absolute;top:0;margin:auto;transform: scale(-1, 1); filter: FlipH;width:"+100/countHost+"%;aspect-ratio:16/9;object-fit:cover;z-index:-100;border-radius: 24px;"
+        });
+        hmsActions.attachVideo(peer.videoTrack, video);
+        hostVideoTracks.push(video);
+    }
+  }});
 
   peers.forEach((peer) => {
 
@@ -304,7 +321,7 @@ function renderPeers(peers) {
             class: "peer-container",
             style:"display:flex;flex-direction:row;flex-wrap:wrap;position:relative;width:100%;height:100%;display:flex;justify-content:center;align-items:center;"
           },
-          video,
+          ...hostVideoTracks,
           h(
             "div",
             {
