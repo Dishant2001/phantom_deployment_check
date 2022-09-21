@@ -83,7 +83,7 @@ class Queue {
 let queue = new Queue();
 
 
-var hosts = {};
+// var hosts = {};
 var guests = {};
 var host_key = '', guest_key = '', token = '';
 
@@ -225,6 +225,8 @@ function renderPeers(peers) {
     )
   );
 
+  var hosts={};
+
   peers.forEach((peer) => {
 
     if (peer.roleName == 'host') {
@@ -237,7 +239,7 @@ function renderPeers(peers) {
           autoplay: true, // if video doesn't play we'll see a blank tile
           muted: true,
           playsinline: true,
-          style: "position:absolute;top:0;margin:auto;transform: scale(-1, 1); filter: FlipH;width:100%;aspect-ratio:16/9;object-fit:cover;z-index:-100;border-radius: 24px;"
+          style: "position:absolute;top:0;margin:auto;transform: scale(-1, 1); filter: FlipH;width:"+100/Object.keys(hosts).length+"%;aspect-ratio:16/9;object-fit:cover;z-index:-100;border-radius: 24px;"
         });
 
         // this method takes a track ID and attaches that video track to a given
@@ -293,7 +295,7 @@ function renderPeers(peers) {
           "div",
           {
             class: "peer-container",
-            style:"display:flex;flex-direction:row;position:relative;width:100%;height:100%;display:flex;justify-content:center;align-items:center;"
+            style:"display:flex;flex-direction:row;flex-wrap:wrap;position:relative;width:100%;height:100%;display:flex;justify-content:center;align-items:center;"
           },
           video,
           h(
