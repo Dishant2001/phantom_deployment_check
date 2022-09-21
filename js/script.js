@@ -400,7 +400,7 @@ function renderPeers(peers) {
       );
 
       peersContainer.innerHTML="";
-      if(top_guest.isLocal&&confirm("Host is inviting you inside"))
+      // if(top_guest.isLocal&&confirm("Host is inviting you inside"))
         peersContainer.append(peerContainer);
     }
     for (var i = 0; i < queue.size(); ++i) {
