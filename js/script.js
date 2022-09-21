@@ -82,6 +82,8 @@ class Queue {
 
 let queue = new Queue();
 
+
+var hosts = {};
 var guests = {};
 var host_key = '', guest_key = '', token = '';
 
@@ -222,8 +224,6 @@ function renderPeers(peers) {
       "c"
     )
   );
-
-  var hosts={};
 
   peers.forEach((peer) => {
 
