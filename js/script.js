@@ -324,10 +324,10 @@ function renderPeers(peers) {
         // peersContainer.append(controlContainer);
         // peersContainer.append(guestContainer);
 
-        document.getElementById('remove-person').addEventListener('click',()=>{
-          var currrently_in = Object.values(queue.peek())[0];
-          console.log("Currently interviewd: ",currrently_in);
-        });
+        // document.getElementById('remove-person').addEventListener('click',()=>{
+        //   var currrently_in = Object.values(queue.peek())[0];
+        //   console.log("Currently interviewd: ",currrently_in);
+        // });
 
 
       }
