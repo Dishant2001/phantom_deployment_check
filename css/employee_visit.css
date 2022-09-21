@@ -154,10 +154,6 @@ button{
     margin: auto;
 }
 
-.controls div * {
-    z-index: -100;
-}
-
 .hostContainer{
     /* position: fixed; */
     margin: auto;
@@ -201,7 +197,6 @@ button{
     justify-content: center;
     /* justify-content: space-aroun; */
     border-radius: 0 0 15px 15px ;
-    z-index: -100;
 }
 .hostControls div{
     display: flex;
@@ -211,7 +206,6 @@ button{
     aspect-ratio: 1/1;
     background-color: #FAFAFB;
     border-radius: 15px;
-    z-index: -100;
 }
 
 .queue{

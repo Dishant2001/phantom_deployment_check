@@ -187,7 +187,7 @@ function renderPeers(peers) {
       "div",
       {
         id: "setting",
-        style: "margin:auto;display: flex;background-color: #FAFAFB;height: 80%;aspect-ratio:1;z-index: -100;border-radius:15px;"
+        style: "margin:auto;display: flex;background-color: #FAFAFB;height: 80%;aspect-ratio:1;z-index: 0;border-radius:15px;"
       },
       "s"
     ),
@@ -195,7 +195,7 @@ function renderPeers(peers) {
       "div",
       {
         id: "mic",
-        style: "margin:auto;display: flex;background-color: #FAFAFB;height: 80%;aspect-ratio:1;z-index: -100;border-radius:15px;"
+        style: "margin:auto;display: flex;background-color: #FAFAFB;height: 80%;aspect-ratio:1;z-index: 0;border-radius:15px;"
       },
       "m"
     ),
@@ -203,7 +203,7 @@ function renderPeers(peers) {
       "div",
       {
         id: "call",
-        style: "margin:auto;display: flex;background-color: #4C67F4;height: 100%;aspect-ratio:1;z-index: -100;border-radius:23px;"
+        style: "margin:auto;display: flex;background-color: #4C67F4;height: 100%;aspect-ratio:1;z-index: 0;border-radius:23px;"
       },
       "c"
     ),
@@ -211,7 +211,7 @@ function renderPeers(peers) {
       "div",
       {
         id: "video",
-        style: "margin:auto;display: flex;background-color: #FAFAFB;height: 80%;aspect-ratio:1;z-index: -100;border-radius:15px;"
+        style: "margin:auto;display: flex;background-color: #FAFAFB;height: 80%;aspect-ratio:1;z-index: 0;border-radius:15px;"
       },
       "v"
     ),
@@ -219,7 +219,7 @@ function renderPeers(peers) {
       "div",
       {
         id: "chat",
-        style: "margin:auto;display: flex;background-color: #FAFAFB;height: 80%;aspect-ratio:1;z-index: -100;border-radius:15px;"
+        style: "margin:auto;display: flex;background-color: #FAFAFB;height: 80%;aspect-ratio:1;z-index: 0;border-radius:15px;"
       },
       "c"
     )
@@ -364,7 +364,7 @@ function renderPeers(peers) {
         autoplay: true, // if video doesn't play we'll see a blank tile
         muted: true,
         playsinline: true,
-        style: "position:absolute;top:0;margin:auto;transform: scale(-1, 1);"+top_guest.isLocal?"filter:FlipH;":""+"width:100%;aspect-ratio:16/9;object-fit:cover;z-index:-100;border-radius: 24px;"
+        style: "position:absolute;top:0;margin:auto;transform: scale(-1, 1); filter: FlipH;width:100%;aspect-ratio:16/9;object-fit:cover;z-index:-100;border-radius: 24px;"
       });
 
       hmsActions.attachVideo(top_guest.videoTrack, video_guest);
