@@ -232,6 +232,7 @@ function renderPeers(peers) {
     if (peer.roleName == 'host') {
       temp = 1;
       hosts[peer.id] = peer;
+      console.log('No. of hosts: ',Object.keys(hosts).length);
       console.log('Host arrived');
       if (peer.videoTrack) {
         video = h("video", {
