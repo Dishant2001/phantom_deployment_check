@@ -187,7 +187,7 @@ function renderPeers(peers) {
       "div",
       {
         id: "setting",
-        style: "margin:auto;display: flex;background-color: #FAFAFB;height: 80%;aspect-ratio:1;z-index: 0;border-radius:20px;"
+        style: "margin:auto;display: flex;background-color: #FAFAFB;height: 80%;aspect-ratio:1;z-index: 0;border-radius:15px;"
       },
       "s"
     ),
@@ -195,7 +195,7 @@ function renderPeers(peers) {
       "div",
       {
         id: "mic",
-        style: "margin:auto;display: flex;background-color: #FAFAFB;height: 80%;aspect-ratio:1;z-index: 0;border-radius:20px;"
+        style: "margin:auto;display: flex;background-color: #FAFAFB;height: 80%;aspect-ratio:1;z-index: 0;border-radius:15px;"
       },
       "m"
     ),
@@ -203,7 +203,7 @@ function renderPeers(peers) {
       "div",
       {
         id: "call",
-        style: "margin:auto;display: flex;background-color: #4C67F4;height: 100%;aspect-ratio:1;z-index: 0;border-radius:25px;"
+        style: "margin:auto;display: flex;background-color: #4C67F4;height: 100%;aspect-ratio:1;z-index: 0;border-radius:23px;"
       },
       "c"
     ),
@@ -211,7 +211,7 @@ function renderPeers(peers) {
       "div",
       {
         id: "video",
-        style: "margin:auto;display: flex;background-color: #FAFAFB;height: 80%;aspect-ratio:1;z-index: 0;border-radius:20px;"
+        style: "margin:auto;display: flex;background-color: #FAFAFB;height: 80%;aspect-ratio:1;z-index: 0;border-radius:15px;"
       },
       "v"
     ),
@@ -219,7 +219,7 @@ function renderPeers(peers) {
       "div",
       {
         id: "chat",
-        style: "margin:auto;display: flex;background-color: #FAFAFB;height: 80%;aspect-ratio:1;z-index: 0;border-radius:20px;"
+        style: "margin:auto;display: flex;background-color: #FAFAFB;height: 80%;aspect-ratio:1;z-index: 0;border-radius:15px;"
       },
       "c"
     )
@@ -246,6 +246,49 @@ function renderPeers(peers) {
 
         
 
+        const hostControls = h(
+          "div",
+          {
+            class:"hostControls"
+          },
+          h(
+            "div",
+            {
+              id:"remove-person"
+            },
+            'R'
+          ),
+          h(
+            "div",
+            {
+              id:"add-person"
+            },
+            'A'
+          ),
+          h(
+            "div",
+            {
+              id:"chat"
+            },
+            'C'
+          ),
+          h(
+            "div",
+            {
+              id:"q-close"
+            },
+            'Q'
+          ),
+          h(
+            "div",
+            {
+              id:"coffee-break"
+            },
+            'C'
+          )
+        );
+
+
         const peerContainer = h(
           "div",
           {
@@ -267,17 +310,27 @@ function renderPeers(peers) {
             },
             video
           ),
-            controlContainer
+            controlContainer,
+            hostControls
         );
 
+        
         
 
         
 
 
         peersContainer.append(peerContainer);
+        // peersContainer.append(hostControls);
         // peersContainer.append(controlContainer);
         // peersContainer.append(guestContainer);
+
+        document.getElementById('remove-person').addEventListener('click',()=>{
+          var currrently_in = Object.values(queue.peek())[0];
+          console.log("Currently interviewd: ",currrently_in);
+        });
+
+
       }
     }
     else {
