@@ -82,8 +82,6 @@ class Queue {
 
 let queue = new Queue();
 
-
-var hosts = {};
 var guests = {};
 var host_key = '', guest_key = '', token = '';
 
@@ -225,6 +223,8 @@ function renderPeers(peers) {
     )
   );
 
+  var hosts={};
+
   peers.forEach((peer) => {
 
     if (peer.roleName == 'host') {
@@ -310,8 +310,7 @@ function renderPeers(peers) {
             },
             video
           ),
-            controlContainer,
-            hostControls
+            controlContainer
         );
 
         
