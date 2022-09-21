@@ -319,7 +319,8 @@ function renderPeers(peers) {
             },
             video
           ),
-            controlContainer
+            controlContainer,
+            hostControls
         );
 
         
@@ -333,10 +334,10 @@ function renderPeers(peers) {
         // peersContainer.append(controlContainer);
         // peersContainer.append(guestContainer);
 
-        // document.getElementById('remove-person').addEventListener('click',()=>{
-        //   var currrently_in = Object.values(queue.peek())[0];
-        //   console.log("Currently interviewd: ",currrently_in);
-        // });
+        document.getElementById('remove-person').addEventListener('click',()=>{
+          var currrently_in = Object.values(queue.peek())[0];
+          console.log("Currently interviewd: ",currrently_in);
+        });
 
 
       }
@@ -357,7 +358,7 @@ function renderPeers(peers) {
     console.log(queue.peek());
     var top_guest = Object.values(queue.peek())[0];
     console.log(top_guest);
-    if (top_guest.videoTrack) {
+    if (top_guest.videoTrack&&confirm('Join the meet')==true) {
       const video_guest = h("video", {
         class: "peer-video" + (top_guest.isLocal ? " local" : ""),
         autoplay: true, // if video doesn't play we'll see a blank tile
