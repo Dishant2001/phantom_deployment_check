@@ -101,7 +101,7 @@ joinBtn.addEventListener("click", () => {
   hmsActions.join({
     userName: document.getElementById("name").value,
     // authToken: host_key,
-    authToken: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3Nfa2V5IjoiNjMxMmVmZjdiMWU3ODBlNzhjM2NlZDI0IiwidHlwZSI6ImFwcCIsInZlcnNpb24iOjIsInJvb21faWQiOiI2MzE2ZTFjM2IxZTc4MGU3OGMzZDFkY2YiLCJ1c2VyX2lkIjoidTEiLCJyb2xlIjoiaG9zdCIsImp0aSI6IjM3ZThiMTY3LTcyN2MtNDIwNi04YzE3LWRhOTUyMDA1ZmRiMSIsImV4cCI6MTY2MzgyMTQ1OCwiaWF0IjoxNjYzNzM1MDU4LCJuYmYiOjE2NjM3MzUwNTh9.S9KFVhAMhyF_REGZQAt--rsUvVNP4fVtZv0C4KlZUiw",
+    authToken: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3Nfa2V5IjoiNjMxMmVmZjdiMWU3ODBlNzhjM2NlZDI0IiwidHlwZSI6ImFwcCIsInZlcnNpb24iOjIsInJvb21faWQiOiI2MzE2ZTFjM2IxZTc4MGU3OGMzZDFkY2YiLCJ1c2VyX2lkIjoidTEiLCJyb2xlIjoiaG9zdCIsImp0aSI6IjQ5NGM1NWE3LTcyMjYtNDFiNi04ZjhhLWE4NWY4YjJmZGM0ZiIsImV4cCI6MTY2MzkzNjgwNSwiaWF0IjoxNjYzODUwNDA1LCJuYmYiOjE2NjM4NTA0MDV9.X7xXDe2l9bb8T3_h_5gfJFw6GULUEhMkyxhywYQnBZ4",
     settings: {
       isAudioMuted: false,
       isVideoMuted: false
@@ -118,7 +118,7 @@ joinBtnGuest.addEventListener("click", async () => {
   hmsActions.join({
     userName: document.getElementById("name").value,
     // authToken: data['guest_key'],
-    authToken: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3Nfa2V5IjoiNjMxMmVmZjdiMWU3ODBlNzhjM2NlZDI0IiwidHlwZSI6ImFwcCIsInZlcnNpb24iOjIsInJvb21faWQiOiI2MzE2ZTFjM2IxZTc4MGU3OGMzZDFkY2YiLCJ1c2VyX2lkIjoidTIiLCJyb2xlIjoiZ3Vlc3QiLCJqdGkiOiJiYTg5YzFkZi03MmFjLTRkZTQtOWY3ZS1lNDE4YTkyMmY2YzYiLCJleHAiOjE2NjM4MjE0NTgsImlhdCI6MTY2MzczNTA1OCwibmJmIjoxNjYzNzM1MDU4fQ.zX3iDAwG2oP-YlnUfotRAOLIcZ6bHtj9b81yKsL8uis',
+    authToken: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3Nfa2V5IjoiNjMxMmVmZjdiMWU3ODBlNzhjM2NlZDI0IiwidHlwZSI6ImFwcCIsInZlcnNpb24iOjIsInJvb21faWQiOiI2MzE2ZTFjM2IxZTc4MGU3OGMzZDFkY2YiLCJ1c2VyX2lkIjoidTIiLCJyb2xlIjoiZ3Vlc3QiLCJqdGkiOiI5MjU4MWNiNS1lZmM5LTRmYmYtYWE2Yi03ZmY0ZjRjOTdjZjkiLCJleHAiOjE2NjM5MzY4MDUsImlhdCI6MTY2Mzg1MDQwNSwibmJmIjoxNjYzODUwNDA1fQ.f-OvI_hgDA4qvKpxgNeX2UkyrpW6H7uWrobi3UE0ydo',
     settings: {
       isAudioMuted: true,
       isVideoMuted: true
