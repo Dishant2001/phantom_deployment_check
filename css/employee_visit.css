@@ -190,11 +190,12 @@ button{
     position: absolute;
     top:100%;
     width: 70%;
+    aspect-ratio: 20/1;
     margin: auto;
     display: flex;
     flex-direction: row;
     background-color: #1C2541;
-    padding: 2em;
+    padding: 0.5em;
     justify-content: center;
     /* justify-content: space-aroun; */
     border-radius: 0 0 15px 15px ;
@@ -211,6 +212,10 @@ button{
 }
 #remove-person{
     background-color: #ff3459;
+    margin-left: 20%;
+}
+#coffee-break{
+    margin-right: 20%;
 }
 
 .controls div{
@@ -458,4 +463,10 @@ footer{
 
 }
 
+@media only screen and (max-width:327px){
+    .hostControls{
+        width: 60%;
+        padding: 0.2em;
+    }
+}
 
