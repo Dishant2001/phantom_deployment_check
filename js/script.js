@@ -175,6 +175,13 @@ function buttonControl(){
   call.addEventListener('click',()=>{
     leaveRoom();
   });
+
+
+  document.getElementById('remove-person').addEventListener('click',()=>{
+    var currrently_in = Object.values(queue.peek())[0];
+    console.log("Currently interviewd: ",currrently_in);
+  });
+
 }
 
 var temp = 0
@@ -277,6 +284,78 @@ function renderPeers(peers) {
     )
   );
 
+  const hostControls = h(
+    "div",
+    {
+      class:"hostControls"
+    },
+    h(
+      "div",
+      {
+        id:"remove-person",
+      },
+      h(
+        "img",
+        {
+          src:"img/out.png",
+          style:"margin:auto;width:50%;"
+        }
+      )
+    ),
+    h(
+      "div",
+      {
+        id:"add-person"
+      },
+      h(
+        "img",
+        {
+          src:"img/person.png",
+          style:"margin:auto;width:50%;"
+        }
+      )
+    ),
+    h(
+      "div",
+      {
+        id:"chat"
+      },
+      h(
+        "img",
+        {
+          src:"img/chat.png",
+          style:"margin:auto;width:50%;"
+        }
+      )
+    ),
+    h(
+      "div",
+      {
+        id:"q-close"
+      },
+      h(
+        "img",
+        {
+          src:"img/Q.png",
+          style:"margin:auto;width:50%;"
+        }
+      )
+    ),
+    h(
+      "div",
+      {
+        id:"coffee-break"
+      },
+      h(
+        "img",
+        {
+          src:"img/coffee.png",
+          style:"margin:auto;width:50%;"
+        }
+      )
+    )
+  );
+
   var hosts={};
   var countHost=0;
 
@@ -307,77 +386,7 @@ function renderPeers(peers) {
 
         
 
-        const hostControls = h(
-          "div",
-          {
-            class:"hostControls"
-          },
-          h(
-            "div",
-            {
-              id:"remove-person",
-            },
-            h(
-              "img",
-              {
-                src:"img/out.png",
-                style:"margin:auto;width:50%;"
-              }
-            )
-          ),
-          h(
-            "div",
-            {
-              id:"add-person"
-            },
-            h(
-              "img",
-              {
-                src:"img/person.png",
-                style:"margin:auto;width:50%;"
-              }
-            )
-          ),
-          h(
-            "div",
-            {
-              id:"chat"
-            },
-            h(
-              "img",
-              {
-                src:"img/chat.png",
-                style:"margin:auto;width:50%;"
-              }
-            )
-          ),
-          h(
-            "div",
-            {
-              id:"q-close"
-            },
-            h(
-              "img",
-              {
-                src:"img/Q.png",
-                style:"margin:auto;width:50%;"
-              }
-            )
-          ),
-          h(
-            "div",
-            {
-              id:"coffee-break"
-            },
-            h(
-              "img",
-              {
-                src:"img/coffee.png",
-                style:"margin:auto;width:50%;"
-              }
-            )
-          )
-        );
+       
 
 
         const peerContainer = h(
@@ -416,10 +425,10 @@ function renderPeers(peers) {
         // peersContainer.append(controlContainer);
         // peersContainer.append(guestContainer);
 
-        document.getElementById('remove-person').addEventListener('click',()=>{
-          var currrently_in = Object.values(queue.peek())[0];
-          console.log("Currently interviewd: ",currrently_in);
-        });
+        // document.getElementById('remove-person').addEventListener('click',()=>{
+        //   var currrently_in = Object.values(queue.peek())[0];
+        //   console.log("Currently interviewd: ",currrently_in);
+        // });
 
         buttonControl();
 
@@ -493,7 +502,8 @@ function renderPeers(peers) {
           },
           temp_arr[1]
         ),
-          controlContainer
+          controlContainer,
+          Object.values(hosts)[0].isLocal?hostControls:''
       );
 
       peersContainer.innerHTML="";
