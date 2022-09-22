@@ -358,6 +358,7 @@ function renderPeers(peers) {
 
   var hosts={};
   var countHost=0;
+  var checkIfHost=false;
 
   peers.forEach((peer)=>{
     if(peer.roleName=='host')
@@ -384,7 +385,9 @@ function renderPeers(peers) {
         // <video> element
         hmsActions.attachVideo(peer.videoTrack, video);
 
-        
+        if(peer.isLocal){
+          checkIfHost=true;
+        }
 
        
 
@@ -481,30 +484,59 @@ function renderPeers(peers) {
       else{
         temp_arr=[video_guest,video];
       }
-      const peerContainer = h(
-        "div",
-        {
-          class: "peer-container",
-          style:"position:relative;width:100%;height:100%;display:flex;justify-content:center;align-items:center;"
-        },
-        temp_arr[0],
-        h(
+      var peerContainer;
+      if(checkIfHost){
+
+        peerContainer = h(
           "div",
           {
-            class: "peer-name"
+            class: "peer-container",
+            style:"position:relative;width:100%;height:100%;display:flex;justify-content:center;align-items:center;"
           },
-          top_guest.name + (top_guest.isLocal ? " (You)" : "")
-        ),
-        h(
+          temp_arr[0],
+          h(
+            "div",
+            {
+              class: "peer-name"
+            },
+            top_guest.name + (top_guest.isLocal ? " (You)" : "")
+          ),
+          h(
+            "div",
+            {
+              class:"guestContainer",
+            },
+            temp_arr[1]
+          ),
+            controlContainer,
+            hostControls
+        );
+      }
+      else{
+        peerContainer = h(
           "div",
           {
-            class:"guestContainer",
+            class: "peer-container",
+            style:"position:relative;width:100%;height:100%;display:flex;justify-content:center;align-items:center;"
           },
-          temp_arr[1]
-        ),
-          controlContainer,
-          Object.values(hosts)[0].isLocal?hostControls:''
-      );
+          temp_arr[0],
+          h(
+            "div",
+            {
+              class: "peer-name"
+            },
+            top_guest.name + (top_guest.isLocal ? " (You)" : "")
+          ),
+          h(
+            "div",
+            {
+              class:"guestContainer",
+            },
+            temp_arr[1]
+          ),
+            controlContainer
+        );
+      }
 
       peersContainer.innerHTML="";
       // if(top_guest.isLocal&&confirm("Host is inviting you inside"))
