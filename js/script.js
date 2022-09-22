@@ -18,15 +18,15 @@ const hmsActions = hmsManager.getHMSActions();
 const form = document.getElementById("join");
 const joinBtn = document.getElementById("join-btn");
 const joinBtnGuest = document.getElementById('join-btn-guest');
-const conference = document.getElementById("conference");
+// const conference = document.getElementById("conference");
 const peersContainer = document.getElementById("hostContainer");
 const guestContainer = document.getElementById("guestContainer");
 const queueContainer = document.getElementById("queue");
 const startRoomBtn = document.getElementById('header-right-btn');
 const leaveBtn = document.getElementById("leave-btn");
-const muteAud = document.getElementById("mute-aud");
-const muteVid = document.getElementById("mute-vid");
-const controls = document.getElementById("controls");
+// const muteAud = document.getElementById("mute-aud");
+// const muteVid = document.getElementById("mute-vid");
+// const controls = document.getElementById("controls");
 
 
 
@@ -683,41 +683,41 @@ var temp = 0
 //   console.log(guests);
 // }
 
-function onConnection(isConnected) {
-  if (isConnected) {
-    form.classList.add("hide");
-    conference.classList.remove("hide");
-    leaveBtn.classList.remove("hide");
-    controls.classList.remove("hide");
-  } else {
-    form.classList.remove("hide");
-    conference.classList.add("hide");
-    leaveBtn.classList.add("hide");
-    controls.classList.add("hide");
-  }
-}
+// function onConnection(isConnected) {
+//   if (isConnected) {
+//     form.classList.add("hide");
+//     conference.classList.remove("hide");
+//     leaveBtn.classList.remove("hide");
+//     controls.classList.remove("hide");
+//   } else {
+//     form.classList.remove("hide");
+//     conference.classList.add("hide");
+//     leaveBtn.classList.add("hide");
+//     controls.classList.add("hide");
+//   }
+// }
 
 // // reactive state - renderPeers is called whenever there is a change in the peer-list
 // hmsStore.subscribe(renderPeers, selectPeers);
 
 // // listen to the connection state
-hmsStore.subscribe(onConnection, selectIsConnectedToRoom);
+// hmsStore.subscribe(onConnection, selectIsConnectedToRoom);
 
-muteAud.addEventListener("click", () => {
-  const audioEnabled = !hmsStore.getState(selectIsLocalAudioEnabled);
+// muteAud.addEventListener("click", () => {
+//   const audioEnabled = !hmsStore.getState(selectIsLocalAudioEnabled);
 
-  hmsActions.setLocalAudioEnabled(audioEnabled);
+//   hmsActions.setLocalAudioEnabled(audioEnabled);
 
-  muteAud.textContent = audioEnabled ? "Mute" : "Unmute";
-});
+//   muteAud.textContent = audioEnabled ? "Mute" : "Unmute";
+// });
 
-muteVid.addEventListener("click", () => {
-  const videoEnabled = !hmsStore.getState(selectIsLocalVideoEnabled);
+// muteVid.addEventListener("click", () => {
+//   const videoEnabled = !hmsStore.getState(selectIsLocalVideoEnabled);
 
-  hmsActions.setLocalVideoEnabled(videoEnabled);
+//   hmsActions.setLocalVideoEnabled(videoEnabled);
 
-  muteVid.textContent = videoEnabled ? "Hide" : "Unhide";
+//   muteVid.textContent = videoEnabled ? "Hide" : "Unhide";
 
-  // Re-render video tile
-  renderPeers();
-});
+//   // Re-render video tile
+//   renderPeers();
+// });
