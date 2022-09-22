@@ -177,9 +177,10 @@ function buttonControl(){
   });
 
 
-  document.getElementById('remove-person').addEventListener('click',()=>{
+  document.getElementById('remove-person').addEventListener('click',async()=>{
     var currrently_in = Object.values(queue.peek())[0];
     console.log("Currently interviewd: ",currrently_in);
+    await hmsActions.removePeer(peer.id, reason);
   });
 
 }
