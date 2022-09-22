@@ -512,6 +512,12 @@ function renderPeers(peers) {
             hostControls
         );
 
+        peersContainer.innerHTML="";
+            // if(top_guest.isLocal&&confirm("Host is inviting you inside"))
+              peersContainer.append(peerContainer);
+      
+              buttonControl();
+
         document.getElementById('remove-person').addEventListener('click',async()=>{
           var currrently_in = Object.values(queue.peek())[0];
           console.log("Currently interviewd: ",currrently_in);
@@ -542,14 +548,14 @@ function renderPeers(peers) {
             temp_arr[1]
           ),
             controlContainer
-        );
+            );
+            peersContainer.innerHTML="";
+            // if(top_guest.isLocal&&confirm("Host is inviting you inside"))
+              peersContainer.append(peerContainer);
+      
+              buttonControl();
       }
 
-      peersContainer.innerHTML="";
-      // if(top_guest.isLocal&&confirm("Host is inviting you inside"))
-        peersContainer.append(peerContainer);
-
-        buttonControl();
     }
     for (var i = 0; i < queue.size(); ++i) {
       var ith_guest = Object.values(queue.items[i])[0];
