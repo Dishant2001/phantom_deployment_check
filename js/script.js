@@ -176,13 +176,6 @@ function buttonControl(){
     leaveRoom();
   });
 
-
-  document.getElementById('remove-person').addEventListener('click',async()=>{
-    var currrently_in = Object.values(queue.peek())[0];
-    console.log("Currently interviewd: ",currrently_in);
-    await hmsActions.removePeer(currrently_in.id, '');
-  });
-
 }
 
 var temp = 0
@@ -436,6 +429,14 @@ function renderPeers(peers) {
 
         buttonControl();
 
+        document.getElementById('remove-person').addEventListener('click',async()=>{
+          var currrently_in_queue = Object.values(queue.peek())[0];
+          console.log("Currently interviewd: ",currrently_in_queue);
+          await hmsActions.removePeer(currrently_in_queue.id, '');
+        });
+
+        //
+
 
       }
     }
@@ -512,6 +513,13 @@ function renderPeers(peers) {
             controlContainer,
             hostControls
         );
+
+        document.getElementById('remove-person').addEventListener('click',async()=>{
+          var currrently_in = Object.values(queue.peek())[0];
+          console.log("Currently interviewd: ",currrently_in);
+          await hmsActions.removePeer(currrently_in.id, '');
+        });
+
       }
       else{
         peerContainer = h(
