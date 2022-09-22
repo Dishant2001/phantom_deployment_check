@@ -222,6 +222,7 @@ function renderPeers(peers) {
       "div",
       {
         id: "setting",
+        listener:'false',
         style: "margin:auto;display: flex;background-color: #FAFAFB;height: 80%;aspect-ratio:1;z-index: 0;border-radius:15px;"
       },
       h(
@@ -236,6 +237,7 @@ function renderPeers(peers) {
       "div",
       {
         id: "mic",
+        listener:'false',
         style: "margin:auto;display: flex;background-color: #FAFAFB;height: 80%;aspect-ratio:1;z-index: 0;border-radius:15px;"
       },
       h(
@@ -250,6 +252,7 @@ function renderPeers(peers) {
       "div",
       {
         id: "call",
+        listener:'false',
         style: "margin:auto;display: flex;background-color: #4C67F4;height: 100%;aspect-ratio:1;z-index: 0;border-radius:23px;"
       },
       h(
@@ -264,6 +267,7 @@ function renderPeers(peers) {
       "div",
       {
         id: "video",
+        listener:'false',
         style: "margin:auto;display: flex;background-color: #FAFAFB;height: 80%;aspect-ratio:1;z-index: 0;border-radius:15px;"
       },
       h(
@@ -278,6 +282,7 @@ function renderPeers(peers) {
       "div",
       {
         id: "chat",
+        listener:'false',
         style: "margin:auto;display: flex;background-color: #FAFAFB;height: 80%;aspect-ratio:1;z-index: 0;border-radius:15px;"
       },
       h(
