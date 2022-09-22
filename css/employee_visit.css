@@ -190,7 +190,6 @@ button{
     position: absolute;
     top:100%;
     width: 70%;
-    aspect-ratio: 10/1;
     margin: auto;
     display: flex;
     flex-direction: row;
