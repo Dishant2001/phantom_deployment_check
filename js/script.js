@@ -154,6 +154,7 @@ function h(tag, attrs = {}, ...children) {
 }
 
 // display a tile for each peer in the peer list
+var audioOn=false;
 
 function buttonControl(){
   const mic=document.getElementById('mic');
@@ -162,6 +163,7 @@ function buttonControl(){
   mic.addEventListener('click',()=>{
     const audioEnabled = !hmsStore.getState(selectIsLocalAudioEnabled);
     hmsActions.setLocalAudioEnabled(audioEnabled);
+    console.log('Audio: ',audioEnabled);
     mic.style.backgroundColor=audioEnabled?"#fafafb":"#ff3459";
   });
 
