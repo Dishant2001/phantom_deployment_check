@@ -219,7 +219,6 @@ button{
 }
 
 .queue{
-    position: absolute;
     display: flex;
     flex-direction: row;
     margin: auto;
