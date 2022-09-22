@@ -160,6 +160,25 @@ function buttonControl(){
   const mic=document.getElementById('mic');
   const call=document.getElementById('call');
   const cam=document.getElementById('video');
+
+  mic.removeEventListener('click',()=>{
+    const audioEnabled = !hmsStore.getState(selectIsLocalAudioEnabled);
+    hmsActions.setLocalAudioEnabled(audioEnabled);
+    console.log('Audio: ',audioEnabled);
+    mic.style.backgroundColor=audioEnabled?"#fafafb":"#ff3459";
+  });
+
+  cam.removeEventListener('click',()=>{
+    const videoEnabled = !hmsStore.getState(selectIsLocalVideoEnabled);
+    hmsActions.setLocalVideoEnabled(videoEnabled);
+    cam.style.backgroundColor=videoEnabled?"#fafafb":"#ff3459";
+    renderPeers();
+  });
+
+  call.removeEventListener('click',()=>{
+    leaveRoom();
+  });
+  
   mic.addEventListener('click',()=>{
     const audioEnabled = !hmsStore.getState(selectIsLocalAudioEnabled);
     hmsActions.setLocalAudioEnabled(audioEnabled);
