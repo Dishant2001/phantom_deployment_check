@@ -542,6 +542,7 @@ function renderPeers(peers) {
         enterInCall = confirm("Host is inviting you inside! Are you ready?");
         readyToGoIn=true;
       }
+    }
       
       if (top_guest.videoTrack&&enterInCall) {
         var video_guest;
@@ -644,7 +645,6 @@ function renderPeers(peers) {
         
                 buttonControl();
         }
-    }
 
     }
   }
