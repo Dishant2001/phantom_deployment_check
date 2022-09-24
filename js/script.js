@@ -478,9 +478,7 @@ function renderPeers(peers) {
                   buttonControl();
     
             document.getElementById('remove-person').addEventListener('click',async()=>{
-              var currrently_in = Object.values(queue.peek())[0];
-              console.log("Currently interviewd: ",currrently_in);
-              await hmsActions.removePeer(currrently_in.id, '');
+              await hmsActions.removePeer(ele.id, '');
             });
     
           }
@@ -561,9 +559,7 @@ function renderPeers(peers) {
               buttonControl();
       
               document.getElementById('remove-person').addEventListener('click',async()=>{
-                var currrently_in = Object.values(queue.peek())[0];
-                console.log("Currently interviewd: ",currrently_in);
-                await hmsActions.removePeer(currrently_in.id, '');
+                await hmsActions.removePeer(ele.id, '');
               });
     }
   }
