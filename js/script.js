@@ -195,11 +195,12 @@ var temp = 0
 var guests = 0;
 var readyToGoIn=false;
 var enterInCall=false;
+var ele;
 
 function renderPeers(peers) {
   peersContainer.innerHTML = "";
   queueContainer.innerHTML = "";
-  queue.clear();
+  
 
   if (!peers) {
     // this allows us to make peer list an optional argument
@@ -207,7 +208,7 @@ function renderPeers(peers) {
   }
 
 
-  var video='';
+  // var video='';
 
   const guestContainer = h(
     "div",
@@ -371,66 +372,253 @@ function renderPeers(peers) {
     )
   );
 
-  var hosts={};
+  var hosts=[],guests=[];
   var countHost=0;
+  var countGuest=0;
   var checkIfHost=false;
 
   peers.forEach((peer)=>{
-    if(peer.roleName=='host')
+    if(peer.roleName=='host'){
       ++countHost;
+      hosts.push(peer);
+    }
+    else{
+      ++countGuest;
+      guests.push(peer);
+    }
   });
 
-  peers.forEach((peer) => {
+  if(countHost>0){
 
-    if (peer.roleName == 'host') {
-      temp = 1;
-      hosts[peer.id] = peer;
-      console.log('No. of hosts: ',Object.keys(hosts).length);
-      console.log('Host arrived');
-      if (peer.videoTrack) {
-        video = h("video", {
-          class: "peer-video" + (peer.isLocal ? " local" : ""),
-          autoplay: true, // if video doesn't play we'll see a blank tile
-          muted: true,
-          playsinline: true,
-          style: "display:inline-flex;position:absolute;top:0;margin:auto;transform: scale(-1, 1); filter: FlipH;width:"+100/countHost+"%;aspect-ratio:16/9;object-fit:cover;z-index:-100;border-radius: 24px;"
-        });
+    var peer=hosts[0];
+    console.log(peer);
+    ele=guests[0];
+    console.log(ele);
+    var video;
+    if (peer.videoTrack) {
+      video = h("video", {
+        class: "peer-video" + (peer.isLocal ? " local" : ""),
+        autoplay: true, // if video doesn't play we'll see a blank tile
+        muted: true,
+        playsinline: true,
+        style: "display:inline-flex;position:absolute;top:0;margin:auto;transform: scale(-1, 1); filter: FlipH;width:"+100/countHost+"%;aspect-ratio:16/9;object-fit:cover;z-index:-100;border-radius: 24px;"
+      });
 
-        // this method takes a track ID and attaches that video track to a given
-        // <video> element
-        hmsActions.attachVideo(peer.videoTrack, video);
+      // this method takes a track ID and attaches that video track to a given
+      // <video> element
+      hmsActions.attachVideo(peer.videoTrack, video);
+      if(peer.isLocal){
+        checkIfHost=true;
+      }
+    }
 
-        if(peer.isLocal){
-          checkIfHost=true;
+    if(ele){
+
+      var video_guest;
+          if(ele.isLocal){
+            video_guest = h("video", {
+              class: "peer-video" + (ele.isLocal ? " local" : ""),
+              autoplay: true, // if video doesn't play we'll see a blank tile
+              muted: true,
+              playsinline: true,
+              style: "position:absolute;top:0;margin:auto;transform: scale(-1, 1);filter: FlipH;width:100%;aspect-ratio:16/9;object-fit:cover;z-index:-100;border-radius: 24px;"
+            });
+          }
+          else{
+            video_guest = h("video", {
+              class: "peer-video" + (ele.isLocal ? " local" : ""),
+              autoplay: true, // if video doesn't play we'll see a blank tile
+              muted: true,
+              playsinline: true,
+              style: "position:absolute;top:0;margin:auto;transform: scale(-1, 1);width:100%;aspect-ratio:16/9;object-fit:cover;z-index:-100;border-radius: 24px;"
+            });
+          }
+          
+    
+          hmsActions.attachVideo(ele.videoTrack, video_guest);
+          var temp_arr=[];
+          if(ele.isLocal){
+            temp_arr=[video,video_guest];
+          }
+          else{
+            temp_arr=[video_guest,video];
+          }
+          var peerContainer;
+          if(checkIfHost){
+    
+            peerContainer = h(
+              "div",
+              {
+                class: "peer-container",
+                style:"position:relative;width:100%;height:100%;display:flex;justify-content:center;align-items:center;"
+              },
+              temp_arr[0],
+              h(
+                "div",
+                {
+                  class: "peer-name"
+                },
+                ele.name + (ele.isLocal ? " (You)" : "")
+              ),
+              h(
+                "div",
+                {
+                  class:"guestContainer",
+                },
+                temp_arr[1]
+              ),
+                controlContainer,
+                hostControls
+            );
+    
+            peersContainer.innerHTML="";
+                // if(top_guest.isLocal&&confirm("Host is inviting you inside"))
+                  peersContainer.append(peerContainer);
+          
+                  buttonControl();
+    
+            document.getElementById('remove-person').addEventListener('click',async()=>{
+              var currrently_in = Object.values(queue.peek())[0];
+              console.log("Currently interviewd: ",currrently_in);
+              await hmsActions.removePeer(currrently_in.id, '');
+            });
+    
+          }
+          else{
+            peerContainer = h(
+              "div",
+              {
+                class: "peer-container",
+                style:"position:relative;width:100%;height:100%;display:flex;justify-content:center;align-items:center;"
+              },
+              temp_arr[0],
+              h(
+                "div",
+                {
+                  class: "peer-name"
+                },
+                ele.name + (ele.isLocal ? " (You)" : "")
+              ),
+              h(
+                "div",
+                {
+                  class:"guestContainer",
+                },
+                temp_arr[1]
+              ),
+                controlContainer
+                );
+                peersContainer.innerHTML="";
+                // if(top_guest.isLocal&&confirm("Host is inviting you inside"))
+                  peersContainer.append(peerContainer);
+          
+                  buttonControl();
+          }
         }
+     
+    else{
+      const peerContainer = h(
+                "div",
+                {
+                  class: "peer-container",
+                  style:"display:flex;flex-direction:row;flex-wrap:wrap;position:relative;width:100%;height:100%;display:flex;justify-content:center;align-items:center;"
+                },
+                video,
+                h(
+                  "div",
+                  {
+                    class: "peer-name"
+                  },
+                  peer.name + (peer.isLocal ? " (You)" : "")
+                ),
+                h(
+                  "div",
+                  {
+                    class:"guestContainer",
+                  },
+                  video
+                ),
+                  controlContainer,
+                  hostControls
+              );
+      
+              
+              
+      
+              
+      
+      
+              peersContainer.append(peerContainer);
+              // peersContainer.append(hostControls);
+              // peersContainer.append(controlContainer);
+              // peersContainer.append(guestContainer);
+      
+              // document.getElementById('remove-person').addEventListener('click',()=>{
+              //   var currrently_in = Object.values(queue.peek())[0];
+              //   console.log("Currently interviewd: ",currrently_in);
+              // });
+      
+              buttonControl();
+      
+              document.getElementById('remove-person').addEventListener('click',async()=>{
+                var currrently_in = Object.values(queue.peek())[0];
+                console.log("Currently interviewd: ",currrently_in);
+                await hmsActions.removePeer(currrently_in.id, '');
+              });
+    }
+  }
+  
+
+  // peers.forEach((peer) => {
+
+  //   if (peer.roleName == 'host') {
+      
+  //     console.log('No. of hosts: ',Object.keys(hosts).length);
+  //     console.log('Host arrived');
+  //     if (peer.videoTrack) {
+  //       video = h("video", {
+  //         class: "peer-video" + (peer.isLocal ? " local" : ""),
+  //         autoplay: true, // if video doesn't play we'll see a blank tile
+  //         muted: true,
+  //         playsinline: true,
+  //         style: "display:inline-flex;position:absolute;top:0;margin:auto;transform: scale(-1, 1); filter: FlipH;width:"+100/countHost+"%;aspect-ratio:16/9;object-fit:cover;z-index:-100;border-radius: 24px;"
+  //       });
+
+  //       // this method takes a track ID and attaches that video track to a given
+  //       // <video> element
+  //       hmsActions.attachVideo(peer.videoTrack, video);
+
+  //       if(peer.isLocal){
+  //         checkIfHost=true;
+  //       }
 
        
 
 
-        const peerContainer = h(
-          "div",
-          {
-            class: "peer-container",
-            style:"display:flex;flex-direction:row;flex-wrap:wrap;position:relative;width:100%;height:100%;display:flex;justify-content:center;align-items:center;"
-          },
-          video,
-          h(
-            "div",
-            {
-              class: "peer-name"
-            },
-            peer.name + (peer.isLocal ? " (You)" : "")
-          ),
-          h(
-            "div",
-            {
-              class:"guestContainer",
-            },
-            video
-          ),
-            controlContainer,
-            hostControls
-        );
+  //       const peerContainer = h(
+  //         "div",
+  //         {
+  //           class: "peer-container",
+  //           style:"display:flex;flex-direction:row;flex-wrap:wrap;position:relative;width:100%;height:100%;display:flex;justify-content:center;align-items:center;"
+  //         },
+  //         video,
+  //         h(
+  //           "div",
+  //           {
+  //             class: "peer-name"
+  //           },
+  //           peer.name + (peer.isLocal ? " (You)" : "")
+  //         ),
+  //         h(
+  //           "div",
+  //           {
+  //             class:"guestContainer",
+  //           },
+  //           video
+  //         ),
+  //           controlContainer,
+  //           hostControls
+  //       );
 
         
         
@@ -438,82 +626,75 @@ function renderPeers(peers) {
         
 
 
-        peersContainer.append(peerContainer);
-        // peersContainer.append(hostControls);
-        // peersContainer.append(controlContainer);
-        // peersContainer.append(guestContainer);
+  //       peersContainer.append(peerContainer);
+  //       // peersContainer.append(hostControls);
+  //       // peersContainer.append(controlContainer);
+  //       // peersContainer.append(guestContainer);
 
-        // document.getElementById('remove-person').addEventListener('click',()=>{
-        //   var currrently_in = Object.values(queue.peek())[0];
-        //   console.log("Currently interviewd: ",currrently_in);
-        // });
+  //       // document.getElementById('remove-person').addEventListener('click',()=>{
+  //       //   var currrently_in = Object.values(queue.peek())[0];
+  //       //   console.log("Currently interviewd: ",currrently_in);
+  //       // });
 
-        buttonControl();
+  //       buttonControl();
 
-        document.getElementById('remove-person').addEventListener('click',async()=>{
-          var currrently_in = Object.values(queue.peek())[0];
-          console.log("Currently interviewd: ",currrently_in);
-          await hmsActions.removePeer(currrently_in.id, '');
-        });
+  //       document.getElementById('remove-person').addEventListener('click',async()=>{
+  //         var currrently_in = Object.values(queue.peek())[0];
+  //         console.log("Currently interviewd: ",currrently_in);
+  //         await hmsActions.removePeer(currrently_in.id, '');
+  //       });
 
 
-      }
-    }
-    else {
-      var ele = {}
-      ele[peer.id] = peer;
-      if (!queue.search(peer.id)) {
-        queue.enqueue(ele);
-        console.log(queue);
-        guests = guests + 1;
-        console.log(`${guests} in the meeting`);
-        console.log(peer);
-      }
+  //     }
+  //   }
+  //   else {
+  //     ele = peer;
+      
 
-      if(peer.isLocal){
-        if (peer.videoTrack) {
-          const video_temp = h("video", {
-            class: "peer-video" + (peer.isLocal ? " local" : ""),
-            autoplay: true, // if video doesn't play we'll see a blank tile
-            muted: true,
-            playsinline: true,
-            style: "display:inline-flex;position:absolute;top:0;margin:auto;transform: scale(-1, 1); filter: FlipH;width:100%;aspect-ratio:16/9;object-fit:cover;z-index:-100;border-radius: 24px;"
-          });
+  //     if(peer.isLocal){
+  //       if (peer.videoTrack) {
+  //         const video_temp = h("video", {
+  //           class: "peer-video" + (peer.isLocal ? " local" : ""),
+  //           autoplay: true, // if video doesn't play we'll see a blank tile
+  //           muted: true,
+  //           playsinline: true,
+  //           style: "display:inline-flex;position:absolute;top:0;margin:auto;transform: scale(-1, 1); filter: FlipH;width:100%;aspect-ratio:16/9;object-fit:cover;z-index:-100;border-radius: 24px;"
+  //         });
   
-          // this method takes a track ID and attaches that video track to a given
-          // <video> element
-          hmsActions.attachVideo(peer.videoTrack, video_temp);
+  //         // this method takes a track ID and attaches that video track to a given
+  //         // <video> element
+  //         hmsActions.attachVideo(peer.videoTrack, video_temp);
   
-          // if(peer.isLocal){
-          //   checkIfHost=true;
-          // }
+  //         // if(peer.isLocal){
+  //         //   checkIfHost=true;
+  //         // }
   
          
   
   
-          const peerContainer = h(
-            "div",
-            {
-              class: "peer-container",
-              style:"display:flex;flex-direction:row;flex-wrap:wrap;position:relative;width:100%;height:100%;display:flex;justify-content:center;align-items:center;"
-            },
-            video_temp,
-            h(
-              "div",
-              {
-                class: "peer-name"
-              },
-              peer.name + (peer.isLocal ? " (You)" : "")
-            ),
-            h(
-              "div",
-              {
-                class:"guestContainer",
-              },
-              video_temp
-            ),
-              controlContainer,
-          );
+  //         const peerContainer = h(
+  //           "div",
+  //           {
+  //             class: "peer-container",
+  //             style:"display:flex;flex-direction:row;flex-wrap:wrap;position:relative;width:100%;height:100%;display:flex;justify-content:center;align-items:center;"
+  //           },
+  //           video_temp,
+  //           h(
+  //             "div",
+  //             {
+  //               class: "peer-name"
+  //             },
+  //             peer.name + (peer.isLocal ? " (You)" : "")
+  //           ),
+  //           h(
+  //             "div",
+  //             {
+  //               class:"guestContainer",
+  //             },
+  //             video_temp
+  //           ),
+  //             controlContainer,
+  //         );
   
           
           
@@ -521,153 +702,258 @@ function renderPeers(peers) {
           
   
   
-          peersContainer.append(peerContainer);
+  //         peersContainer.append(peerContainer);
 
-          buttonControl();
+  //         buttonControl();
 
-      }
+  //     }
 
-    }
-  }
-  });
+  //   }
+  // }
+  // });
+
+  // if(ele&&countHost>0){
+
+  //   var video_guest;
+  //       if(ele.isLocal){
+  //         video_guest = h("video", {
+  //           class: "peer-video" + (ele.isLocal ? " local" : ""),
+  //           autoplay: true, // if video doesn't play we'll see a blank tile
+  //           muted: true,
+  //           playsinline: true,
+  //           style: "position:absolute;top:0;margin:auto;transform: scale(-1, 1);filter: FlipH;width:100%;aspect-ratio:16/9;object-fit:cover;z-index:-100;border-radius: 24px;"
+  //         });
+  //       }
+  //       else{
+  //         video_guest = h("video", {
+  //           class: "peer-video" + (ele.isLocal ? " local" : ""),
+  //           autoplay: true, // if video doesn't play we'll see a blank tile
+  //           muted: true,
+  //           playsinline: true,
+  //           style: "position:absolute;top:0;margin:auto;transform: scale(-1, 1);width:100%;aspect-ratio:16/9;object-fit:cover;z-index:-100;border-radius: 24px;"
+  //         });
+  //       }
+        
+  
+  //       hmsActions.attachVideo(ele.videoTrack, video_guest);
+  //       var temp_arr=[];
+  //       if(ele.isLocal){
+  //         temp_arr=[video,video_guest];
+  //       }
+  //       else{
+  //         temp_arr=[video_guest,video];
+  //       }
+  //       var peerContainer;
+  //       if(checkIfHost){
+  
+  //         peerContainer = h(
+  //           "div",
+  //           {
+  //             class: "peer-container",
+  //             style:"position:relative;width:100%;height:100%;display:flex;justify-content:center;align-items:center;"
+  //           },
+  //           temp_arr[0],
+  //           h(
+  //             "div",
+  //             {
+  //               class: "peer-name"
+  //             },
+  //             ele.name + (ele.isLocal ? " (You)" : "")
+  //           ),
+  //           h(
+  //             "div",
+  //             {
+  //               class:"guestContainer",
+  //             },
+  //             temp_arr[1]
+  //           ),
+  //             controlContainer,
+  //             hostControls
+  //         );
+  
+  //         peersContainer.innerHTML="";
+  //             // if(top_guest.isLocal&&confirm("Host is inviting you inside"))
+  //               peersContainer.append(peerContainer);
+        
+  //               buttonControl();
+  
+  //         document.getElementById('remove-person').addEventListener('click',async()=>{
+  //           var currrently_in = Object.values(queue.peek())[0];
+  //           console.log("Currently interviewd: ",currrently_in);
+  //           await hmsActions.removePeer(currrently_in.id, '');
+  //         });
+  
+  //       }
+  //       else{
+  //         peerContainer = h(
+  //           "div",
+  //           {
+  //             class: "peer-container",
+  //             style:"position:relative;width:100%;height:100%;display:flex;justify-content:center;align-items:center;"
+  //           },
+  //           temp_arr[0],
+  //           h(
+  //             "div",
+  //             {
+  //               class: "peer-name"
+  //             },
+  //             ele.name + (ele.isLocal ? " (You)" : "")
+  //           ),
+  //           h(
+  //             "div",
+  //             {
+  //               class:"guestContainer",
+  //             },
+  //             temp_arr[1]
+  //           ),
+  //             controlContainer
+  //             );
+  //             peersContainer.innerHTML="";
+  //             // if(top_guest.isLocal&&confirm("Host is inviting you inside"))
+  //               peersContainer.append(peerContainer);
+        
+  //               buttonControl();
+  //       }
+
 
   
-  if (peers.length != 0 && queue.size() != 0 && countHost>0) {
-    console.log(queue.peek());
-    var top_guest = Object.values(queue.peek())[0];
-    console.log(top_guest);
-    if(top_guest.isLocal){
+  
+  // if (peers.length != 0 && queue.size() != 0 && countHost>0) {
+  //   console.log(queue.peek());
+  //   var top_guest = Object.values(queue.peek())[0];
+  //   console.log(top_guest);
+  //   if(top_guest.isLocal){
 
       
-      if(!readyToGoIn){
-        enterInCall = confirm("Host is inviting you inside! Are you ready?");
-        readyToGoIn=true;
-      }
-    }
+  //     if(!readyToGoIn){
+  //       enterInCall = confirm("Host is inviting you inside! Are you ready?");
+  //       readyToGoIn=true;
+  //     }
+  //   }
       
-      if (top_guest.videoTrack&&enterInCall) {
-        var video_guest;
-        if(top_guest.isLocal){
-          video_guest = h("video", {
-            class: "peer-video" + (top_guest.isLocal ? " local" : ""),
-            autoplay: true, // if video doesn't play we'll see a blank tile
-            muted: true,
-            playsinline: true,
-            style: "position:absolute;top:0;margin:auto;transform: scale(-1, 1);filter: FlipH;width:100%;aspect-ratio:16/9;object-fit:cover;z-index:-100;border-radius: 24px;"
-          });
-        }
-        else{
-          video_guest = h("video", {
-            class: "peer-video" + (top_guest.isLocal ? " local" : ""),
-            autoplay: true, // if video doesn't play we'll see a blank tile
-            muted: true,
-            playsinline: true,
-            style: "position:absolute;top:0;margin:auto;transform: scale(-1, 1);width:100%;aspect-ratio:16/9;object-fit:cover;z-index:-100;border-radius: 24px;"
-          });
-        }
+  //     if (top_guest.videoTrack&&enterInCall) {
+  //       var video_guest;
+  //       if(top_guest.isLocal){
+  //         video_guest = h("video", {
+  //           class: "peer-video" + (top_guest.isLocal ? " local" : ""),
+  //           autoplay: true, // if video doesn't play we'll see a blank tile
+  //           muted: true,
+  //           playsinline: true,
+  //           style: "position:absolute;top:0;margin:auto;transform: scale(-1, 1);filter: FlipH;width:100%;aspect-ratio:16/9;object-fit:cover;z-index:-100;border-radius: 24px;"
+  //         });
+  //       }
+  //       else{
+  //         video_guest = h("video", {
+  //           class: "peer-video" + (top_guest.isLocal ? " local" : ""),
+  //           autoplay: true, // if video doesn't play we'll see a blank tile
+  //           muted: true,
+  //           playsinline: true,
+  //           style: "position:absolute;top:0;margin:auto;transform: scale(-1, 1);width:100%;aspect-ratio:16/9;object-fit:cover;z-index:-100;border-radius: 24px;"
+  //         });
+  //       }
         
   
-        hmsActions.attachVideo(top_guest.videoTrack, video_guest);
-        var temp_arr=[];
-        if(top_guest.isLocal){
-          temp_arr=[video,video_guest];
-        }
-        else{
-          temp_arr=[video_guest,video];
-        }
-        var peerContainer;
-        if(checkIfHost){
+  //       hmsActions.attachVideo(top_guest.videoTrack, video_guest);
+  //       var temp_arr=[];
+  //       if(top_guest.isLocal){
+  //         temp_arr=[video,video_guest];
+  //       }
+  //       else{
+  //         temp_arr=[video_guest,video];
+  //       }
+  //       var peerContainer;
+  //       if(checkIfHost){
   
-          peerContainer = h(
-            "div",
-            {
-              class: "peer-container",
-              style:"position:relative;width:100%;height:100%;display:flex;justify-content:center;align-items:center;"
-            },
-            temp_arr[0],
-            h(
-              "div",
-              {
-                class: "peer-name"
-              },
-              top_guest.name + (top_guest.isLocal ? " (You)" : "")
-            ),
-            h(
-              "div",
-              {
-                class:"guestContainer",
-              },
-              temp_arr[1]
-            ),
-              controlContainer,
-              hostControls
-          );
+  //         peerContainer = h(
+  //           "div",
+  //           {
+  //             class: "peer-container",
+  //             style:"position:relative;width:100%;height:100%;display:flex;justify-content:center;align-items:center;"
+  //           },
+  //           temp_arr[0],
+  //           h(
+  //             "div",
+  //             {
+  //               class: "peer-name"
+  //             },
+  //             top_guest.name + (top_guest.isLocal ? " (You)" : "")
+  //           ),
+  //           h(
+  //             "div",
+  //             {
+  //               class:"guestContainer",
+  //             },
+  //             temp_arr[1]
+  //           ),
+  //             controlContainer,
+  //             hostControls
+  //         );
   
-          peersContainer.innerHTML="";
-              // if(top_guest.isLocal&&confirm("Host is inviting you inside"))
-                peersContainer.append(peerContainer);
+  //         peersContainer.innerHTML="";
+  //             // if(top_guest.isLocal&&confirm("Host is inviting you inside"))
+  //               peersContainer.append(peerContainer);
         
-                buttonControl();
+  //               buttonControl();
   
-          document.getElementById('remove-person').addEventListener('click',async()=>{
-            var currrently_in = Object.values(queue.peek())[0];
-            console.log("Currently interviewd: ",currrently_in);
-            await hmsActions.removePeer(currrently_in.id, '');
-          });
+  //         document.getElementById('remove-person').addEventListener('click',async()=>{
+  //           var currrently_in = Object.values(queue.peek())[0];
+  //           console.log("Currently interviewd: ",currrently_in);
+  //           await hmsActions.removePeer(currrently_in.id, '');
+  //         });
   
-        }
-        else{
-          peerContainer = h(
-            "div",
-            {
-              class: "peer-container",
-              style:"position:relative;width:100%;height:100%;display:flex;justify-content:center;align-items:center;"
-            },
-            temp_arr[0],
-            h(
-              "div",
-              {
-                class: "peer-name"
-              },
-              top_guest.name + (top_guest.isLocal ? " (You)" : "")
-            ),
-            h(
-              "div",
-              {
-                class:"guestContainer",
-              },
-              temp_arr[1]
-            ),
-              controlContainer
-              );
-              peersContainer.innerHTML="";
-              // if(top_guest.isLocal&&confirm("Host is inviting you inside"))
-                peersContainer.append(peerContainer);
+  //       }
+  //       else{
+  //         peerContainer = h(
+  //           "div",
+  //           {
+  //             class: "peer-container",
+  //             style:"position:relative;width:100%;height:100%;display:flex;justify-content:center;align-items:center;"
+  //           },
+  //           temp_arr[0],
+  //           h(
+  //             "div",
+  //             {
+  //               class: "peer-name"
+  //             },
+  //             top_guest.name + (top_guest.isLocal ? " (You)" : "")
+  //           ),
+  //           h(
+  //             "div",
+  //             {
+  //               class:"guestContainer",
+  //             },
+  //             temp_arr[1]
+  //           ),
+  //             controlContainer
+  //             );
+  //             peersContainer.innerHTML="";
+  //             // if(top_guest.isLocal&&confirm("Host is inviting you inside"))
+  //               peersContainer.append(peerContainer);
         
-                buttonControl();
-        }
+  //               buttonControl();
+  //       }
 
-    }
-  }
-  for (var i = 0; i < queue.size(); ++i) {
-    var ith_guest = Object.values(queue.items[i])[0];
-    console.log(ith_guest);
-    const queueEle = h(
-      "div",
-      {
-        class: "queue-ele"
-      },
-      h(
-        "span",
-        {
+  //   }
+  // }
+  // for (var i = 0; i < queue.size(); ++i) {
+  //   var ith_guest = Object.values(queue.items[i])[0];
+  //   console.log(ith_guest);
+  //   const queueEle = h(
+  //     "div",
+  //     {
+  //       class: "queue-ele"
+  //     },
+  //     h(
+  //       "span",
+  //       {
 
-        },
-        ith_guest.name[0]
-      )
-    );
+  //       },
+  //       ith_guest.name[0]
+  //     )
+  //   );
 
-    queueContainer.append(queueEle);
-  }
+  //   queueContainer.append(queueEle);
+  // }
 
   // const mic=document.getElementById('mic');
   // const call=document.getElementById('call');
