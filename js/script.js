@@ -101,8 +101,8 @@ startRoomBtn.addEventListener("click",async() => {
 joinBtn.addEventListener("click", () => {
   hmsActions.join({
     userName: document.getElementById("name").value,
-    authToken: host_key,
-    // authToken: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3Nfa2V5IjoiNjMxMmVmZjdiMWU3ODBlNzhjM2NlZDI0IiwidHlwZSI6ImFwcCIsInZlcnNpb24iOjIsInJvb21faWQiOiI2MzE2ZTFjM2IxZTc4MGU3OGMzZDFkY2YiLCJ1c2VyX2lkIjoidTEiLCJyb2xlIjoiaG9zdCIsImp0aSI6ImZjNjNlYjkxLWM3YjAtNDNkNS05NjkwLTY4NDIwNWNjZDA1ZSIsImV4cCI6MTY2NDAyNzEwOCwiaWF0IjoxNjYzOTQwNzA4LCJuYmYiOjE2NjM5NDA3MDh9.F87ulB6T7B6_e6wROU298Sb_Uw_6Yo-bRbh5ojlJYV8",
+    // authToken: host_key,
+    authToken: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3Nfa2V5IjoiNjMxMmVmZjdiMWU3ODBlNzhjM2NlZDI0IiwidHlwZSI6ImFwcCIsInZlcnNpb24iOjIsInJvb21faWQiOiI2MzE2ZTFjM2IxZTc4MGU3OGMzZDFkY2YiLCJ1c2VyX2lkIjoidTEiLCJyb2xlIjoiaG9zdCIsImp0aSI6ImU3M2RkOTQzLWMyMzAtNDIwZi04NjU0LTM4MTI4ZTJmMjc3ZCIsImV4cCI6MTY2NDEzNTY2MCwiaWF0IjoxNjY0MDQ5MjYwLCJuYmYiOjE2NjQwNDkyNjB9.-ZTk314afyz45mwQgyAy2_z3bCUZClEqLpdFS6Rw4x0",
     settings: {
       isAudioMuted: false,
       isVideoMuted: false
@@ -118,8 +118,8 @@ joinBtnGuest.addEventListener("click", async () => {
   // const data = await response.json();
   hmsActions.join({
     userName: document.getElementById("name").value,
-    authToken: guest_key,
-    // authToken: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3Nfa2V5IjoiNjMxMmVmZjdiMWU3ODBlNzhjM2NlZDI0IiwidHlwZSI6ImFwcCIsInZlcnNpb24iOjIsInJvb21faWQiOiI2MzE2ZTFjM2IxZTc4MGU3OGMzZDFkY2YiLCJ1c2VyX2lkIjoidTIiLCJyb2xlIjoiZ3Vlc3QiLCJqdGkiOiIxYzhhNGFmNy1kYmRmLTQzNjEtYmMyMi0yMDMzNTNjYzFiYjEiLCJleHAiOjE2NjQwMjcxMDgsImlhdCI6MTY2Mzk0MDcwOCwibmJmIjoxNjYzOTQwNzA4fQ.T-8NS9pF-AT8rSG8N32Dpd6kHwlBJdMci9T7qNmLxzM',
+    // authToken: guest_key,
+    authToken: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3Nfa2V5IjoiNjMxMmVmZjdiMWU3ODBlNzhjM2NlZDI0IiwidHlwZSI6ImFwcCIsInZlcnNpb24iOjIsInJvb21faWQiOiI2MzE2ZTFjM2IxZTc4MGU3OGMzZDFkY2YiLCJ1c2VyX2lkIjoidTIiLCJyb2xlIjoiZ3Vlc3QiLCJqdGkiOiI5ODA5Njg4ZS1jZDM4LTQwZjctYWFjMy04NGM3ODdjZGQwMmMiLCJleHAiOjE2NjQxMzU2NjAsImlhdCI6MTY2NDA0OTI2MCwibmJmIjoxNjY0MDQ5MjYwfQ.ZJjHrSDkiA4JT-FAAbNYvT8PzOgP5xZG2gs_6uM1Rjo',
     settings: {
       isAudioMuted: true,
       isVideoMuted: true
