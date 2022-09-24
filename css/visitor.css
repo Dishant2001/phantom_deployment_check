@@ -1,0 +1,126 @@
+
+.tagline{
+    width: 100%;
+    text-align: center;
+    margin: auto;
+    padding-bottom: 2.5em;
+}
+
+.tagline p{
+    text-align: center;
+    font-family: 'Manrope', sans-serif;
+    font-style: normal;
+    color: #1C2541;
+    font-size: min(12vh,4vw);
+}
+
+.tagline p span{
+    /* font-weight: bolder; */
+    font-weight: 700;
+}
+
+.jobs-cont{
+    display: flex;
+    flex-direction: column;
+    width: 85%;
+    margin: auto;
+}
+
+.location-filter{
+    color: #485470;
+    font-family: 'Manrope', sans-serif;
+    font-size: min(32px,3vw);
+    font-weight: bolder;
+}
+
+#location-dropdown, #city{
+    outline: none;
+    border: none;
+    font-family: 'Manrope', sans-serif;
+    font-size: min(32px,3vw);
+    font-weight: bolder;
+    color: #36F599;
+}
+
+
+.job-cat-count{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    padding: 0.5em;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.job-cat-count div{
+    border-radius: 22px;
+    font-family: 'Manrope', sans-serif;
+    font-size: min(13px,1vw);
+    border: 1px solid;
+    border-color: #485470;
+    color: #485470;
+    padding: 1em;
+    margin-right: 1em;
+}
+
+.live-rooms-count{
+    background-color: #4c67f4;
+    color: #FFFFFF;
+    outline: none;
+    border: none;
+}
+
+.heading{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+
+
+.job-heading{
+    color: #485470;
+    font-family: 'Manrope', sans-serif;
+    font-size: min(32px,3vw);
+    font-weight: bolder;
+}
+
+.see-all span{
+    text-align: center;
+    vertical-align: middle;
+    font-family: 'Manrope', sans-serif;
+    font-size: min(15px,1.5vw);
+    color: #485470;
+}
+
+.all-jobs{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 100%;
+    margin: auto;
+    justify-content: flex-start;
+}
+
+.job-cards{
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+    width: 40%;
+}
+
+.jobs-cont-header{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.jobs-cont-header-left,.jobs-cont-header-right{
+    display: inline-block;
+    width: 50%;
+}
+
+.jobs-cont-header-right img{
+    width: 50%;
+}

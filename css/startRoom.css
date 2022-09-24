@@ -1,0 +1,126 @@
+#second,#third{
+    display: none;
+}
+
+.form-container{
+    z-index: -200;
+    width: 95%;
+    height:min(90vh,90vw);
+    /* height: 200px; */
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    margin: auto;
+    margin-bottom: max(5vh,15vw);
+}
+
+.form-left{
+    width: 30%;
+    height: 100%;
+    margin: auto;
+    margin-right: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    background-color: #4c67f4;
+    color: #FFFFFF;
+    font-family: 'Manrope', sans-serif;
+    font-size: min(15px,1.5vw);
+    padding: 2em;
+}
+
+.form-left div{
+    margin: auto;
+}
+
+.form-left span{
+    font-weight: bolder;
+}
+
+.form-right{
+    width: 50%;
+    height: 100%;
+    margin: auto;
+    margin-left: 0;
+    display: flex;
+    flex-direction: column;
+    background-color: #f1f4fb;
+    color: #485470;
+    font-family: 'Manrope', sans-serif;
+    font-size: min(15px,1.5vw);
+    padding: 2em;
+}
+
+.form-right div{
+    width: 80%;
+    margin: auto;
+    padding: 0.5em;
+    padding-left: 0;
+    /* display: flex;
+    flex-direction: row; */
+}
+
+.form-right input,textarea{
+    padding: min(15px,1vw);
+    outline: none;
+    border: none;
+    border-radius: 4px;
+    width: 100%;
+}
+
+
+.double-conts{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+
+    justify-content: space-between;
+}
+.double-conts div{
+    width: 40%;
+    margin-left: 0;
+}
+
+/* .salary,.skills,.qualification{
+    width: 100%;
+} */
+
+.form-heading{
+    font-family: 'Manrope', sans-serif;
+    font-size: min(32px,3vw);
+    font-weight: 700;
+}
+
+.form-right label{
+    display: block;
+}
+
+.next{
+    background-color: #4c67f4;
+    color: #FFFFFF;
+    font-family: 'Manrope', sans-serif;
+    font-size: min(12px,1.2vw);
+    padding-left: min(40px,3vw);
+    padding-right: min(40px,3vw);
+    padding-top: min(15px,1vw);
+    padding-bottom: min(15px,1vw);
+    outline: none;
+    border: none;
+    cursor: pointer;
+    border-radius: 25px;
+}
+.previous{
+    background-color: #FFFFFF;
+    color: #1c2541;
+    font-family: 'Manrope', sans-serif;
+    font-size: min(12px,1.2vw);
+    padding-left: min(40px,3vw);
+    padding-right: min(40px,3vw);
+    padding-top: min(15px,1vw);
+    padding-bottom: min(15px,1vw);
+    outline: none;
+    border: none;
+    cursor: pointer;
+    border-radius: 25px;
+}

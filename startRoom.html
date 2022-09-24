@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/employee_visit.css">
+    <link rel="stylesheet" href="css/visitor.css">
+    <link rel="stylesheet" href="css/startRoom.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans&family=Manrope&family=Poppins:wght@100;400&display=swap" rel="stylesheet">
+    <title>Phantom</title>
+</head>
+<body>
+    <header>
+        <div class="header">
+            <div class="header-left">
+                <div class="heyhere">
+                    <span>HeyHere</span>
+                </div>
+                <div>
+                    <button class="header-left-button">LIVE JOBS</button>
+                </div>
+            </div>
+            <!-- <div class="header-center">
+                <span>Employers, Start a Video Interview Room. Announce Your Job Openings. Start Interviewing, Right Now</span>
+            </div> -->
+            <div class="header-right">
+                <div class="header-right-span">
+                    <span>Employers, Start a Video Interview Room. Announce Your Job Openings. Start Interviewing, Right Now</span>
+                </div>
+                <div class="header-right-btn">
+                    <button class="header-right-button" id="header-right-btn">Start a Video Interview Room</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="form-container" id="first">
+        <div class="form-left">
+            <div>
+                <p>Setup your Walk-In Video Interview Room - <span>In 2-3 Minute</span>
+                    <span>Curious?</span> Check demo room here</p>
+            </div>
+            <div class="list-cont">
+                <div class="list-cont-left">
+
+                </div>
+                <div class="list-cont-right">
+                    <ul>
+                        <li>Enter Job Details</li>
+                        <li>Enter Job Description</li>
+                        <li>Preview Walk-in Room</li>
+                        <li>Go Live</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="form-right">
+            <div class="form-heading">
+                Enter details on open Job position 
+            </div>
+            <div class="double-conts">
+                <div class="title">
+                    <label for="title">Job Title</label>
+                    <input type="text" name="title" id="title">
+                </div>
+                <div class="location">
+                    <label for="title">Job Location</label>
+                    <input type="text" name="location" id="location">
+                </div>
+            </div>
+            <div class="double-conts">
+                <div class="education">
+                    <label for="education">Education Expectation</label>
+                    <input type="text" name="education" id="education">
+                </div>
+                <div class="workex">
+                    <label for="workex">Min Work Experience Needed</label>
+                    <input type="text" name="workex" id="workex">
+                </div>
+            </div>
+            <div>
+                <label for="salary">Annual Salary in ₹</label>
+                <input type="text" name="salary" id="salary">
+            </div>
+            <div>
+                <label for="skills">Key Skills Needed</label>
+                <input type="text" name="skills" id="skills">
+            </div>
+            <div>
+                <label for="qualification">Minimum Qualification Criteria</label>
+                <input type="text" name="qualification" id="qualification">
+            </div>
+            <div>
+                <button class="next" id="next1">
+                    Next
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-container" id="second">
+        <div class="form-left">
+            <div>
+                <p>Setup your Walk-In Video Interview Room - <span>In 2-3 Minute</span>
+                    <span>Curious?</span> Check demo room here</p>
+            </div>
+            <div class="list-cont">
+                <div class="list-cont-left">
+
+                </div>
+                <div class="list-cont-right">
+                    <ul>
+                        <li>Enter Job Details</li>
+                        <li>Enter Job Description</li>
+                        <li>Preview Walk-in Room</li>
+                        <li>Go Live</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="form-right">
+            <div class="form-heading">
+                Enter Job Description 
+            </div>
+            <!-- <div class="double-conts">
+                <div class="title">
+                    <label for="title">Job Title</label>
+                    <input type="text" name="title" id="title">
+                </div>
+                <div class="location">
+                    <label for="title">Job Location</label>
+                    <input type="text" name="location" id="location">
+                </div>
+            </div>
+            <div class="double-conts">
+                <div class="education">
+                    <label for="education">Education Expectation</label>
+                    <input type="text" name="education" id="education">
+                </div>
+                <div class="workex">
+                    <label for="workex">Min Work Experience Needed</label>
+                    <input type="text" name="workex" id="workex">
+                </div>
+            </div> -->
+            <div>
+                <label for="role">What is candidate expected to do in this role ?</label>
+                <textarea name="role" id="role" cols="30" rows="5"></textarea>
+                <!-- <input type="text" name="salary" id="salary"> -->
+            </div>
+            <div>
+                <label for="growth">What is the growth aspect for this role in your company ?</label>
+                <textarea name="growth" id="growth" cols="30" rows="5"></textarea>
+                <!-- <input type="text" name="salary" id="salary"> -->
+            </div>
+            <div>
+                <label for="whyjoin">What is should candidate join your company ?</label>
+                <textarea name="whyjoin" id="whyjoin" cols="30" rows="5"></textarea>
+                <!-- <input type="text" name="salary" id="salary"> -->
+            </div>
+            <div class="double-conts">
+                <div>
+                    <button class="previous" id="prev1">
+                        Previous
+                    </button>
+                </div>
+                <div>
+                    <button class="next" id="next2">
+                        Next
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-container" id="third">
+        <div class="form-left">
+            <div>
+                <p>Setup your Walk-In Video Interview Room - <span>In 2-3 Minute</span>
+                    <span>Curious?</span> Check demo room here</p>
+            </div>
+            <div class="list-cont">
+                <div class="list-cont-left">
+
+                </div>
+                <div class="list-cont-right">
+                    <ul>
+                        <li>Enter Job Details</li>
+                        <li>Enter Job Description</li>
+                        <li>Preview Walk-in Room</li>
+                        <li>Go Live</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="form-right">
+            <div class="form-heading">
+                Check Your Audio and Video Settings
+            </div>
+
+            <div class="hostContainer" id="hostContainer">
+                
+            </div>
+            
+            <div class="double-conts">
+                <div>
+                    <button class="previous" id="prev2">
+                        Previous
+                    </button>
+                </div>
+                <div>
+                    <button class="next" id="next3">
+                        Preview Your Room
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <footer>
+        <div class="footer">
+            <div class="faq">
+                <div class="faq-cont">
+                    <p>
+                        Have any questions,
+                    </p>
+                    <p>
+                        Check FAQ!
+                    </p>
+                </div>
+                <div class="faq-cont footer-img">
+                    <img src="img/round_arrow.png" alt="">
+                </div>
+                <div class="faq-cont">
+                    <button class="contact-us">
+                        Contact Us
+                    </button>
+                </div>
+            </div>
+            <!-- <div class="footer-cont-big">
+                <div class="footer-cont-big-child-left">
+                    <div class="footer-cont-small">
+                        <div class="heyhere">
+                            <span>HeyHere</span>
+                        </div>
+                        <div>
+                            <button class="header-left-button">LIVE JOBS</button>
+                        </div>
+                    </div>
+                    <div class="footer-cont-small">
+                        <p>HeyHere is  a LIVE Jobs Marketplace. Here  employers can conduct "LIVE  Video Call Interviews" to attract talents.</p>
+                        <br>
+                        <br> 
+
+<p>HeyHere benefits employers by rapidly filling vacancies. It is  helping candidates in finding a job quickly.  It saves travel time & travel expenses  for the candidates. It also saves  times, talent sourcing cost, physical space,  and other facility related expenses  for the employers.</p> 
+<br>
+<br>
+<h5>Pricing</h5> 
+<p>For Employers -  Personalized Video Room for Walk-In Interviews 
+Rs 499 per room. Unlimited candidates. Valid for 24 Hours
+
+For Candidate -  Entry Ticket For Walk-In Interview Room
+Rs 99 per entry ticket for a single Walk In interview
+
+We charge candidates to filter in only serious candidates who value employer’s time as well as their own. </p> 
+
+                    </div>
+                </div>
+                <div class="footer-cont-big-child-right"></div>
+            </div> -->
+        </div>
+    </footer>
+    
+      
+
+
+</body>
+
+<!-- <script type="module" src="https://cdn.skypack.dev/@100mslive/hms-video-store"></script> -->
+<script type="module" src="js/script.js"></script>
+<script type="module" src="js/startRoom.js"></script>
+<!-- <script type="module" src="js/visitor.js"></script> -->
+
+</html>
