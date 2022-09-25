@@ -421,7 +421,7 @@ function renderPeers(peers) {
               autoplay: true, // if video doesn't play we'll see a blank tile
               muted: true,
               playsinline: true,
-              style: "position:absolute;top:0;margin:auto;transform: scale(-1, 1);filter: FlipH;width:100%;aspect-ratio:16/9;object-fit:cover;z-index:-100;border-radius: 24px;"
+              style: "position:absolute;top:0;margin:auto;transform: scale(-1, 1);width:100%;aspect-ratio:16/9;object-fit:cover;z-index:-100;border-radius: 24px;"
             });
           }
           else{
@@ -430,7 +430,7 @@ function renderPeers(peers) {
               autoplay: true, // if video doesn't play we'll see a blank tile
               muted: true,
               playsinline: true,
-              style: "position:absolute;top:0;margin:auto;transform: scale(-1, 1);width:100%;aspect-ratio:16/9;object-fit:cover;z-index:-100;border-radius: 24px;"
+              style: "position:absolute;top:0;margin:auto;width:100%;aspect-ratio:16/9;object-fit:cover;z-index:-100;border-radius: 24px;"
             });
           }
           
