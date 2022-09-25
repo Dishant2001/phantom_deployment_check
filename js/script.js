@@ -231,9 +231,7 @@ var ele;
 async function renderPeers(peers) {
 
   const response = await fetch('https://mytestsite.net.in/getQueue',{
-    method:'GET',
-    mode:'no-cors',
-    headers: { "Content-Type": "application/json" }
+    mode:'no-cors'
   });
   const resp_data=await response.json();
 
