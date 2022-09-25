@@ -136,8 +136,9 @@ var q_top='',q_next='';
 joinBtnGuest.addEventListener('click',async()=>{
   username=document.getElementById("name").value;
   const response = await fetch('https://mytestsite.net.in/enqueue',{
+    mode:'cors',
     method:'POST',
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json"},
     body: JSON.stringify({'user':username})
   });
   const resp_data=await response.json();
@@ -229,11 +230,7 @@ var ele;
 
 async function renderPeers(peers) {
 
-  const response = await fetch('https://mytestsite.net.in/getQueue',{
-    method:'POST',
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({'user':username})
-  });
+  const response = await fetch('https://mytestsite.net.in/getQueue',{mode:'cors'});
   const resp_data=await response.json();
 
   q=resp_data.queue;
@@ -241,19 +238,17 @@ async function renderPeers(peers) {
   q_next=resp_data.next;
 
   if(q_top!=undefined&&username==q_top.user){
-    if(confirm("Host invited you to join! Ready??")==true){
-      hmsActions.join({
-            userName: username,
-            // authToken: guest_key,
-            authToken: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3Nfa2V5IjoiNjMxMmVmZjdiMWU3ODBlNzhjM2NlZDI0IiwidHlwZSI6ImFwcCIsInZlcnNpb24iOjIsInJvb21faWQiOiI2MzE2ZTFjM2IxZTc4MGU3OGMzZDFkY2YiLCJ1c2VyX2lkIjoidTIiLCJyb2xlIjoiZ3Vlc3QiLCJqdGkiOiI5ODA5Njg4ZS1jZDM4LTQwZjctYWFjMy04NGM3ODdjZGQwMmMiLCJleHAiOjE2NjQxMzU2NjAsImlhdCI6MTY2NDA0OTI2MCwibmJmIjoxNjY0MDQ5MjYwfQ.ZJjHrSDkiA4JT-FAAbNYvT8PzOgP5xZG2gs_6uM1Rjo',
-            settings: {
-              isAudioMuted: true,
-              isVideoMuted: true
-            },
-            rememberDeviceSelection: true,
-          });
-          console.log('joined in as Guest also!!!');
-    }
+    hmsActions.join({
+          userName: username,
+          // authToken: guest_key,
+          authToken: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3Nfa2V5IjoiNjMxMmVmZjdiMWU3ODBlNzhjM2NlZDI0IiwidHlwZSI6ImFwcCIsInZlcnNpb24iOjIsInJvb21faWQiOiI2MzE2ZTFjM2IxZTc4MGU3OGMzZDFkY2YiLCJ1c2VyX2lkIjoidTIiLCJyb2xlIjoiZ3Vlc3QiLCJqdGkiOiI5ODA5Njg4ZS1jZDM4LTQwZjctYWFjMy04NGM3ODdjZGQwMmMiLCJleHAiOjE2NjQxMzU2NjAsImlhdCI6MTY2NDA0OTI2MCwibmJmIjoxNjY0MDQ5MjYwfQ.ZJjHrSDkiA4JT-FAAbNYvT8PzOgP5xZG2gs_6uM1Rjo',
+          settings: {
+            isAudioMuted: true,
+            isVideoMuted: true
+          },
+          rememberDeviceSelection: true,
+        });
+        console.log('joined in as Guest also!!!');
   }
 
   peersContainer.innerHTML = "";
