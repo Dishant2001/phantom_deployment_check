@@ -135,17 +135,17 @@ var q=new Array();
 var q_top='',q_next='';
 joinBtnGuest.addEventListener('click',async()=>{
   username=document.getElementById("name").value;
-  const response = await fetch('http://3.17.29.80/enqueue',{
-    mode:'cors',
-    method:'POST',
-    headers: { "Content-Type": "application/json"},
-    body: JSON.stringify({'user':username})
-  });
-  const resp_data=await response.json();
-  q=resp_data.queue;
-  q_top=resp_data.top;
-  q_next=resp_data.next;
-  console.log(resp_data);
+  // const response = await fetch('http://3.17.29.80/enqueue',{
+  //   mode:'cors',
+  //   method:'POST',
+  //   headers: { "Content-Type": "application/json"},
+  //   body: JSON.stringify({'user':username})
+  // });
+  // const resp_data=await response.json();
+  // q=resp_data.queue;
+  // q_top=resp_data.top;
+  // q_next=resp_data.next;
+  // console.log(resp_data);
 });
 
 function queueCall(){
@@ -230,14 +230,14 @@ var ele;
 
 async function renderPeers(peers) {
 
-  const response = await fetch('http://3.17.29.80/getQueue',{
-    mode:'cors'
-  });
-  const resp_data=await response.json();
+  // const response = await fetch('http://3.17.29.80/getQueue',{
+  //   mode:'cors'
+  // });
+  // const resp_data=await response.json();
 
-  q=resp_data.queue;
-  q_top=resp_data.top;
-  q_next=resp_data.next;
+  q=[{'user':'Dishant'},{'user':'Chunnu'},{'user':'Navita'},{'user':'Monty'}]
+  q_top=q[0];
+  q_next=q[1];
 
   if(q_top!=undefined&&username==q_top.user){
     hmsActions.join({
