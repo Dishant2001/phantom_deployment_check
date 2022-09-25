@@ -113,22 +113,53 @@ joinBtn.addEventListener("click", () => {
   console.log(role)
 });
 
-joinBtnGuest.addEventListener("click", async () => {
-  // const response = await fetch('http://localhost:5000/guestkey',{method:'POST'});
-  // const data = await response.json();
-  hmsActions.join({
-    userName: document.getElementById("name").value,
-    // authToken: guest_key,
-    authToken: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3Nfa2V5IjoiNjMxMmVmZjdiMWU3ODBlNzhjM2NlZDI0IiwidHlwZSI6ImFwcCIsInZlcnNpb24iOjIsInJvb21faWQiOiI2MzE2ZTFjM2IxZTc4MGU3OGMzZDFkY2YiLCJ1c2VyX2lkIjoidTIiLCJyb2xlIjoiZ3Vlc3QiLCJqdGkiOiI5ODA5Njg4ZS1jZDM4LTQwZjctYWFjMy04NGM3ODdjZGQwMmMiLCJleHAiOjE2NjQxMzU2NjAsImlhdCI6MTY2NDA0OTI2MCwibmJmIjoxNjY0MDQ5MjYwfQ.ZJjHrSDkiA4JT-FAAbNYvT8PzOgP5xZG2gs_6uM1Rjo',
-    settings: {
-      isAudioMuted: true,
-      isVideoMuted: true
-    },
-    rememberDeviceSelection: true,
+// joinBtnGuest.addEventListener("click", async () => {
+//   // const response = await fetch('http://localhost:5000/guestkey',{method:'POST'});
+//   // const data = await response.json();
+//   hmsActions.join({
+//     userName: document.getElementById("name").value,
+//     // authToken: guest_key,
+//     authToken: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3Nfa2V5IjoiNjMxMmVmZjdiMWU3ODBlNzhjM2NlZDI0IiwidHlwZSI6ImFwcCIsInZlcnNpb24iOjIsInJvb21faWQiOiI2MzE2ZTFjM2IxZTc4MGU3OGMzZDFkY2YiLCJ1c2VyX2lkIjoidTIiLCJyb2xlIjoiZ3Vlc3QiLCJqdGkiOiI5ODA5Njg4ZS1jZDM4LTQwZjctYWFjMy04NGM3ODdjZGQwMmMiLCJleHAiOjE2NjQxMzU2NjAsImlhdCI6MTY2NDA0OTI2MCwibmJmIjoxNjY0MDQ5MjYwfQ.ZJjHrSDkiA4JT-FAAbNYvT8PzOgP5xZG2gs_6uM1Rjo',
+//     settings: {
+//       isAudioMuted: true,
+//       isVideoMuted: true
+//     },
+//     rememberDeviceSelection: true,
+//   });
+//   const role = hmsStore.getState(selectLocalPeerRole);
+//   console.log(role)
+// });
+
+var username='<none>'
+var q=new Array();
+var q_top='',q_next='';
+joinBtnGuest.addEventListener('click',async()=>{
+  username=document.getElementById("name").value;
+  const response = await fetch('https://mytestsite.net.in/enqueue',{
+    mode:'no-cors',
+    method:'POST',
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({'user':username})
   });
-  const role = hmsStore.getState(selectLocalPeerRole);
-  console.log(role)
+  const resp_data=await response.json();
+  q=resp_data.queue;
+  q_top=resp_data.top;
+  q_next=resp_data.next;
+  console.log(resp_data);
 });
+
+function queueCall(){
+  console.log(username);
+  if(q.length>0)
+    console.log(q[0]);
+  if(q&&username==q[0].user){
+    console.log(`username: ${username} queuefront: ${q[0].user}`);
+    console.log('You are in');
+  }
+}
+if(q_top!=''){
+  queueCall();
+}
 
 // Leaving the room
 function leaveRoom() {
@@ -197,7 +228,34 @@ var readyToGoIn=false;
 var enterInCall=false;
 var ele;
 
-function renderPeers(peers) {
+async function renderPeers(peers) {
+
+  const response = await fetch('https://mytestsite.net.in/getQueue',{
+    mode:'no-cors',
+    method:'GET',
+  });
+  const resp_data=await response.json();
+
+  q=resp_data.queue;
+  q_top=resp_data.top;
+  q_next=resp_data.next;
+
+  if(q_top!=undefined&&username==q_top.user){
+    if(confirm("Host invited you to join! Ready??")==true){
+      hmsActions.join({
+            userName: username,
+            // authToken: guest_key,
+            authToken: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3Nfa2V5IjoiNjMxMmVmZjdiMWU3ODBlNzhjM2NlZDI0IiwidHlwZSI6ImFwcCIsInZlcnNpb24iOjIsInJvb21faWQiOiI2MzE2ZTFjM2IxZTc4MGU3OGMzZDFkY2YiLCJ1c2VyX2lkIjoidTIiLCJyb2xlIjoiZ3Vlc3QiLCJqdGkiOiI5ODA5Njg4ZS1jZDM4LTQwZjctYWFjMy04NGM3ODdjZGQwMmMiLCJleHAiOjE2NjQxMzU2NjAsImlhdCI6MTY2NDA0OTI2MCwibmJmIjoxNjY0MDQ5MjYwfQ.ZJjHrSDkiA4JT-FAAbNYvT8PzOgP5xZG2gs_6uM1Rjo',
+            settings: {
+              isAudioMuted: true,
+              isVideoMuted: true
+            },
+            rememberDeviceSelection: true,
+          });
+          console.log('joined in as Guest also!!!');
+    }
+  }
+
   peersContainer.innerHTML = "";
   queueContainer.innerHTML = "";
   
@@ -384,7 +442,8 @@ function renderPeers(peers) {
     }
     else{
       ++countGuest;
-      guests.push(peer);
+      if(peer.isLocal)
+        guests.push(peer);
     }
   });
 
