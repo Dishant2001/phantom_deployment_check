@@ -135,7 +135,7 @@ var q=new Array();
 var q_top='',q_next='';
 joinBtnGuest.addEventListener('click',async()=>{
   username=document.getElementById("name").value;
-  const response = await fetch('http://mytestsite.net.in/enqueue',{
+  const response = await fetch('http://127.0.0.1:5000/enqueue',{
     mode:'cors',
     method:'POST',
     headers: { "Content-Type": "application/json"},
@@ -230,8 +230,9 @@ var ele;
 
 async function renderPeers(peers) {
 
-  const response = await fetch('http://mytestsite.net.in/getQueue',{
-    mode:'cors'
+  const response = await fetch('http://127.0.0.1:5000/getQueue',{
+    mode:'cors',
+    headers:{'Content-Type':'application/json'}
   });
   const resp_data=await response.json();
 
