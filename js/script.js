@@ -229,7 +229,11 @@ var ele;
 
 async function renderPeers(peers) {
 
-  const response = await fetch('https://mytestsite.net.in/getQueue');
+  const response = await fetch('https://mytestsite.net.in/getQueue',{
+    method:'POST',
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({'user':username})
+  });
   const resp_data=await response.json();
 
   q=resp_data.queue;
