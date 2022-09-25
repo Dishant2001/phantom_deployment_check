@@ -401,7 +401,7 @@ function renderPeers(peers) {
         autoplay: true, // if video doesn't play we'll see a blank tile
         muted: true,
         playsinline: true,
-        style: "display:inline-flex;position:absolute;top:0;margin:auto;"+peer.isLocal?"transform: scale(-1, 1);":""+"width:"+100/countHost+"%;aspect-ratio:16/9;object-fit:cover;z-index:-100;border-radius: 24px;"
+        style: "display:inline-flex;position:absolute;top:0;margin:auto;"+(peer.isLocal?"transform: scale(-1, 1);filter:FlipH;":"")+"width:"+100/countHost+"%;aspect-ratio:16/9;object-fit:cover;z-index:-100;border-radius: 24px;"
       });
 
       // this method takes a track ID and attaches that video track to a given
