@@ -231,8 +231,7 @@ var ele;
 async function renderPeers(peers) {
 
   const response = await fetch('http://3.17.29.80/getQueue',{
-    mode:'cors',
-    headers:{'Content-Type':'text/html; charset=utf-8'}
+    mode:'cors'
   });
   const resp_data=await response.json();
 
