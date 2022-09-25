@@ -616,6 +616,9 @@ async function renderPeers(peers) {
       
               document.getElementById('remove-person').addEventListener('click',async()=>{
                 await hmsActions.removePeer(ele.id, '');
+                if(ele.isLocal){
+                  username='<none>';
+                }
               });
     }
   }
