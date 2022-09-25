@@ -131,7 +131,7 @@ joinBtn.addEventListener("click", () => {
 // });
 
 var username='<none>'
-var q=new Array();
+var q=[{'user':'Dishant'},{'user':'Chunnu'},{'user':'Navita'},{'user':'Monty'}];
 var q_top='',q_next='';
 joinBtnGuest.addEventListener('click',async()=>{
   username=document.getElementById("name").value;
@@ -235,7 +235,7 @@ async function renderPeers(peers) {
   // });
   // const resp_data=await response.json();
 
-  q=[{'user':'Dishant'},{'user':'Chunnu'},{'user':'Navita'},{'user':'Monty'}]
+  
   q_top=q[0];
   q_next=q[1];
 
