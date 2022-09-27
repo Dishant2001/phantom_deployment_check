@@ -30,79 +30,54 @@ const leaveBtn = document.getElementById("leave-btn");
 
 
 
-class Queue {
-  constructor() {
-    this.items = [];
-  }
+const webSocketClient = new WebSocket("ws://localhost:5000");
 
-  enqueue(element) {
-    console.log(String(Object.values(element)[0].joinedAt).slice(15, 24));
-    if (this.items.length == 0)
-      return this.items.push(element);
-    else {
-      for (var i = 0; i < this.items.length; ++i) {
-        if (String(Object.values(this.items[i])[0].joinedAt).slice(15, 24) > String(Object.values(element)[0].joinedAt).slice(15, 24)) {
-          break;
-        }
-        return this.items.splice(i, 0, element);
-      }
+webSocketClient.onopen=function(){
+  console.log("Connected to server!");
+  // const data={'mssg':'hello!'};
+  // webSocketClient.send(JSON.stringify(data));
+
+  var data;
+  var username='<none>';
+  
+  webSocketClient.onmessage=function(message){
+    data = JSON.parse(message.data);
+    console.log("Received: ",data);
+    console.log(`Username:${username}  Queue Front:${data.front}`);
+    if(data&&data.front==username){
+      console.log('Its your turn');
     }
-  }
-
-  dequeue() {
-    if (this.items.length > 0) {
-      return this.items.shift();
+    if(data&&data.next==username){
+      console.log('You are next');
     }
-  }
 
-  peek() {
-    return this.items[this.items.length - 1];
-  }
+    hmsStore.subscribe(renderPeers, selectPeers);
 
-  isEmpty() {
-    return this.items.length == 0;
-  }
+  };
 
-  size() {
-    return this.items.length;
-  }
-
-  clear() {
-    this.items = [];
-  }
-
-  search(id) {
-    for (var i = 0; i < this.items.length; ++i) {
-      if (Object.keys(this.items[i])[0] == id)
-        return true;
-    }
-    return false;
-  }
-}
-
-let queue = new Queue();
+  
 
 
-// var hosts = {};
-var guests = {};
+  var guests = {};
+  var isHost=false;
 var host_key = '', guest_key = '', token = '',room_id='';
 
-startRoomBtn.addEventListener("click",async() => {
-  const response = await fetch('https://mytestsite.net.in/room',{method:'POST'});
-  const data = await response.json();
-  console.log(data);
-  host_key=data['host_key'];
-  guest_key=data['guest_key'];
-  room_id=data.room_details.id;
-  token=data['token'];
-});
+// startRoomBtn.addEventListener("click",async() => {
+//   const response = await fetch('https://mytestsite.net.in/room',{method:'POST'});
+//   const data = await response.json();
+//   console.log(data);
+//   host_key=data['host_key'];
+//   guest_key=data['guest_key'];
+//   room_id=data.room_details.id;
+//   token=data['token'];
+// });
 
 // Joining the room
 joinBtn.addEventListener("click", () => {
   hmsActions.join({
     userName: document.getElementById("name").value,
     // authToken: host_key,
-    authToken: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3Nfa2V5IjoiNjMxMmVmZjdiMWU3ODBlNzhjM2NlZDI0IiwidHlwZSI6ImFwcCIsInZlcnNpb24iOjIsInJvb21faWQiOiI2MzE2ZTFjM2IxZTc4MGU3OGMzZDFkY2YiLCJ1c2VyX2lkIjoidTEiLCJyb2xlIjoiaG9zdCIsImp0aSI6ImU3M2RkOTQzLWMyMzAtNDIwZi04NjU0LTM4MTI4ZTJmMjc3ZCIsImV4cCI6MTY2NDEzNTY2MCwiaWF0IjoxNjY0MDQ5MjYwLCJuYmYiOjE2NjQwNDkyNjB9.-ZTk314afyz45mwQgyAy2_z3bCUZClEqLpdFS6Rw4x0",
+    authToken: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3Nfa2V5IjoiNjMxMmVmZjdiMWU3ODBlNzhjM2NlZDI0IiwidHlwZSI6ImFwcCIsInZlcnNpb24iOjIsInJvb21faWQiOiI2MzE2ZTFjM2IxZTc4MGU3OGMzZDFkY2YiLCJ1c2VyX2lkIjoidTEiLCJyb2xlIjoiaG9zdCIsImp0aSI6IjcwYjljZGFlLWJjMmItNDBmZi04OWY4LTRhNGU5MjA1YjIwNiIsImV4cCI6MTY2NDMzNzc5MCwiaWF0IjoxNjY0MjUxMzkwLCJuYmYiOjE2NjQyNTEzOTB9.-xi0k3QtT_boGVrm6rqY4dazxn2b22f5E_R8enCpgx8",
     settings: {
       isAudioMuted: false,
       isVideoMuted: false
@@ -111,6 +86,8 @@ joinBtn.addEventListener("click", () => {
   });
   const role = hmsStore.getState(selectLocalPeerRole);
   console.log(role)
+  
+  hmsStore.subscribe(renderPeers, selectPeers);
 });
 
 // joinBtnGuest.addEventListener("click", async () => {
@@ -130,22 +107,20 @@ joinBtn.addEventListener("click", () => {
 //   console.log(role)
 // });
 
-var username='<none>'
+
 var q=new Array();
 var q_top='',q_next='';
 joinBtnGuest.addEventListener('click',async()=>{
   username=document.getElementById("name").value;
-  const response = await fetch('http://127.0.0.1:5000/enqueue',{
-    mode:'cors',
-    method:'POST',
-    headers: { "Content-Type": "application/json"},
-    body: JSON.stringify({'user':username})
-  });
-  const resp_data=await response.json();
-  q=resp_data.queue;
-  q_top=resp_data.top;
-  q_next=resp_data.next;
-  console.log(resp_data);
+  // const response = await fetch('http://127.0.0.1:5000/enqueue',{
+  //   mode:'cors',
+  //   method:'POST',
+  //   headers: { "Content-Type": "application/json"},
+  //   body: JSON.stringify({'user':username})
+  // });
+  webSocketClient.send(username);
+  
+  // console.log(resp_data);
 });
 
 function queueCall(){
@@ -164,6 +139,10 @@ if(q_top!=''){
 // Leaving the room
 function leaveRoom() {
   hmsActions.leave();
+  if(username==data.front){
+    username='<none>';
+    webSocketClient.send('pop');
+  }
 }
 
 // Cleanup if user refreshes the tab or navigates away
@@ -226,30 +205,30 @@ var temp = 0
 var guests = 0;
 var readyToGoIn=false;
 var enterInCall=false;
-var ele;
+var ele=undefined;
 
 async function renderPeers(peers) {
 
-  const response = await fetch('http://127.0.0.1:5000/getQueue',{
-    mode:'cors',
-    headers:{'Content-Type':'application/json'}
-  });
-  const resp_data=await response.json();
+  // const response = await fetch('http://127.0.0.1:5000/getQueue',{
+  //   mode:'cors',
+  //   headers:{'Content-Type':'application/json'}
+  // });
+  // const resp_data=await response.json();
 
-  q=resp_data.queue;
-  q_top=resp_data.top;
-  q_next=resp_data.next;
-
-  if(q_top!=undefined&&username==q_top.user){
+  // q=resp_data.queue;
+  // q_top=resp_data.top;
+  // q_next=resp_data.next;
+  // console.log('Current Queue: ',q);
+  if(data!=undefined&&username==data.front){
     hmsActions.join({
           userName: username,
           // authToken: guest_key,
-          authToken: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3Nfa2V5IjoiNjMxMmVmZjdiMWU3ODBlNzhjM2NlZDI0IiwidHlwZSI6ImFwcCIsInZlcnNpb24iOjIsInJvb21faWQiOiI2MzE2ZTFjM2IxZTc4MGU3OGMzZDFkY2YiLCJ1c2VyX2lkIjoidTIiLCJyb2xlIjoiZ3Vlc3QiLCJqdGkiOiI5ODA5Njg4ZS1jZDM4LTQwZjctYWFjMy04NGM3ODdjZGQwMmMiLCJleHAiOjE2NjQxMzU2NjAsImlhdCI6MTY2NDA0OTI2MCwibmJmIjoxNjY0MDQ5MjYwfQ.ZJjHrSDkiA4JT-FAAbNYvT8PzOgP5xZG2gs_6uM1Rjo',
+          authToken: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3Nfa2V5IjoiNjMxMmVmZjdiMWU3ODBlNzhjM2NlZDI0IiwidHlwZSI6ImFwcCIsInZlcnNpb24iOjIsInJvb21faWQiOiI2MzE2ZTFjM2IxZTc4MGU3OGMzZDFkY2YiLCJ1c2VyX2lkIjoidTIiLCJyb2xlIjoiZ3Vlc3QiLCJqdGkiOiJhYWQzMzBjNi03ZmZmLTQ1OTQtOTAwNS0yNmU4ZGU2NzMzNWUiLCJleHAiOjE2NjQzMzc3OTAsImlhdCI6MTY2NDI1MTM5MCwibmJmIjoxNjY0MjUxMzkwfQ.Sok7K_1pUE1_CWzU14OvxkIc1maCopVh6Wz6YMwIUpE',
           settings: {
             isAudioMuted: true,
             isVideoMuted: true
           },
-          rememberDeviceSelection: true,
+          rememberDeviceSelection: false,
         });
         console.log('joined in as Guest also!!!');
   }
@@ -442,6 +421,7 @@ async function renderPeers(peers) {
       ++countGuest;
       if(peer.isLocal)
         guests.push(peer);
+        ele=peer;
     }
   });
 
@@ -449,7 +429,7 @@ async function renderPeers(peers) {
 
     var peer=hosts[0];
     console.log(peer);
-    ele=guests[0];
+    // ele=guests[0];
     console.log(ele);
     var video;
     if (peer.videoTrack) {
@@ -469,7 +449,7 @@ async function renderPeers(peers) {
       }
     }
 
-    if(ele){
+    if(ele!=undefined){
 
       var video_guest;
           if(ele.isLocal){
@@ -616,7 +596,11 @@ async function renderPeers(peers) {
               buttonControl();
       
               document.getElementById('remove-person').addEventListener('click',async()=>{
-                await hmsActions.removePeer(ele.id, '');
+                hmsActions.removePeer(ele.id, '');
+                if(username==data.front){
+                  username='<none>';
+                  webSocketClient.send('pop');
+                }
               });
     }
   }
@@ -1020,8 +1004,68 @@ async function renderPeers(peers) {
 }
 
 // subscribe to the peers, so render is called whenever there is a change like peer join and leave
-hmsStore.subscribe(renderPeers, selectPeers);
 
+
+
+
+};
+
+
+
+class Queue {
+  constructor() {
+    this.items = [];
+  }
+
+  enqueue(element) {
+    console.log(String(Object.values(element)[0].joinedAt).slice(15, 24));
+    if (this.items.length == 0)
+      return this.items.push(element);
+    else {
+      for (var i = 0; i < this.items.length; ++i) {
+        if (String(Object.values(this.items[i])[0].joinedAt).slice(15, 24) > String(Object.values(element)[0].joinedAt).slice(15, 24)) {
+          break;
+        }
+        return this.items.splice(i, 0, element);
+      }
+    }
+  }
+
+  dequeue() {
+    if (this.items.length > 0) {
+      return this.items.shift();
+    }
+  }
+
+  peek() {
+    return this.items[this.items.length - 1];
+  }
+
+  isEmpty() {
+    return this.items.length == 0;
+  }
+
+  size() {
+    return this.items.length;
+  }
+
+  clear() {
+    this.items = [];
+  }
+
+  search(id) {
+    for (var i = 0; i < this.items.length; ++i) {
+      if (Object.keys(this.items[i])[0] == id)
+        return true;
+    }
+    return false;
+  }
+}
+
+let queue = new Queue();
+
+
+// var hosts = {};
 
 
 
