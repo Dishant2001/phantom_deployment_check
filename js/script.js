@@ -30,7 +30,11 @@ const leaveBtn = document.getElementById("leave-btn");
 
 
 
-const webSocketClient = new WebSocket("ws://localhost:5000");
+const webSocketClient = new WebSocket("ws://3.22.236.2:80");
+
+webSocketClient.onclose=function(){
+  console.log("Connection closed!");
+}
 
 webSocketClient.onopen=function(){
   console.log("Connected to server!");
@@ -39,19 +43,26 @@ webSocketClient.onopen=function(){
 
   var data;
   var username='<none>';
-  
+  var count=1,nextcount=1;
   webSocketClient.onmessage=function(message){
     data = JSON.parse(message.data);
+    var conf=false;
     console.log("Received: ",data);
     console.log(`Username:${username}  Queue Front:${data.front}`);
     if(data&&data.front==username){
       console.log('Its your turn');
+      if(count==1)
+        conf=confirm('Host is inviting you inside. Are you ready?');
+      --count;
     }
     if(data&&data.next==username){
       console.log('You are next');
+      if(nextcount==1)
+        alert('You are next!');
+      --nextcount;
     }
-
-    hmsStore.subscribe(renderPeers, selectPeers);
+    if(conf)
+      hmsStore.subscribe(renderPeers, selectPeers);
 
   };
 
@@ -143,6 +154,7 @@ function leaveRoom() {
     username='<none>';
     webSocketClient.send('pop');
   }
+  // webSocketClient.close();
 }
 
 // Cleanup if user refreshes the tab or navigates away
@@ -595,12 +607,12 @@ async function renderPeers(peers) {
       
               buttonControl();
       
-              document.getElementById('remove-person').addEventListener('click',async()=>{
+              document.getElementById('remove-person').addEventListener('click',()=>{
+                hmsActions.removePeer(ele.id, '');
                 if(username==data.front){
                   username='<none>';
                   webSocketClient.send('pop');
                 }
-                await hmsActions.removePeer(ele.id, '');
               });
     }
   }
