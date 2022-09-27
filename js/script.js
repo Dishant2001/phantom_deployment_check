@@ -596,11 +596,11 @@ async function renderPeers(peers) {
               buttonControl();
       
               document.getElementById('remove-person').addEventListener('click',async()=>{
-                hmsActions.removePeer(ele.id, '');
                 if(username==data.front){
                   username='<none>';
                   webSocketClient.send('pop');
                 }
+                await hmsActions.removePeer(ele.id, '');
               });
     }
   }
