@@ -24,6 +24,9 @@ const guestContainer = document.getElementById("guestContainer");
 const queueContainer = document.getElementById("queue");
 const startRoomBtn = document.getElementById('header-right-btn');
 const leaveBtn = document.getElementById("leave-btn");
+const coffeeCont = document.getElementById("coffee");
+const confCont = document.getElementById('confirm-cont');
+
 // const muteAud = document.getElementById("mute-aud");
 // const muteVid = document.getElementById("mute-vid");
 // const controls = document.getElementById("controls");
@@ -45,14 +48,16 @@ webSocketClient.onopen = function () {
   var username = '<none>';
   var count = 1, nextcount = 1,inQueue=true;
   webSocketClient.onmessage = function (message) {
-    if(message=="/coffeeBreak"){
+    if(message.data=="/coffeeBreak"){
       var peerContent = h(
         "img",
         {
-          style:"width:100%;aspect-ratio:16/9;",
-          src:"css/coffee.png"
+          style:"width:100%;aspect-ratio:16/9;z-index:200;",
+          src:"img/coffee.png"
         },
-      )
+      );
+      // peersContainer.innerHTML="";
+      coffeeCont.append(peerContent);
     }
 
     else{
@@ -64,8 +69,14 @@ webSocketClient.onopen = function () {
       if (data && data.front == username) {
         console.log('Its your turn');
         if (count == 1)
-          conf = confirm('Host is inviting you inside. Are you ready?');
-        --count;
+          // conf = confirm('Host is inviting you inside. Are you ready?');
+          confCont.style.display="flex";
+            const confBtn = document.getElementById('confirm-btn');
+            confBtn.addEventListener('click',()=>{
+              --count;
+              confCont.style.display="none";
+              hmsStore.subscribe(renderPeers, selectPeers);
+            });
       }
       if (data && data.next == username) {
         console.log('You are next');
@@ -73,8 +84,6 @@ webSocketClient.onopen = function () {
           alert('You are next!');
         --nextcount;
       }
-      if (conf)
-        hmsStore.subscribe(renderPeers, selectPeers);
        
       queueContainer.innerHTML="";  
   
@@ -292,6 +301,9 @@ webSocketClient.onopen = function () {
     }
 
   }
+
+  var coffeeBreak=false;
+
   
 
   var temp = 0
@@ -337,6 +349,10 @@ webSocketClient.onopen = function () {
 
 
     // var video='';
+
+    const videoEnabled = !hmsStore.getState(selectIsLocalVideoEnabled);
+        hmsActions.setLocalVideoEnabled(videoEnabled);
+
 
     const guestContainer = h(
       "div",
@@ -401,7 +417,7 @@ webSocketClient.onopen = function () {
         {
           id: "video",
           listener: 'false',
-          style: "margin:auto;display: flex;background-color: #FAFAFB;height: 80%;aspect-ratio:1;z-index: 0;border-radius:15px;"
+          style: "margin:auto;display: flex;background-color:"+(videoEnabled?"#FAFAFB;":"#ff3459;")+"height: 80%;aspect-ratio:1;z-index: 0;border-radius:15px;"
         },
         h(
           "img",
@@ -542,7 +558,7 @@ webSocketClient.onopen = function () {
         }
       }
 
-      if (ele != undefined&&ele.videoTrack) {
+      if (ele != undefined&&ele.videoTrack&&video!=undefined) {
 
         var video_guest;
         if (ele.isLocal) {
@@ -609,6 +625,20 @@ webSocketClient.onopen = function () {
 
           document.getElementById('remove-person').addEventListener('click', async () => {
             await hmsActions.removePeer(ele.id, '');
+            webSocketClient.send('pop');
+          });
+
+          document.getElementById('coffee-break').addEventListener('click',()=>{
+            if(!coffeeBreak){
+              coffeeBreak=true;
+              webSocketClient.send('/coffeeBreak');
+              coffeeCont.style.display="block";
+            }
+            else{
+              coffeeBreak=false;
+              webSocketClient.send('/breakOver');
+              coffeeCont.style.display="none";
+            }
           });
 
         }
@@ -692,6 +722,19 @@ webSocketClient.onopen = function () {
           await hmsActions.removePeer(ele.id, '');
           webSocketClient.send('pop');
           
+        });
+
+        document.getElementById('coffee-break').addEventListener('click',()=>{
+          if(!coffeeBreak){
+            coffeeBreak=true;
+            webSocketClient.send('/coffeeBreak');
+            coffeeCont.style.display="block";
+          }
+          else{
+            coffeeBreak=false;
+            webSocketClient.send('/breakOver');
+            coffeeCont.style.display="none";
+          }
         });
       }
     }

@@ -164,7 +164,7 @@ button{
     z-index: -100;
     width: 60%;
     /* margin-top: 4em; */
-    /* margin-bottom: 4em; */
+    margin-bottom: min(5vw,10vh);
     object-fit: cover;
     z-index: -100;
     aspect-ratio: 16/9;
@@ -186,6 +186,55 @@ button{
     background:none;
     z-index: -100;
 }
+
+.confirm{
+    display: none;
+    position: absolute;
+    float: left;
+    padding: min(5vh,3vw);
+    /* display: flex; */
+    flex-direction: column;
+    top: 55vh;
+    left: 28vw;
+    margin: auto;
+    width: 40%;
+    aspect-ratio: 4/3;
+    z-index: 200;
+    justify-content: center;
+    background-color: #FCFBFB;
+    box-shadow: 5px 5px 0px 0px rgba(72, 84, 112, 0.3) ;
+    border-radius: 20px;
+}
+
+.confirm-cont{
+    margin: auto;
+}
+
+.confirm-cont p{
+    text-align: center;
+    font-family: 'Manrope', sans-serif;
+    font-style: normal;
+    color: #1C2541;
+    font-size: min(8vh,3vw);
+    font-weight: bold;
+}
+
+#confirm-btn{
+    color: #ffffff;
+    background-color: #4C67F4;
+    font-family: 'Manrope', sans-serif;
+    font-size: min(12px,1.2vw);
+    padding-left: min(40px,3vw);
+    padding-right: min(40px,3vw);
+    padding-top: min(15px,1vw);
+    padding-bottom: min(15px,1vw);
+    outline: none;
+    border: none;
+    cursor: pointer;
+    border-radius: 25px;
+}
+
+
 
 .hostControls{
     position: absolute;
