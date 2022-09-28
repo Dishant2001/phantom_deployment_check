@@ -225,7 +225,7 @@ button{
 
 .queue{
     display: flex;
-    flex-direction: row-reverse;
+    flex-direction: row;
     margin: auto;
     width: 60%;
     margin-top: 20px;
@@ -236,8 +236,9 @@ button{
     display: flex;
     width: 40px;
     aspect-ratio: 1;
+    margin-left: -7px;
     border-radius: 50%;
-    background-color: #36F599;
+    /* background-color: #36F599; */
     justify-content: center;
 }
 
