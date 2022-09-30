@@ -140,7 +140,7 @@ webSocketClient.onopen = function () {
     hmsActions.join({
       userName: document.getElementById("name").value,
       // authToken: host_key,
-      authToken: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3Nfa2V5IjoiNjMxMmVmZjdiMWU3ODBlNzhjM2NlZDI0IiwidHlwZSI6ImFwcCIsInZlcnNpb24iOjIsInJvb21faWQiOiI2MzE2ZTFjM2IxZTc4MGU3OGMzZDFkY2YiLCJ1c2VyX2lkIjoidTEiLCJyb2xlIjoiaG9zdCIsImp0aSI6IjliZDlmZDg0LTg4NDgtNGIwYS05M2MxLTk4OWYxOWI4NDY5MCIsImV4cCI6MTY2NDU1NzYxOCwiaWF0IjoxNjY0NDcxMjE4LCJuYmYiOjE2NjQ0NzEyMTh9.nacGV1TgACAxsU6lXIfuTRb9nR9LwXvZqCcbYjl1Ig0",
+      authToken: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3Nfa2V5IjoiNjMxMmVmZjdiMWU3ODBlNzhjM2NlZDI0IiwidHlwZSI6ImFwcCIsInZlcnNpb24iOjIsInJvb21faWQiOiI2MzE2ZTFjM2IxZTc4MGU3OGMzZDFkY2YiLCJ1c2VyX2lkIjoidTEiLCJyb2xlIjoiaG9zdCIsImp0aSI6IjJlMWMzNTc0LTZiMDMtNGE4Yi1hOGFiLTRiMTAwZGZjNjg1ZSIsImV4cCI6MTY2NDY0MjA3MSwiaWF0IjoxNjY0NTU1NjcxLCJuYmYiOjE2NjQ1NTU2NzF9.J4fS_hxspwHKHmcgu3rVh0tc9tFUfG6hWUihOqxFMmU",
       settings: {
         isAudioMuted: false,
         isVideoMuted: false
@@ -328,7 +328,7 @@ webSocketClient.onopen = function () {
       hmsActions.join({
         userName: username,
         // authToken: guest_key,
-        authToken: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3Nfa2V5IjoiNjMxMmVmZjdiMWU3ODBlNzhjM2NlZDI0IiwidHlwZSI6ImFwcCIsInZlcnNpb24iOjIsInJvb21faWQiOiI2MzE2ZTFjM2IxZTc4MGU3OGMzZDFkY2YiLCJ1c2VyX2lkIjoidTIiLCJyb2xlIjoiZ3Vlc3QiLCJqdGkiOiI3MzA3NDhkOS05ZjE5LTQ0Y2MtOTM4Ni1hMWY0MzIzNmU2NzgiLCJleHAiOjE2NjQ1NTc2MTgsImlhdCI6MTY2NDQ3MTIxOCwibmJmIjoxNjY0NDcxMjE4fQ.4XFrWdjIigv8v9wk73BxLhLM_EmRsKz1L3I32x3YCRw',
+        authToken: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3Nfa2V5IjoiNjMxMmVmZjdiMWU3ODBlNzhjM2NlZDI0IiwidHlwZSI6ImFwcCIsInZlcnNpb24iOjIsInJvb21faWQiOiI2MzE2ZTFjM2IxZTc4MGU3OGMzZDFkY2YiLCJ1c2VyX2lkIjoidTIiLCJyb2xlIjoiZ3Vlc3QiLCJqdGkiOiI3MWE1ZDM5NC0yOGY3LTQwMmItYmE3NC1iZGFkZGZmNDRiMGUiLCJleHAiOjE2NjQ2NDIwNzEsImlhdCI6MTY2NDU1NTY3MSwibmJmIjoxNjY0NTU1NjcxfQ.zgVAAHfmMpPp7vk6fvX5iwyr4E60SjNmKxB-Oy5thJk',
         settings: {
           isAudioMuted: true,
           isVideoMuted: true
@@ -526,7 +526,7 @@ webSocketClient.onopen = function () {
         ++countHost;
         hosts.push(peer);
       }
-      else {
+      else if(peer.roleName=='guest') {
         ++countGuest;
         if (peer.isLocal)
           guests.push(peer);
