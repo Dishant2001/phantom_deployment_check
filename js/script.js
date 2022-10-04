@@ -26,6 +26,7 @@ const startRoomBtn = document.getElementById('header-right-btn');
 const leaveBtn = document.getElementById("leave-btn");
 const coffeeCont = document.getElementById("coffee");
 const confCont = document.getElementById('confirm-cont');
+const recordedVideo = document.getElementById('recorded-video');
 
 // const muteAud = document.getElementById("mute-aud");
 // const muteVid = document.getElementById("mute-vid");
@@ -45,6 +46,8 @@ webSocketClient.onopen = function () {
   // webSocketClient.send(JSON.stringify(data));
 
   var data;
+  var camera_stream=null,media_recorder=null,blobs_recorded=[];
+  // var download_link = document.querySelector("#download-video");
   var username = '<none>';
   var count = 1, nextcount = 1,inQueue=true;
   webSocketClient.onmessage = function (message) {
@@ -136,11 +139,11 @@ webSocketClient.onopen = function () {
   // });
 
   // Joining the room
-  joinBtn.addEventListener("click", () => {
+  joinBtn.addEventListener("click", async() => {
     hmsActions.join({
       userName: document.getElementById("name").value,
       // authToken: host_key,
-      authToken: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3Nfa2V5IjoiNjMxMmVmZjdiMWU3ODBlNzhjM2NlZDI0IiwidHlwZSI6ImFwcCIsInZlcnNpb24iOjIsInJvb21faWQiOiI2MzE2ZTFjM2IxZTc4MGU3OGMzZDFkY2YiLCJ1c2VyX2lkIjoidTEiLCJyb2xlIjoiaG9zdCIsImp0aSI6IjJlMWMzNTc0LTZiMDMtNGE4Yi1hOGFiLTRiMTAwZGZjNjg1ZSIsImV4cCI6MTY2NDY0MjA3MSwiaWF0IjoxNjY0NTU1NjcxLCJuYmYiOjE2NjQ1NTU2NzF9.J4fS_hxspwHKHmcgu3rVh0tc9tFUfG6hWUihOqxFMmU",
+      authToken: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3Nfa2V5IjoiNjMxMmVmZjdiMWU3ODBlNzhjM2NlZDI0IiwidHlwZSI6ImFwcCIsInZlcnNpb24iOjIsInJvb21faWQiOiI2MzE2ZTFjM2IxZTc4MGU3OGMzZDFkY2YiLCJ1c2VyX2lkIjoidTEiLCJyb2xlIjoiaG9zdCIsImp0aSI6ImRiOWIzYWJiLWFkNWYtNGQ5ZS04OTMyLTUxZjg3ZmRkYzBjNiIsImV4cCI6MTY2NDk4OTM3MCwiaWF0IjoxNjY0OTAyOTcwLCJuYmYiOjE2NjQ5MDI5NzB9.NmnurwzjISzgxcH5FTJFZqnIlGDg4sqf8Ib1oMT5xec",
       settings: {
         isAudioMuted: false,
         isVideoMuted: false
@@ -152,6 +155,47 @@ webSocketClient.onopen = function () {
 
     hmsStore.subscribe(renderPeers, selectPeers);
     webSocketClient.send('/startRecording');
+
+    
+
+    
+
+    // start recording with each recorded blob having 1 second video
+    (async function timelyRecorder(){
+      blobs_recorded=[];
+      camera_stream = await navigator.mediaDevices.getUserMedia({ video: true});
+
+    media_recorder = new MediaRecorder(camera_stream, { mimeType: 'video/webm' });
+
+    // event : new recorded video blob available 
+    media_recorder.addEventListener('dataavailable', function(e) {
+      // blobs_recorded=[];
+      recordedVideo.innerHTML="";
+      console.log("Recording: ",new Blob([e.data], { type: 'video/webm' }));
+      blobs_recorded.push(e.data);
+      
+  });
+  media_recorder.addEventListener('stop', function() {
+    // create local object URL from the recorded video blobs
+    let video_local = URL.createObjectURL(new Blob(blobs_recorded, { type: 'video/webm' }));
+    	// download_link.src = video_local;
+      var tempVideo = h("video", {
+        class: "recorded-video",
+        src:video_local,
+        autoplay: true, // if video doesn't play we'll see a blank tile
+        muted: true,
+        playsinline: true,
+        // style: "display:inline-flex;position:absolute;top:0;margin:auto;" + (peer.isLocal ? "transform: scale(-1, 1);filter:FlipH;" : "") + "width:" + 100 / countHost + "%;aspect-ratio:16/9;object-fit:cover;z-index:-100;border-radius: 24px;"
+      });
+      // media_recorder.stop();
+      recordedVideo.append(tempVideo);
+  });
+      media_recorder.start();
+      setTimeout(()=>{
+        media_recorder.stop();
+        timelyRecorder();
+      },5000);
+    })();
 
     //   async function start(){
     //     console.log('entered inside');
@@ -228,6 +272,8 @@ webSocketClient.onopen = function () {
       }
       else {
         webSocketClient.send('/stopRecording');
+        media_recorder.stop();
+        console.log("Video Blob: ",blobs_recorded);
       }
 
       //   async function stop() {
@@ -328,7 +374,7 @@ webSocketClient.onopen = function () {
       hmsActions.join({
         userName: username,
         // authToken: guest_key,
-        authToken: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3Nfa2V5IjoiNjMxMmVmZjdiMWU3ODBlNzhjM2NlZDI0IiwidHlwZSI6ImFwcCIsInZlcnNpb24iOjIsInJvb21faWQiOiI2MzE2ZTFjM2IxZTc4MGU3OGMzZDFkY2YiLCJ1c2VyX2lkIjoidTIiLCJyb2xlIjoiZ3Vlc3QiLCJqdGkiOiI3MWE1ZDM5NC0yOGY3LTQwMmItYmE3NC1iZGFkZGZmNDRiMGUiLCJleHAiOjE2NjQ2NDIwNzEsImlhdCI6MTY2NDU1NTY3MSwibmJmIjoxNjY0NTU1NjcxfQ.zgVAAHfmMpPp7vk6fvX5iwyr4E60SjNmKxB-Oy5thJk',
+        authToken: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3Nfa2V5IjoiNjMxMmVmZjdiMWU3ODBlNzhjM2NlZDI0IiwidHlwZSI6ImFwcCIsInZlcnNpb24iOjIsInJvb21faWQiOiI2MzE2ZTFjM2IxZTc4MGU3OGMzZDFkY2YiLCJ1c2VyX2lkIjoidTIiLCJyb2xlIjoiZ3Vlc3QiLCJqdGkiOiIzZTZhMzk5MS02OGY4LTRiYmMtOGUyMy00NGEwMDQzYTA3MTMiLCJleHAiOjE2NjQ5ODkzNzAsImlhdCI6MTY2NDkwMjk3MCwibmJmIjoxNjY0OTAyOTcwfQ.J1kv3rCuXmek9JokKvBSyqjcd48DEh0u5uBpvwx9bEo',
         settings: {
           isAudioMuted: true,
           isVideoMuted: true
