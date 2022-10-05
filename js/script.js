@@ -27,6 +27,9 @@ const leaveBtn = document.getElementById("leave-btn");
 const coffeeCont = document.getElementById("coffee");
 const confCont = document.getElementById('confirm-cont');
 
+const announcementScreen = document.getElementById('announce-mssg');
+const recVideo = document.getElementById('recorded-video');
+
 // const muteAud = document.getElementById("mute-aud");
 // const muteVid = document.getElementById("mute-vid");
 // const controls = document.getElementById("controls");
@@ -61,6 +64,14 @@ webSocketClient.onopen = function () {
       );
       // peersContainer.innerHTML="";
       coffeeCont.append(peerContent);
+    }
+    else if(JSON.parse(message.data).hasOwnProperty('mssg')){
+      console.log(JSON.parse(message.data)['mssg']);
+    }
+    else if(JSON.parse(message.data).hasOwnProperty('blobData')){
+      var recData=JSON.parse(message.data)
+      console.log(recData['blobData']);
+      recVideo.src=recData['blobData'];
     }
 
     else{
@@ -181,6 +192,10 @@ webSocketClient.onopen = function () {
       });
       media_recorder.addEventListener('stop',async function(){
         let video_local=URL.createObjectURL(new Blob(blobs_recorded,{type:'video/webm'}));
+        console.log("video url: ",video_local);
+        // recVideo.src=video_local;
+        webSocketClient.send(JSON.stringify({'blobData':video_local}));
+
       });
       media_recorder.start();
       setTimeout(()=>{
@@ -301,6 +316,7 @@ webSocketClient.onopen = function () {
     const mic = document.getElementById('mic');
     const call = document.getElementById('call');
     const cam = document.getElementById('video');
+    const chat = document.getElementById('chat');
 
     if (mic.getAttribute('listener') !== 'true') {
       mic.addEventListener('click', () => {
@@ -326,6 +342,26 @@ webSocketClient.onopen = function () {
       call.addEventListener('click', () => {
         call.setAttribute('listener', 'true');
         leaveRoom();
+      });
+    }
+
+    if (chat.getAttribute('listener') !== 'true') {
+      chat.addEventListener('click', () => {
+        console.log("Chat key pressed!");
+        cam.click()
+        mic.click();
+          peersContainer.style.display="none"
+          announcementScreen.style.display="flex";
+
+          document.getElementById('announce').addEventListener('click',()=>{
+            var mssg=document.getElementById('announcement');
+            console.log(mssg.value);
+            webSocketClient.send('broadcast/'+mssg.value);
+            announcementScreen.style.display="none";
+            peersContainer.style.display="block";
+            cam.click()
+        mic.click();
+          });
       });
     }
 

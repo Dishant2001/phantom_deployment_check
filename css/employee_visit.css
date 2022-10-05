@@ -157,6 +157,7 @@ button{
 }
 
 .hostContainer{
+    /* position: relative; */
     /* position: fixed; */
     margin: auto;
     /* margin-top: 200px; */
@@ -303,6 +304,68 @@ button{
 
 .controls{
     display: none;
+}
+
+.announce-mssg{
+    /* position: absolute; */
+    /* top: 0; */
+    display: none;
+    z-index: 200;
+    flex-direction: column;
+    justify-content: flex-start;
+    width: 50%;
+    aspect-ratio: 16/9;
+    padding: min(32px,3vw);
+    margin: auto;
+    border-radius: 24px;
+    background-color: #36F599;
+}
+
+.announce-cont{
+    /* margin: auto; */
+    padding: min(15px,1.5vw);
+    width: 100%;
+}
+
+.announce-cont img{
+    width: min(32px,3vw);
+}
+.announce-cont p{
+    font-family: 'Manrope', sans-serif;
+    color: #1C2541;
+}
+
+.enter-mssg{
+    font-size: min(12px,1.2vw);
+    font-weight: 600;
+}
+
+.mssg-info{
+    font-size: min(8px,0.8vw);
+    font-weight: 300;
+}
+
+#announcement{
+    padding: min(15px,1.5vw);
+    outline: none;
+    border: none;
+    border-radius: min(4px,1vw);
+    width: 80%;
+}
+
+#announce{
+    background-color: #4c67f4;
+    color: #FFFFFF;
+    font-family: 'Manrope', sans-serif;
+    font-size: min(12px,1.2vw);
+    padding-left: min(40px,3vw);
+    padding-right: min(40px,3vw);
+    padding-top: min(15px,1vw);
+    padding-bottom: min(15px,1vw);
+    outline: none;
+    border: none;
+    cursor: pointer;
+    border-radius: 25px;
 }
 
 /* .controls{
