@@ -39,7 +39,7 @@ var camera_stream=null;
 
 
 
-const webSocketClient = new WebSocket("ws://localhost:5000");
+const webSocketClient = new WebSocket("ws://3.17.29.80:5000");
 
 webSocketClient.onclose = function () {
   console.log("Connection closed!");
@@ -154,7 +154,7 @@ webSocketClient.onopen = function () {
     hmsActions.join({
       userName: document.getElementById("name").value,
       // authToken: host_key,
-      authToken: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3Nfa2V5IjoiNjMxMmVmZjdiMWU3ODBlNzhjM2NlZDI0IiwidHlwZSI6ImFwcCIsInZlcnNpb24iOjIsInJvb21faWQiOiI2MzE2ZTFjM2IxZTc4MGU3OGMzZDFkY2YiLCJ1c2VyX2lkIjoidTEiLCJyb2xlIjoiaG9zdCIsImp0aSI6ImRiOWIzYWJiLWFkNWYtNGQ5ZS04OTMyLTUxZjg3ZmRkYzBjNiIsImV4cCI6MTY2NDk4OTM3MCwiaWF0IjoxNjY0OTAyOTcwLCJuYmYiOjE2NjQ5MDI5NzB9.NmnurwzjISzgxcH5FTJFZqnIlGDg4sqf8Ib1oMT5xec",
+      authToken: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3Nfa2V5IjoiNjMxMmVmZjdiMWU3ODBlNzhjM2NlZDI0IiwidHlwZSI6ImFwcCIsInZlcnNpb24iOjIsInJvb21faWQiOiI2MzE2ZTFjM2IxZTc4MGU3OGMzZDFkY2YiLCJ1c2VyX2lkIjoidTEiLCJyb2xlIjoiaG9zdCIsImp0aSI6ImJhMmVkNTFhLTI2MTItNDJiZi04NTI2LTRjNDQyYzU5MWQ0MiIsImV4cCI6MTY2NTA3ODE1MCwiaWF0IjoxNjY0OTkxNzUwLCJuYmYiOjE2NjQ5OTE3NTB9.8_KoPW66IJU1lEkfU9FlubjD4u-M6cSXSBJ61vfIYxU",
       settings: {
         isAudioMuted: false,
         isVideoMuted: false
@@ -393,7 +393,7 @@ webSocketClient.onopen = function () {
       hmsActions.join({
         userName: username,
         // authToken: guest_key,
-        authToken: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3Nfa2V5IjoiNjMxMmVmZjdiMWU3ODBlNzhjM2NlZDI0IiwidHlwZSI6ImFwcCIsInZlcnNpb24iOjIsInJvb21faWQiOiI2MzE2ZTFjM2IxZTc4MGU3OGMzZDFkY2YiLCJ1c2VyX2lkIjoidTIiLCJyb2xlIjoiZ3Vlc3QiLCJqdGkiOiIzZTZhMzk5MS02OGY4LTRiYmMtOGUyMy00NGEwMDQzYTA3MTMiLCJleHAiOjE2NjQ5ODkzNzAsImlhdCI6MTY2NDkwMjk3MCwibmJmIjoxNjY0OTAyOTcwfQ.J1kv3rCuXmek9JokKvBSyqjcd48DEh0u5uBpvwx9bEo',
+        authToken: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3Nfa2V5IjoiNjMxMmVmZjdiMWU3ODBlNzhjM2NlZDI0IiwidHlwZSI6ImFwcCIsInZlcnNpb24iOjIsInJvb21faWQiOiI2MzE2ZTFjM2IxZTc4MGU3OGMzZDFkY2YiLCJ1c2VyX2lkIjoidTIiLCJyb2xlIjoiZ3Vlc3QiLCJqdGkiOiI4YWYwMjlhYi0zOWY3LTQwOTItYWExYi01NTIxMWZjNDAxODgiLCJleHAiOjE2NjUwNzgxNTAsImlhdCI6MTY2NDk5MTc1MCwibmJmIjoxNjY0OTkxNzUwfQ.LcJAuJBZ7EMWmf1FDgARBCV2rnv6H9JlMR1SKdVc_28',
         settings: {
           isAudioMuted: true,
           isVideoMuted: true
@@ -1193,64 +1193,7 @@ webSocketClient.onopen = function () {
 
 
 
-class Queue {
-  constructor() {
-    this.items = [];
-  }
 
-  enqueue(element) {
-    console.log(String(Object.values(element)[0].joinedAt).slice(15, 24));
-    if (this.items.length == 0)
-      return this.items.push(element);
-    else {
-      for (var i = 0; i < this.items.length; ++i) {
-        if (String(Object.values(this.items[i])[0].joinedAt).slice(15, 24) > String(Object.values(element)[0].joinedAt).slice(15, 24)) {
-          break;
-        }
-        return this.items.splice(i, 0, element);
-      }
-    }
-  }
-
-  dequeue() {
-    if (this.items.length > 0) {
-      return this.items.shift();
-    }
-  }
-
-  peek() {
-    return this.items[this.items.length - 1];
-  }
-
-  isEmpty() {
-    return this.items.length == 0;
-  }
-
-  size() {
-    return this.items.length;
-  }
-
-  clear() {
-    this.items = [];
-  }
-
-  search(id) {
-    for (var i = 0; i < this.items.length; ++i) {
-      if (Object.keys(this.items[i])[0] == id)
-        return true;
-    }
-    return false;
-  }
-}
-
-let queue = new Queue();
-
-
-// var hosts = {};
-
-
-
-var temp = 0
 // function renderPeers(peers) {
 //   peersContainer.innerHTML = "";
 
