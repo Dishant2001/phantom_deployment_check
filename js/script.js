@@ -36,10 +36,11 @@ const recVideo = document.getElementById('recorded-video');
 
 var media_recorder=null;
 var camera_stream=null;
+var isHostHere=false,isGuesthere=false;
 
 
 
-const webSocketClient = new WebSocket("ws://3.17.29.80:5000");
+const webSocketClient = new WebSocket("ws://localhost:5000");
 
 webSocketClient.onclose = function () {
   console.log("Connection closed!");
@@ -71,7 +72,21 @@ webSocketClient.onopen = function () {
     else if(JSON.parse(message.data).hasOwnProperty('blobData')){
       var recData=JSON.parse(message.data)
       console.log(recData['blobData']);
-      recVideo.src=recData['blobData'];
+      if(!isHostHere&&!isGuesthere&&username!="<none>"){
+        peersContainer.innerHTML="";
+        var video_rec=h(
+          "video",
+          {
+            style:"width:100%;aspect-ratio:16/9;border-radius:24px;",
+            src:recData['blobData'],
+            autoplay:true,
+            muted:true,
+            playsinline:true,
+          }
+        );
+        // recVideo.src=recData['blobData'];
+        peersContainer.append(video_rec);
+      }
     }
 
     else{
@@ -154,7 +169,7 @@ webSocketClient.onopen = function () {
     hmsActions.join({
       userName: document.getElementById("name").value,
       // authToken: host_key,
-      authToken: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3Nfa2V5IjoiNjMxMmVmZjdiMWU3ODBlNzhjM2NlZDI0IiwidHlwZSI6ImFwcCIsInZlcnNpb24iOjIsInJvb21faWQiOiI2MzE2ZTFjM2IxZTc4MGU3OGMzZDFkY2YiLCJ1c2VyX2lkIjoidTEiLCJyb2xlIjoiaG9zdCIsImp0aSI6ImJhMmVkNTFhLTI2MTItNDJiZi04NTI2LTRjNDQyYzU5MWQ0MiIsImV4cCI6MTY2NTA3ODE1MCwiaWF0IjoxNjY0OTkxNzUwLCJuYmYiOjE2NjQ5OTE3NTB9.8_KoPW66IJU1lEkfU9FlubjD4u-M6cSXSBJ61vfIYxU",
+      authToken: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3Nfa2V5IjoiNjMxMmVmZjdiMWU3ODBlNzhjM2NlZDI0IiwidHlwZSI6ImFwcCIsInZlcnNpb24iOjIsInJvb21faWQiOiI2MzE2ZTFjM2IxZTc4MGU3OGMzZDFkY2YiLCJ1c2VyX2lkIjoidTEiLCJyb2xlIjoiaG9zdCIsImp0aSI6ImZlMTkyNjhiLWQwYWYtNDk0MC05Y2I4LTU4ZWZhNDY2MzkzNyIsImV4cCI6MTY2NTE2NjU3NiwiaWF0IjoxNjY1MDgwMTc2LCJuYmYiOjE2NjUwODAxNzZ9.Cb89ZW2E9zvmBcFP6LIKt9UZwJ4SsFgrNvWQEvdSx8I",
       settings: {
         isAudioMuted: false,
         isVideoMuted: false
@@ -163,6 +178,7 @@ webSocketClient.onopen = function () {
     });
     const role = hmsStore.getState(selectLocalPeerRole);
     console.log(role)
+    isHostHere=true;
 
     hmsStore.subscribe(renderPeers, selectPeers);
     webSocketClient.send('/startRecording');
@@ -393,13 +409,14 @@ webSocketClient.onopen = function () {
       hmsActions.join({
         userName: username,
         // authToken: guest_key,
-        authToken: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3Nfa2V5IjoiNjMxMmVmZjdiMWU3ODBlNzhjM2NlZDI0IiwidHlwZSI6ImFwcCIsInZlcnNpb24iOjIsInJvb21faWQiOiI2MzE2ZTFjM2IxZTc4MGU3OGMzZDFkY2YiLCJ1c2VyX2lkIjoidTIiLCJyb2xlIjoiZ3Vlc3QiLCJqdGkiOiI4YWYwMjlhYi0zOWY3LTQwOTItYWExYi01NTIxMWZjNDAxODgiLCJleHAiOjE2NjUwNzgxNTAsImlhdCI6MTY2NDk5MTc1MCwibmJmIjoxNjY0OTkxNzUwfQ.LcJAuJBZ7EMWmf1FDgARBCV2rnv6H9JlMR1SKdVc_28',
+        authToken: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3Nfa2V5IjoiNjMxMmVmZjdiMWU3ODBlNzhjM2NlZDI0IiwidHlwZSI6ImFwcCIsInZlcnNpb24iOjIsInJvb21faWQiOiI2MzE2ZTFjM2IxZTc4MGU3OGMzZDFkY2YiLCJ1c2VyX2lkIjoidTIiLCJyb2xlIjoiZ3Vlc3QiLCJqdGkiOiI2MmM5MzIxOS0xZjczLTRhZTQtOGNmOS02OWQ4NWQ2YzZmYzQiLCJleHAiOjE2NjUxNjY1NzYsImlhdCI6MTY2NTA4MDE3NiwibmJmIjoxNjY1MDgwMTc2fQ.POa8Il_FcLeneYu7ApV37cczoKNQrjNlsMn9LbsYBAk',
         settings: {
           isAudioMuted: true,
           isVideoMuted: true
         },
         rememberDeviceSelection: false,
       });
+      isGuesthere=true;
       console.log('joined in as Guest also!!!');
     }
 

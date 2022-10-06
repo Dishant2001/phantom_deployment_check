@@ -368,6 +368,17 @@ button{
     border-radius: 25px;
 }
 
+#announcement-mssg{
+    display: none;
+    position: absolute;
+    top: 60%;
+    background-color: #284b54;
+    width: 60%;
+    aspect-ratio: 20/1;
+    margin: auto;
+
+}
+
 /* .controls{
     position: absolute;
     top:82%;
