@@ -53,6 +53,61 @@
     </div>
 
 
+    <div class="camera-start" id="camera-start">
+        <p>The camera is starting...</p>
+        <p>You will be able to start taking Walk-In interviews very soon</p>
+    </div>
+
+    <div id="candidate-review-1" class="candidate-review-1">
+       <div class="review-conts">
+        <p class="review-question">1. What is your decision for this candidate ?</p>
+        <p><span>Shortlisted | </span><span>Rejected | </span><span>On-Hold | </span><span>I will share the feedback later</span></p>
+       </div>
+       <div class="review-conts">
+        <p class="review-question">2. How do your rate this candidate, on the Scale of 1-5 ?</p>
+        <p class="rate">
+            <input type="radio" id="star5" name="rate" value="5" />
+    <label for="star5" title="text">5 stars</label>
+    <input type="radio" id="star4" name="rate" value="4" />
+    <label for="star4" title="text">4 stars</label>
+    <input type="radio" id="star3" name="rate" value="3" />
+    <label for="star3" title="text">3 stars</label>
+    <input type="radio" id="star2" name="rate" value="2" />
+    <label for="star2" title="text">2 stars</label>
+    <input type="radio" id="star1" name="rate" value="1" />
+    <label for="star1" title="text">1 star</label>
+        </p>
+       </div>
+       <div class="review-conts">
+        <p class="review-question">3. Can we share your decision (Question 1 and 2) with the candidate ?</p>
+        <p><span>Yes | </span><span>No</span></p>
+       </div>
+       <div class="review-conts">
+        <button id="review-next">Next</button>
+       </div> 
+    </div>
+
+    <div id="candidate-review-2" class="candidate-review-1">
+        <div class="review-conts">
+         <p class="review-question">4. Please share your remarks about this candidate</p>
+         <p><span>This is private to your company It is acessible to you & your colleagues anytime they appear in future for the interview</span></p>
+         <input type="text" name="remarks" id="remarks">
+        </div>
+        <div class="review-conts">
+         <p class="review-question">5. Can this candidate give interview again for this position ?</p>
+         <p><span>Yes | </span><span>Not for 6 months | </span><span>Not for a Year | </span><span>Never</span></p>
+        </div>
+        <div class="review-conts">
+         <p class="review-question">6. Can we share the video recordings of the interview with the candidate ?</p>
+         <p><span>Candidates use this to prepare for the future</span></p>
+         <p><span>Yes, with unlimited replays | </span><span>Yes with one replay only | </span><span>No</span></p>
+        </div>
+        <div class="review-conts">
+         <button id="review-submit">Submit Feedback</button>
+        </div> 
+     </div>
+
+
     <div class="hostContainer" id="hostContainer">
         <!-- <div class="controls">
             <div id="setting"></div>
@@ -107,6 +162,10 @@
 
     <div class="queue-closed" id="queue-closed">
         <p>Host has temporarily closed the Q</p>
+    </div>
+
+    <div class="coffee" id="coffee">
+
     </div>
 
     <div class="queue" id="queue">

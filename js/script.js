@@ -30,9 +30,13 @@ const confCont = document.getElementById('confirm-cont');
 const announcementScreen = document.getElementById('announce-mssg');
 const announcementReview = document.getElementById('announce-next');
 const queueClosedMssg = document.getElementById('queue-closed');
+const cameraScreenStart = document.getElementById('camera-start');
 const recVideo = document.getElementById('recorded-video');
 
 const mssgCont = document.getElementById("announcement-mssg");
+
+const reviewPage1 = document.getElementById('candidate-review-1');
+const reviewPage2 = document.getElementById('candidate-review-2')
 
 // const muteAud = document.getElementById("mute-aud");
 // const muteVid = document.getElementById("mute-vid");
@@ -48,6 +52,7 @@ var screenOverlay = false;
 
 
 const webSocketClient = new WebSocket("wss://3.137.162.168:5000");
+// const webSocketClient = new WebSocket("ws://localhost:5000");
 
 webSocketClient.onclose = function () {
   console.log("Connection closed!");
@@ -235,9 +240,15 @@ webSocketClient.onopen = function () {
     const role = hmsStore.getState(selectLocalPeerRole);
     console.log(role)
     isHostHere = true;
-
-    hmsStore.subscribe(renderPeers, selectPeers);
-    webSocketClient.send('/startRecording');
+    peersContainer.style.display="none";
+    cameraScreenStart.style.display="flex";
+    setTimeout(()=>{
+      cameraScreenStart.style.display="none";
+      peersContainer.style.display="block";
+      hmsStore.subscribe(renderPeers, selectPeers);
+      webSocketClient.send('/startRecording');
+    },5000);
+    
 
     //   async function start(){
     //     console.log('entered inside');
@@ -587,7 +598,7 @@ webSocketClient.onopen = function () {
         h(
           "img",
           {
-            src: "img/chat.png",
+            src: "img/chat-1.png",
             style: "margin:auto;width:50%;"
           }
         )
@@ -628,19 +639,6 @@ webSocketClient.onopen = function () {
       h(
         "div",
         {
-          id: "chat"
-        },
-        h(
-          "img",
-          {
-            src: "img/chat.png",
-            style: "margin:auto;width:50%;"
-          }
-        )
-      ),
-      h(
-        "div",
-        {
           id: "q-close"
         },
         h(
@@ -660,6 +658,19 @@ webSocketClient.onopen = function () {
           "img",
           {
             src: "img/coffee.png",
+            style: "margin:auto;width:50%;"
+          }
+        )
+      ),
+      h(
+        "div",
+        {
+          id: "chat"
+        },
+        h(
+          "img",
+          {
+            src: "img/chat.png",
             style: "margin:auto;width:50%;"
           }
         )
@@ -774,8 +785,11 @@ webSocketClient.onopen = function () {
           buttonControl();
 
           document.getElementById('remove-person').addEventListener('click', async () => {
+            var remPer = document.getElementById('remove-person');
+            remPer.setAttribute("disabled",false);
             await hmsActions.removePeer(ele.id, '');
-            webSocketClient.send('pop');
+            // webSocketClient.send(`remove/${ele.name}`);
+            // webSocketClient.send('pop');
           });
 
           document.getElementById('q-close').addEventListener('click', () => {
@@ -791,7 +805,9 @@ webSocketClient.onopen = function () {
           });
 
           document.getElementById('add-person').addEventListener('click',()=>{
-            webSocketClient.send('pop');
+            var addPer = document.getElementById('add-person');
+            addPer.setAttribute('disabled',true);
+            // webSocketClient.send('pop');
           });
 
           document.getElementById('coffee-break').addEventListener('click', () => {
@@ -885,8 +901,11 @@ webSocketClient.onopen = function () {
         buttonControl();
 
         document.getElementById('remove-person').addEventListener('click', async () => {
-          await hmsActions.removePeer(ele.id, '');
-          webSocketClient.send('pop');
+          var remPer = document.getElementById('remove-person');
+          remPer.setAttribute("disabled",true);
+          // await hmsActions.removePeer(ele.id, '');
+          // // webSocketClient.send('pop');
+          // webSocketClient.send(`remove/${ele.name}`);
 
         });
 
@@ -903,7 +922,23 @@ webSocketClient.onopen = function () {
         });
 
         document.getElementById('add-person').addEventListener('click',()=>{
-          webSocketClient.send('pop');
+          screenOverlay = true
+          var addPer = document.getElementById('add-person');
+            addPer.setAttribute('disabled',false);
+          peersContainer.style.display="none";
+          reviewPage1.style.display="flex";
+          var nextButton = document.getElementById('review-next');
+          nextButton.addEventListener('click',()=>{
+            reviewPage1.style.display="none";
+            reviewPage2.style.display="flex";
+            var submitFeed = document.getElementById('review-submit');
+            submitFeed.addEventListener('click',()=>{
+              reviewPage2.style.display="none";
+              peersContainer.style.display="block";
+              screenOverlay = false;
+              webSocketClient.send('pop');
+            });
+          });
         });
 
         document.getElementById('coffee-break').addEventListener('click', () => {
