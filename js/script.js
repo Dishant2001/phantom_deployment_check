@@ -47,7 +47,7 @@ var screenOverlay = false;
 
 
 
-const webSocketClient = new WebSocket("ws://localhost:5000");
+const webSocketClient = new WebSocket("wss://3.137.162.168:5000");
 
 webSocketClient.onclose = function () {
   console.log("Connection closed!");
@@ -225,7 +225,7 @@ webSocketClient.onopen = function () {
     hmsActions.join({
       userName: document.getElementById("name").value,
       // authToken: host_key,
-      authToken: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3Nfa2V5IjoiNjMxMmVmZjdiMWU3ODBlNzhjM2NlZDI0IiwidHlwZSI6ImFwcCIsInZlcnNpb24iOjIsInJvb21faWQiOiI2MzE2ZTFjM2IxZTc4MGU3OGMzZDFkY2YiLCJ1c2VyX2lkIjoidTEiLCJyb2xlIjoiaG9zdCIsImp0aSI6ImRiNDIzNDY4LTViNjItNDAwNC04NGE0LTNjMTQzMzA3OTY5OCIsImV4cCI6MTY2NTI5MjI2NSwiaWF0IjoxNjY1MjA1ODY1LCJuYmYiOjE2NjUyMDU4NjV9.mQc4gxAVa6HeMAE0FecE8lPZ9gA_1eeV0C_R9UBioHM",
+      authToken: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3Nfa2V5IjoiNjMxMmVmZjdiMWU3ODBlNzhjM2NlZDI0IiwidHlwZSI6ImFwcCIsInZlcnNpb24iOjIsInJvb21faWQiOiI2MzE2ZTFjM2IxZTc4MGU3OGMzZDFkY2YiLCJ1c2VyX2lkIjoidTEiLCJyb2xlIjoiaG9zdCIsImp0aSI6Ijc2ZDI3NDI4LWQ3MTAtNDYxMS04MWQzLTdiZjE1NThlZjRlZCIsImV4cCI6MTY2NTM4NTcxNiwiaWF0IjoxNjY1Mjk5MzE2LCJuYmYiOjE2NjUyOTkzMTZ9.UcdgAOxkY1DT7ohfYmvzPU9kyfiuwrZCP4KAxZ_Tl90",
       settings: {
         isAudioMuted: false,
         isVideoMuted: false
@@ -477,7 +477,7 @@ webSocketClient.onopen = function () {
       hmsActions.join({
         userName: username,
         // authToken: guest_key,
-        authToken: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3Nfa2V5IjoiNjMxMmVmZjdiMWU3ODBlNzhjM2NlZDI0IiwidHlwZSI6ImFwcCIsInZlcnNpb24iOjIsInJvb21faWQiOiI2MzE2ZTFjM2IxZTc4MGU3OGMzZDFkY2YiLCJ1c2VyX2lkIjoidTIiLCJyb2xlIjoiZ3Vlc3QiLCJqdGkiOiI1ZjM0YjkxNy1kMTUxLTQ4MmUtODRiYS1jZmU2OWQwNDUyMGYiLCJleHAiOjE2NjUyOTIyNjUsImlhdCI6MTY2NTIwNTg2NSwibmJmIjoxNjY1MjA1ODY1fQ.cDwm_SkunZIlmo_pCDf9lZDvKO2Q_KfpbauaU6ju59g',
+        authToken: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3Nfa2V5IjoiNjMxMmVmZjdiMWU3ODBlNzhjM2NlZDI0IiwidHlwZSI6ImFwcCIsInZlcnNpb24iOjIsInJvb21faWQiOiI2MzE2ZTFjM2IxZTc4MGU3OGMzZDFkY2YiLCJ1c2VyX2lkIjoidTIiLCJyb2xlIjoiZ3Vlc3QiLCJqdGkiOiI5NjFjMTFiOC01MjRlLTRhZWUtOTNjMC1jZTIzNGU4YTQ1MmMiLCJleHAiOjE2NjUzODU3MTYsImlhdCI6MTY2NTI5OTMxNiwibmJmIjoxNjY1Mjk5MzE2fQ.-aMXen7WCTYcdX3e8Dl7jHPrXubogt7-zT0nxe3mr9o',
         settings: {
           isAudioMuted: true,
           isVideoMuted: true
