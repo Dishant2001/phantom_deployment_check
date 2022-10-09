@@ -43,6 +43,7 @@ var camera_stream = null;
 var isHostHere = false, isGuesthere = false;
 
 var queueOpen = true;
+var screenOverlay = false;
 
 
 
@@ -73,7 +74,8 @@ webSocketClient.onopen = function () {
     else{
 
       queueClosedMssg.style.display="none";
-      peersContainer.style.display="block";
+      if(!screenOverlay)
+        peersContainer.style.display="block";
 
       if (mssg_response['break']) {
         var peerContent = h(
@@ -89,7 +91,6 @@ webSocketClient.onopen = function () {
       else if (mssg_response['mssg']!='' && !isGuesthere && !isHostHere) {
         console.log(JSON.parse(message.data)['mssg']);
         var mssg = JSON.parse(message.data)['mssg'];
-  
         var mssgCont = h(
           "div",
           {
@@ -419,23 +420,26 @@ webSocketClient.onopen = function () {
 
     if (chat.getAttribute('listener') !== 'true') {
       chat.addEventListener('click', () => {
+        screenOverlay = true;
         console.log("Chat key pressed!");
         cam.click()
         mic.click();
-        peersContainer.style.display = "none"
+        peersContainer.style.display = "none";
         announcementScreen.style.display = "flex";
 
         document.getElementById('announce').addEventListener('click', () => {
           var mssg = document.getElementById('announcement');
           console.log(mssg.value);
           webSocketClient.send('broadcast/' + mssg.value);
+          peersContainer.style.display = "none";
           announcementScreen.style.display = "none";
           announcementReview.style.display = "flex";
           document.getElementById('mssg-text').innerHTML=mssg.value;
-          peersContainer.style.display = "none";
+          // peersContainer.style.display = "none";
           document.getElementById('announce-ok').addEventListener('click',()=>{
             announcementReview.style.display = "none";
             peersContainer.style.display = "block";
+            screenOverlay = false;
             cam.click()
             mic.click();
 
@@ -836,7 +840,7 @@ webSocketClient.onopen = function () {
         }
       }
 
-      else {
+      else if(isHostHere&&!screenOverlay){
         const peerContainer = h(
           "div",
           {
