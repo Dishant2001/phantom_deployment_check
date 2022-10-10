@@ -237,7 +237,7 @@ button{
 
 
 
-.hostControls{
+.hostControls,.hostControls2{
     position: absolute;
     /* top:100%; */
     left: 100%;
@@ -252,7 +252,7 @@ button{
     /* justify-content: space-aroun; */
     border-radius: 0 15px 15px 0 ;
 }
-.hostControls div{
+.hostControls div,.hostControls2 div{
     display: flex;
     margin: auto;
     /* padding: 1em; */
@@ -262,7 +262,7 @@ button{
     border-radius: 20px;
     cursor: pointer;
 }
-#remove-person{
+#remove-person,#remove-person2{
     background-color: #ff3459;
     /* margin-left: 20%; */
 }
@@ -345,11 +345,12 @@ button{
 }
 
 .camera-start{
+    position: relative;
     display: none;
     z-index: 200;
     flex-direction: column;
     justify-content: space-around;
-    width: 50%;
+    width: 60%;
     aspect-ratio: 16/9;
     padding: min(32px,3vw);
     margin: auto;

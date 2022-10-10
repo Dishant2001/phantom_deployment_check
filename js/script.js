@@ -46,13 +46,15 @@ var media_recorder = null;
 var camera_stream = null;
 var isHostHere = false, isGuesthere = false;
 
+var someoneInQueue = false,checkTurn = 1;
+
 var queueOpen = true;
 var screenOverlay = false;
 
 
 
-const webSocketClient = new WebSocket("wss://3.137.162.168:5000");
-// const webSocketClient = new WebSocket("ws://localhost:5000");
+// const webSocketClient = new WebSocket("wss://3.137.162.168:5000");
+const webSocketClient = new WebSocket("ws://localhost:5000");
 
 webSocketClient.onclose = function () {
   console.log("Connection closed!");
@@ -69,6 +71,11 @@ webSocketClient.onopen = function () {
   var count = 1, nextcount = 1, inQueue = true;
   webSocketClient.onmessage = function (message) {
     var mssg_response=JSON.parse(message.data);
+    if((mssg_response['front']!=null||mssg_response['front']!=undefined)&&checkTurn==1){
+      console.log("Someone is giving interview or had his interview done");
+      someoneInQueue = true;
+      checkTurn = 2;
+    }
 
     if(mssg_response['closed']&&!mssg_response['queue'].includes(username)&&!isHostHere){
       console.log("Queue has been closed! Sorry!");
@@ -226,11 +233,14 @@ webSocketClient.onopen = function () {
   // });
 
   // Joining the room
+
+
+
   joinBtn.addEventListener("click", () => {
     hmsActions.join({
       userName: document.getElementById("name").value,
       // authToken: host_key,
-      authToken: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3Nfa2V5IjoiNjMxMmVmZjdiMWU3ODBlNzhjM2NlZDI0IiwidHlwZSI6ImFwcCIsInZlcnNpb24iOjIsInJvb21faWQiOiI2MzE2ZTFjM2IxZTc4MGU3OGMzZDFkY2YiLCJ1c2VyX2lkIjoidTEiLCJyb2xlIjoiaG9zdCIsImp0aSI6Ijc2ZDI3NDI4LWQ3MTAtNDYxMS04MWQzLTdiZjE1NThlZjRlZCIsImV4cCI6MTY2NTM4NTcxNiwiaWF0IjoxNjY1Mjk5MzE2LCJuYmYiOjE2NjUyOTkzMTZ9.UcdgAOxkY1DT7ohfYmvzPU9kyfiuwrZCP4KAxZ_Tl90",
+      authToken: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3Nfa2V5IjoiNjMxMmVmZjdiMWU3ODBlNzhjM2NlZDI0IiwidHlwZSI6ImFwcCIsInZlcnNpb24iOjIsInJvb21faWQiOiI2MzE2ZTFjM2IxZTc4MGU3OGMzZDFkY2YiLCJ1c2VyX2lkIjoidTEiLCJyb2xlIjoiaG9zdCIsImp0aSI6ImU5MDg0ZmI3LWFlNWMtNDNiZi1hYTQ5LTk4M2U5Yzk5N2JlOSIsImV4cCI6MTY2NTUwMjU3MiwiaWF0IjoxNjY1NDE2MTcyLCJuYmYiOjE2NjU0MTYxNzJ9.pksT83d2NOl97lqumtzcdwwL_MQ1g6e7wjo4KziydlU",
       settings: {
         isAudioMuted: false,
         isVideoMuted: false
@@ -242,6 +252,7 @@ webSocketClient.onopen = function () {
     isHostHere = true;
     peersContainer.style.display="none";
     cameraScreenStart.style.display="flex";
+    // cameraScreenStart.append(hostControls);
     setTimeout(()=>{
       cameraScreenStart.style.display="none";
       peersContainer.style.display="block";
@@ -346,8 +357,8 @@ webSocketClient.onopen = function () {
       if (data && username == data.front) {
         username = '<none>';
         inQueue = false;
-        if(mssg_response['next']==null)
-          webSocketClient.send('pop');
+        // if(mssg_response['next']==null)
+        //   webSocketClient.send('pop');
       }
       else {
         webSocketClient.send('/stopRecording');
@@ -488,7 +499,7 @@ webSocketClient.onopen = function () {
       hmsActions.join({
         userName: username,
         // authToken: guest_key,
-        authToken: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3Nfa2V5IjoiNjMxMmVmZjdiMWU3ODBlNzhjM2NlZDI0IiwidHlwZSI6ImFwcCIsInZlcnNpb24iOjIsInJvb21faWQiOiI2MzE2ZTFjM2IxZTc4MGU3OGMzZDFkY2YiLCJ1c2VyX2lkIjoidTIiLCJyb2xlIjoiZ3Vlc3QiLCJqdGkiOiI5NjFjMTFiOC01MjRlLTRhZWUtOTNjMC1jZTIzNGU4YTQ1MmMiLCJleHAiOjE2NjUzODU3MTYsImlhdCI6MTY2NTI5OTMxNiwibmJmIjoxNjY1Mjk5MzE2fQ.-aMXen7WCTYcdX3e8Dl7jHPrXubogt7-zT0nxe3mr9o',
+        authToken: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3Nfa2V5IjoiNjMxMmVmZjdiMWU3ODBlNzhjM2NlZDI0IiwidHlwZSI6ImFwcCIsInZlcnNpb24iOjIsInJvb21faWQiOiI2MzE2ZTFjM2IxZTc4MGU3OGMzZDFkY2YiLCJ1c2VyX2lkIjoidTIiLCJyb2xlIjoiZ3Vlc3QiLCJqdGkiOiIxYzA4YjU1NS05NzY4LTQzZGUtYWE3My0yNTZjZTAxMTRkZjkiLCJleHAiOjE2NjU1MDI1NzIsImlhdCI6MTY2NTQxNjE3MiwibmJmIjoxNjY1NDE2MTcyfQ.-PisbcMggBqYWO-hpRLlF-N9BnpmeJwSaM3pcQY1T0E',
         settings: {
           isAudioMuted: true,
           isVideoMuted: true
@@ -511,8 +522,9 @@ webSocketClient.onopen = function () {
 
     // var video='';
 
-    const videoEnabled = !hmsStore.getState(selectIsLocalVideoEnabled);
-    hmsActions.setLocalVideoEnabled(videoEnabled);
+    // const videoEnabled = !hmsStore.getState(selectIsLocalVideoEnabled);
+    // console.log('Video is: ',videoEnabled);
+    // hmsActions.setLocalVideoEnabled(videoEnabled);
 
 
     const guestContainer = h(
@@ -578,7 +590,7 @@ webSocketClient.onopen = function () {
         {
           id: "video",
           listener: 'false',
-          style: "margin:auto;display: flex;background-color:" + (videoEnabled ? "#FAFAFB;" : "#ff3459;") + "height: 80%;aspect-ratio:1;z-index: 0;border-radius:15px;"
+          style: "margin:auto;display: flex;background-color:" + (true ? "#FAFAFB;" : "#ff3459;") + "height: 80%;aspect-ratio:1;z-index: 0;border-radius:15px;"
         },
         h(
           "img",
@@ -922,23 +934,23 @@ webSocketClient.onopen = function () {
         });
 
         document.getElementById('add-person').addEventListener('click',()=>{
-          screenOverlay = true
           var addPer = document.getElementById('add-person');
-            addPer.setAttribute('disabled',false);
-          peersContainer.style.display="none";
-          reviewPage1.style.display="flex";
-          var nextButton = document.getElementById('review-next');
-          nextButton.addEventListener('click',()=>{
-            reviewPage1.style.display="none";
-            reviewPage2.style.display="flex";
-            var submitFeed = document.getElementById('review-submit');
-            submitFeed.addEventListener('click',()=>{
-              reviewPage2.style.display="none";
-              peersContainer.style.display="block";
-              screenOverlay = false;
-              webSocketClient.send('pop');
+            screenOverlay = true
+              addPer.setAttribute('disabled',false);
+            peersContainer.style.display="none";
+            reviewPage1.style.display="flex";
+            var nextButton = document.getElementById('review-next');
+            nextButton.addEventListener('click',()=>{
+              reviewPage1.style.display="none";
+              reviewPage2.style.display="flex";
+              var submitFeed = document.getElementById('review-submit');
+              submitFeed.addEventListener('click',()=>{
+                reviewPage2.style.display="none";
+                peersContainer.style.display="block";
+                screenOverlay = false;
+                webSocketClient.send('pop');
+              });
             });
-          });
         });
 
         document.getElementById('coffee-break').addEventListener('click', () => {
