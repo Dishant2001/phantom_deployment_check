@@ -165,7 +165,7 @@ button{
     z-index: -100;
     width: 60%;
     /* margin-top: 4em; */
-    margin-bottom: min(5vw,10vh);
+    /* margin-bottom: min(5vw,10vh); */
     object-fit: cover;
     z-index: -100;
     aspect-ratio: 16/9;
@@ -278,6 +278,7 @@ button{
     display: flex;
     flex-direction: row;
     margin: auto;
+    margin-bottom:min(5vw,10vh) ;
     width: 60%;
     margin-top: 20px;
     justify-content: center;
@@ -402,24 +403,28 @@ button{
 }
 
 #announcement-mssg{
+    /* position: absolute; */
+    /* top: 90%; */
+    /* bottom: 0%; */
     display: flex;
     padding: min(15px,1.5vw);
     z-index: 200;
-    position: absolute;
+    /* position: absolute; */
     flex-direction: row;
     justify-content: space-evenly;
-    top: min(65vh,60vw);
-    background-color: #F1F4FB;
+    /* top: min(65vh,60vw); */
+    background-color: #f1f4fb;
     border-radius: 20px;
     width: 50%;
     aspect-ratio: 20/3;
     margin: auto;
+    margin-top: -20%;
 
     font-family: 'Manrope', sans-serif;
     font-style: normal;
     font-weight: 500;
     text-align: center;
-    font-size: 18px;
+    font-size: min(15px,1.5vw)
 
 }
 
@@ -494,6 +499,113 @@ button{
 .rate > input:checked ~ label:hover ~ label,
 .rate > label:hover ~ input:checked ~ label {
     color: #c59b08;
+}
+
+.candidate-queue-btn{
+    display: none;
+    flex-direction: row;
+    width: 60%;
+    margin: auto;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.left-btn1,.left-btn2{
+    width: 30%;
+    margin: auto;
+}
+
+#left-btn1,#left-btn2{
+    width: 100%;
+    background-color: #36f599;
+    color: #000000;
+    font-family: 'Manrope', sans-serif;
+    font-size: min(12px,1.2vw);
+    padding-left: min(45px,5vw);
+    padding-right: min(45px,5vw);
+    padding-top: min(15px,1vw);
+    padding-bottom: min(15px,1vw);
+    outline: none;
+    border: none;
+    cursor: pointer;
+    border-radius: 25px;
+}
+
+#right-btn{
+    width: 50%;
+    margin: auto;
+    margin-right: 0;
+    background-color: #4c67f4;
+    color: #ffffff;
+    text-align: center;
+    font-family: 'Manrope', sans-serif;
+    font-size: min(12px,1.2vw);
+    padding-left: min(45px,5vw);
+    padding-right: min(45px,5vw);
+    padding-top: min(15px,1vw);
+    padding-bottom: min(15px,1vw);
+    outline: none;
+    border: none;
+    border-radius: 25px;
+}
+
+
+.candidate-queue-btn2{
+    display: none;
+    flex-direction: row;
+    width: 60%;
+    margin: auto;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.left-btn1,.left-btn2{
+    width: 30%;
+    margin: auto;
+}
+
+#hi-btn{
+    width: 100%;
+    background-color: #36f599;
+    color: #000000;
+    font-family: 'Manrope', sans-serif;
+    font-size: min(12px,1.2vw);
+    padding-left: min(45px,5vw);
+    padding-right: min(45px,5vw);
+    padding-top: min(15px,1vw);
+    padding-bottom: min(15px,1vw);
+    outline: none;
+    border: none;
+    cursor: pointer;
+    border-radius: 25px;
+}
+
+#hi-btn img{
+    width: 25%;
+    display: inline;
+    margin: auto;
+}
+
+#right-btn2{
+    width: 50%;
+    margin: auto;
+    margin-right: 0;
+    background-color: #4c67f4;
+    color: #ffffff;
+    text-align: center;
+    font-family: 'Manrope', sans-serif;
+    font-size: min(12px,1.2vw);
+    padding-left: min(45px,5vw);
+    padding-right: min(45px,5vw);
+    padding-top: min(15px,1vw);
+    padding-bottom: min(15px,1vw);
+    outline: none;
+    border: none;
+    border-radius: 25px;
+}
+
+#right-btn2 span{
+    font-weight: 500;
 }
 
 /* .controls{
