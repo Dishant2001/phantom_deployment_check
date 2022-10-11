@@ -387,7 +387,7 @@ button{
     width: 80%;
 }
 
-#announce,#announce-ok,#review-next,#review-submit{
+#announce,#announce-ok,#review-next,#review-submit,#submit-feedback{
     background-color: #4c67f4;
     color: #FFFFFF;
     font-family: 'Manrope', sans-serif;
@@ -464,6 +464,61 @@ button{
     color: #1c2541;
 }
 
+
+.leaveQ{
+    display: none;
+    z-index: 200;
+    flex-direction: column;
+    justify-content: flex-start;
+    width: 50%;
+    aspect-ratio: 16/9;
+    padding: min(32px,3vw);
+    margin: auto;
+    border-radius: 24px;
+    background-color: #36F599;
+    font-family: 'Manrope', sans-serif;
+    font-size: min(15px,1.5vw);
+}
+
+.leaveQ-item{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    margin: auto;
+    width: 100%;
+}
+
+.leaveQ-inner-item{
+    padding: min(5px,1vw);
+    padding-left:0;
+}
+
+.leaveQ-item span{
+    font-weight: 700;
+    display: inline;
+}
+
+.alert{
+    font-weight: 700;
+}
+
+.leaveQ-inner-item button{
+    display: inline-block;
+    /* margin: auto; */
+    margin-right:min(5px,1vw) ;
+    background-color: #ffffff;
+    border: none;
+    outline: none;
+    border-radius: min(7px,1vw);
+    font-size: min(12px,1.2vw);
+    padding-left: min(45px,5vw);
+    padding-right: min(45px,5vw);
+    padding-top: min(7px,1vw);
+    padding-bottom: min(7px,1vw);
+}
+
+
+
 .rate {
     /* float: left; */
     height: min(15px,1.5vw);
@@ -500,6 +555,69 @@ button{
 .rate > label:hover ~ input:checked ~ label {
     color: #c59b08;
 }
+
+
+
+.candidate-feedback-1{
+    display: none;
+    z-index: 200;
+    flex-direction: column;
+    justify-content: flex-start;
+    width: 50%;
+    aspect-ratio: 16/9;
+    padding: min(32px,3vw);
+    margin: auto;
+    border-radius: 24px;
+    background-color: #36F599;
+    font-family: 'Manrope', sans-serif;
+    font-style: normal;
+    font-size: min(13px,1.3vw);
+}
+
+.feedback-para{
+    font-weight: 700;
+}
+
+.feedback-question{
+    
+    font-weight:600 ;
+    /* text-align: center; */
+    
+    color: #1c2541;
+}
+
+.feedback-conts{
+    margin: auto;
+    width: 100%;
+}
+
+.small{
+    font-size:min(10px,1vw) ;
+}
+
+.feedback-conts span{
+    font-family: 'Manrope', sans-serif;
+    font-style: normal;
+    font-weight: 600;
+    /* text-align: center; */
+    font-size: min(13px,1.3vw);
+    color: #1c2541;
+}
+
+#feedback-textarea{
+    padding: min(15px,1.5vw);
+    outline: none;
+    border: none;
+    border-radius: min(4px,1vw);
+    width: 80%;
+    font-size: min(15px,1.5vw);
+}
+
+#candidate-feedback-2{
+    justify-content: space-around;
+}
+
+
 
 .candidate-queue-btn{
     display: none;

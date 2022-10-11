@@ -42,6 +42,10 @@ const queueBtns = document.getElementById('candidate-queue-btn');
 
 const queueBtns2 = document.getElementById('candidate-queue-btn2');
 
+const feedbackCont = document.getElementById('candidate-feedback-1')
+
+const leaveQ = document.getElementById('leaveQ');
+
 // const muteAud = document.getElementById("mute-aud");
 // const muteVid = document.getElementById("mute-vid");
 // const controls = document.getElementById("controls");
@@ -71,6 +75,7 @@ webSocketClient.onopen = function () {
 
   var data;
   var username = '<none>';
+  var feedback_check_username = "<none>";
   var queue;
   var count = 1, nextcount = 1, inQueue = false;
 
@@ -83,6 +88,21 @@ webSocketClient.onopen = function () {
       console.log("Someone is giving interview or had his interview done");
       someoneInQueue = true;
       checkTurn = 2;
+    }
+
+    if(!isHostHere&&mssg_response['recentCandidate']==feedback_check_username){
+      screenOverlay = true;
+      feedback_check_username = "<none>";
+      username = "<none>";
+      peersContainer.style.display = "none";
+      feedbackCont.style.display = "flex";
+      const submitFeedbackBtn = document.getElementById('submit-feedback');
+      submitFeedbackBtn.addEventListener('click',(event)=>{
+        event.stopImmediatePropagation();
+        var feedbackCont2 = document.getElementById('candidate-feedback-2');
+        feedbackCont.style.display = "none";
+        feedbackCont2.style.display = "flex";
+      });
     }
 
     // if (mssg_response['closed'] && !mssg_response['queue'].includes(username) && !isHostHere) {
@@ -291,7 +311,26 @@ webSocketClient.onopen = function () {
             leftBtn2.style.display="none";
             leftBtn1.addEventListener('click',(event)=>{
               event.stopImmediatePropagation();
-              
+              screenOverlay = true;
+              peersContainer.style.display="none";
+              leaveQ.style.display="flex";
+              var yesBtn = document.getElementById('leave-yes');
+              var noBtn = document.getElementById('leave-no');
+              yesBtn.addEventListener('click',(event)=>{
+                event.stopImmediatePropagation();
+                var index = data.queue.indexOf(username);
+                webSocketClient.send(`<leave>/${index}`);
+                inQueue = false;
+                username = "<none>";
+                leaveQ.style.display="none";
+                peersContainer.style.display="block";
+              });
+              noBtn.addEventListener('click',(event)=>{
+                event.stopImmediatePropagation();
+                leaveQ.style.display="none";
+                peersContainer.style.display="block";
+              });
+
             });
             if(username==data.next){
               leftBtn1.style.display="block";
@@ -305,6 +344,7 @@ webSocketClient.onopen = function () {
               leftBtn1.style.display="block";
               rightBtn.innerHTML = "Please wait. You are in the queue";
             }
+
           }
           else{
             if(data.closed){
@@ -361,7 +401,7 @@ webSocketClient.onopen = function () {
     hmsActions.join({
       userName: document.getElementById("name").value,
       // authToken: host_key,
-      authToken: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3Nfa2V5IjoiNjMxMmVmZjdiMWU3ODBlNzhjM2NlZDI0IiwidHlwZSI6ImFwcCIsInZlcnNpb24iOjIsInJvb21faWQiOiI2MzE2ZTFjM2IxZTc4MGU3OGMzZDFkY2YiLCJ1c2VyX2lkIjoidTEiLCJyb2xlIjoiaG9zdCIsImp0aSI6ImU5MDg0ZmI3LWFlNWMtNDNiZi1hYTQ5LTk4M2U5Yzk5N2JlOSIsImV4cCI6MTY2NTUwMjU3MiwiaWF0IjoxNjY1NDE2MTcyLCJuYmYiOjE2NjU0MTYxNzJ9.pksT83d2NOl97lqumtzcdwwL_MQ1g6e7wjo4KziydlU",
+      authToken: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3Nfa2V5IjoiNjMxMmVmZjdiMWU3ODBlNzhjM2NlZDI0IiwidHlwZSI6ImFwcCIsInZlcnNpb24iOjIsInJvb21faWQiOiI2MzE2ZTFjM2IxZTc4MGU3OGMzZDFkY2YiLCJ1c2VyX2lkIjoidTEiLCJyb2xlIjoiaG9zdCIsImp0aSI6IjBlMDkyZDgzLTAyZmItNGIxYy1iMzgyLTQyNmNiYmIxZGYzMiIsImV4cCI6MTY2NTU5MzQ3MCwiaWF0IjoxNjY1NTA3MDcwLCJuYmYiOjE2NjU1MDcwNzB9.e0bGdHSjbhh58MjM780Bn0ETzpbfE2dIrcpLpVyZOEI",
       settings: {
         isAudioMuted: true,
         isVideoMuted: false
@@ -446,6 +486,7 @@ webSocketClient.onopen = function () {
   joinBtnGuest.addEventListener('click', async (event) => {
     event.stopImmediatePropagation();
     username = document.getElementById("name").value;
+    feedback_check_username = username;
     // const response = await fetch('http://127.0.0.1:5000/enqueue',{
     //   mode:'cors',
     //   method:'POST',
@@ -479,10 +520,13 @@ webSocketClient.onopen = function () {
       hmsActions.leave();
       console.log('Data.front: ', data.front);
       if (data && username == data.front) {
+        feedback_check_username = username
         username = '<none>';
         inQueue = false;
         // if(mssg_response['next']==null)
         //   webSocketClient.send('pop');
+        webSocketClient.send(`<feedback>/${feedback_check_username}`);
+
       }
       else {
         webSocketClient.send('/stopRecording');
@@ -719,7 +763,7 @@ webSocketClient.onopen = function () {
       hmsActions.join({
         userName: username,
         // authToken: guest_key,
-        authToken: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3Nfa2V5IjoiNjMxMmVmZjdiMWU3ODBlNzhjM2NlZDI0IiwidHlwZSI6ImFwcCIsInZlcnNpb24iOjIsInJvb21faWQiOiI2MzE2ZTFjM2IxZTc4MGU3OGMzZDFkY2YiLCJ1c2VyX2lkIjoidTIiLCJyb2xlIjoiZ3Vlc3QiLCJqdGkiOiIxYzA4YjU1NS05NzY4LTQzZGUtYWE3My0yNTZjZTAxMTRkZjkiLCJleHAiOjE2NjU1MDI1NzIsImlhdCI6MTY2NTQxNjE3MiwibmJmIjoxNjY1NDE2MTcyfQ.-PisbcMggBqYWO-hpRLlF-N9BnpmeJwSaM3pcQY1T0E',
+        authToken: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3Nfa2V5IjoiNjMxMmVmZjdiMWU3ODBlNzhjM2NlZDI0IiwidHlwZSI6ImFwcCIsInZlcnNpb24iOjIsInJvb21faWQiOiI2MzE2ZTFjM2IxZTc4MGU3OGMzZDFkY2YiLCJ1c2VyX2lkIjoidTIiLCJyb2xlIjoiZ3Vlc3QiLCJqdGkiOiJjNjk5YjczYi1kOTkzLTQ5NTUtODIxNi1iNDU3ZTAyODg2NWIiLCJleHAiOjE2NjU1OTM0NzAsImlhdCI6MTY2NTUwNzA3MCwibmJmIjoxNjY1NTA3MDcwfQ.vbqbK5aqAx88hsxKDL-hf_NnsE2lfAdnskpmzUSRAGc',
         settings: {
           isAudioMuted: true,
           isVideoMuted: false
@@ -938,6 +982,7 @@ webSocketClient.onopen = function () {
             var remPer = document.getElementById('remove-person');
             remPer.setAttribute("disabled", false);
             await hmsActions.removePeer(ele.id, '');
+            webSocketClient.send(`<feedback>/${ele.name}`);
             // webSocketClient.send(`remove/${ele.name}`);
             // webSocketClient.send('pop');
           });

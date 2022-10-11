@@ -75,24 +75,44 @@
         </div>
     </div>
 
+
+    <div class="leaveQ" id="leaveQ">
+        <div class="leaveQ-item alert">
+            You are leaving the Queue. You will loose your slot and when you come back, the walkins may be over.
+        </div>
+        <div class="leaveQ-item">
+            <div class="leaveQ-inner-item">
+                Are you sure you want to leave the Q?
+            </div>
+            <div class="leaveQ-inner-item">
+                <button id="leave-yes">Yes</button>
+                <button id="leave-no">No</button>
+            </div>
+        </div>
+        <div class="leaveQ-item">
+            <p>Please note the interview ticket is non-refundable. However you can use the same ticket to give interview in any room on <span>GoodJobs</span>. The tickets are valid forever.</p>
+        </div>
+    </div>
+
+
     <div id="candidate-review-1" class="candidate-review-1">
        <div class="review-conts">
         <p class="review-question">1. What is your decision for this candidate ?</p>
         <p><span>Shortlisted | </span><span>Rejected | </span><span>On-Hold | </span><span>I will share the feedback later</span></p>
        </div>
        <div class="review-conts">
-        <p class="review-question">2. How do your rate this candidate, on the Scale of 1-5 ?</p>
+        <p class="review-question">2. How do you rate this candidate, on the Scale of 1-5 ?</p>
         <p class="rate">
             <input type="radio" id="star5" name="rate" value="5" />
-    <label for="star5" title="text">5 stars</label>
-    <input type="radio" id="star4" name="rate" value="4" />
-    <label for="star4" title="text">4 stars</label>
-    <input type="radio" id="star3" name="rate" value="3" />
-    <label for="star3" title="text">3 stars</label>
-    <input type="radio" id="star2" name="rate" value="2" />
-    <label for="star2" title="text">2 stars</label>
-    <input type="radio" id="star1" name="rate" value="1" />
-    <label for="star1" title="text">1 star</label>
+            <label for="star5" title="text">5 stars</label>
+            <input type="radio" id="star4" name="rate" value="4" />
+            <label for="star4" title="text">4 stars</label>
+            <input type="radio" id="star3" name="rate" value="3" />
+            <label for="star3" title="text">3 stars</label>
+            <input type="radio" id="star2" name="rate" value="2" />
+            <label for="star2" title="text">2 stars</label>
+            <input type="radio" id="star1" name="rate" value="1" />
+            <label for="star1" title="text">1 star</label>
         </p>
        </div>
        <div class="review-conts">
@@ -123,6 +143,51 @@
          <button id="review-submit">Submit Feedback</button>
         </div> 
      </div>
+
+
+
+     <div id="candidate-feedback-1" class="candidate-feedback-1">
+        <div class="feedback-conts">
+         <p class="feedback-para">Your interview is over. Hope you did well! Please share the feedback here</p>
+        </div>
+        <div class="feedback-conts">
+         <p class="feedback-question">1. How do you rate this interviewer, on the Scale of 1-5 ?</p>
+         <p class="rate">
+             <input type="radio" id="star5" name="rate" value="5" />
+             <label for="star5" title="text">5 stars</label>
+             <input type="radio" id="star4" name="rate" value="4" />
+             <label for="star4" title="text">4 stars</label>
+             <input type="radio" id="star3" name="rate" value="3" />
+             <label for="star3" title="text">3 stars</label>
+             <input type="radio" id="star2" name="rate" value="2" />
+             <label for="star2" title="text">2 stars</label>
+             <input type="radio" id="star1" name="rate" value="1" />
+             <label for="star1" title="text">1 star</label>
+         </p>
+        </div>
+        <div class="feedback-conts">
+         <p class="feedback-question">2. Any feedback you have for this company ?</p>
+         <input type="text" name="feedback" id="feedback-textarea" placeholder="Please type your feedback here...">
+        </div>
+        <div class="feedback-conts small">
+            This feedback is confidential and your identity is not shared with anyone.
+        </div>
+        <div class="feedback-conts">
+         <button id="submit-feedback">Submit Feedback</button>
+        </div> 
+     </div>
+     
+     <div class="candidate-feedback-1" id="candidate-feedback-2">
+        <div class="feedback-conts">
+            <p>Thanks for your feedback</p>
+            <p>will you like to help others also find a job?</p>
+        </div>
+        <div class="feedback-conts">
+            <p>Share this room URL with you friends - <span>Email the URL</span> to friends</p>
+            <p>Announce about this walk-in room on social media - <span>Twitter | Instgram | LinkedIn</span></p>
+        </div>
+     </div>
+     
 
 
     <div class="hostContainer" id="hostContainer">
