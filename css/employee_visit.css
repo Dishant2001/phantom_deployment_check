@@ -831,6 +831,7 @@ button{
 #open-room{
     font-weight: 600;
     text-decoration: underline;
+    cursor: pointer;
 }
 
 /* .controls{

@@ -287,23 +287,25 @@ webSocketClient.onopen = function () {
             let x = Math.floor(Math.random() * colors.length);
             console.log(colors[x]);
             var ith_guest = queue[i];
-            console.log(ith_guest);
-            const queueEle = h(
-              "div",
-              {
-                class: "queue-ele",
-                style: "background-color:" + colors[x] + ";"
-              },
-              h(
-                "span",
+            if(ith_guest!='<checkpoint>'){
+              console.log(ith_guest);
+              const queueEle = h(
+                "div",
                 {
-
+                  class: "queue-ele",
+                  style: "background-color:" + colors[x] + ";"
                 },
-                ith_guest[0].toUpperCase()
-              )
-            );
-
-            queueContainer.append(queueEle);
+                h(
+                  "span",
+                  {
+  
+                  },
+                  ith_guest[0].toUpperCase()
+                )
+              );
+  
+              queueContainer.append(queueEle);
+            }
           }
         }
 
@@ -541,7 +543,7 @@ webSocketClient.onopen = function () {
       }
       else {
 
-        if(!isBreak){
+        if(isBreak){
           hmsActions.leave();
           webSocketClient.send('/stopRecording');
           try {
@@ -582,6 +584,15 @@ webSocketClient.onopen = function () {
   
   
           });
+
+          leaveNo.addEventListener('click',(event)=>{
+            event.stopImmediatePropagation();
+            closeAlert1.style.display = "none";
+            screenOverlay = false;
+            peersContainer.style.display = "block";
+          });
+
+
         }
 
       }
@@ -1334,6 +1345,7 @@ webSocketClient.onopen = function () {
               coffee2.style.display = "flex";
               var countdown = document.getElementById('countdown');
               countdown.innerText = currentVal;
+              isBreak = true;
               leaveRoom();
               var openRoom = document.getElementById('open-room');
               openRoom.addEventListener('click',(event)=>{
@@ -1341,11 +1353,11 @@ webSocketClient.onopen = function () {
                 coffee2.style.display = "none";
                 peersContainer.style.display = "none";
                 webSocketClient.send('/breakOver');
-                isBreak = true;
+                isBreak = false;
                 joinBtn.click();
                 setTimeout(()=>{
                   screenOverlay = false;
-                },5000);
+                },1000);
               });
 
             });
