@@ -387,7 +387,7 @@ button{
     width: 80%;
 }
 
-#announce,#announce-ok,#review-next,#review-submit,#submit-feedback{
+#announce,#announce-ok,#review-next,#review-submit,#submit-feedback,#take-break{
     background-color: #4c67f4;
     color: #FFFFFF;
     font-family: 'Manrope', sans-serif;
@@ -724,6 +724,113 @@ button{
 
 #right-btn2 span{
     font-weight: 500;
+}
+
+.close-room-alert{
+    display: none;
+    z-index: 200;
+    flex-direction: column;
+    justify-content: center;
+    width: 50%;
+    aspect-ratio: 16/9;
+    padding: min(32px,3vw);
+    margin: auto;
+    border-radius: 24px;
+    background-color: #36F599;
+    font-family: 'Manrope', sans-serif;
+    font-style: normal;
+    font-size: min(32px,3vw);
+}
+
+#close-yes,#close-no{
+    cursor: pointer;
+}
+
+.close-alert-item{
+    text-align: center;
+}
+
+.close-alert-item span{
+    font-weight: 600;
+}
+
+#room-open{
+    font-weight: 600;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+
+.coffee{
+    display: none;
+    z-index: 200;
+    flex-direction: column;
+    justify-content: flex-start;
+    width: 50%;
+    aspect-ratio: 16/9;
+    padding: min(32px,3vw);
+    margin: auto;
+    border-radius: 24px;
+    background-color: #36F599;
+    font-family: 'Manrope', sans-serif;
+    font-style: normal;
+    font-size: min(13px,1.3vw);
+}
+
+.coffee-item{
+    /* margin: auto; */
+    width: 100%;
+    padding-top: min(10px,1vw);
+    padding-bottom: min(10px,1vw);
+}
+
+.coffee-item img{
+    width: min(30px,3vw);
+}
+
+#time{
+    padding-left: min(32px,5vw);
+    padding-right: min(32px,5vw);
+    padding-top: min(15px,1vw);
+    padding-bottom: min(15px,1vw);
+    border: none;
+    border-radius: min(10px,1vw);
+    font-size: min(15px,1.5vw);
+    font-weight: 600;
+}
+
+#plus5,#minus5{
+    margin: auto;
+    background:none;
+    border: none;
+    font-size: min(45px,5vw);
+    font-weight: 700;
+    padding: min(15px,1.5vw);
+    color: #4C67F4;
+    cursor: pointer;
+}
+
+#plus5 span{
+    margin: auto;
+    vertical-align: middle;
+}
+#minus5 span{
+    margin: auto;
+    vertical-align: middle;
+}
+
+#coffee-2{
+    font-size: min(20px,2vw);
+    /* text-align: center; */
+}
+
+.coffee-item span{
+    font-weight: 600;
+}
+
+#open-room{
+    font-weight: 600;
+    text-decoration: underline;
 }
 
 /* .controls{

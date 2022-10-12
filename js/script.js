@@ -46,6 +46,12 @@ const feedbackCont = document.getElementById('candidate-feedback-1')
 
 const leaveQ = document.getElementById('leaveQ');
 
+const coffee1 = document.getElementById('coffee-1');
+const coffee2 = document.getElementById('coffee-2');
+
+const closeAlert1 = document.getElementById('close-alert1');
+const closeAlert2 = document.getElementById('close-alert2');
+
 // const muteAud = document.getElementById("mute-aud");
 // const muteVid = document.getElementById("mute-vid");
 // const controls = document.getElementById("controls");
@@ -58,6 +64,9 @@ var someoneInQueue = false, checkTurn = 1;
 
 var queueOpen = true;
 var screenOverlay = false;
+
+var isBreak = false;
+
 
 
 
@@ -119,16 +128,16 @@ webSocketClient.onopen = function () {
       if (!screenOverlay)
         peersContainer.style.display = "block";
 
-      if (mssg_response['break']) {
-        var peerContent = h(
-          "img",
-          {
-            style: "width:100%;aspect-ratio:16/9;z-index:200;",
-            src: "img/coffee.png"
-          },
-        );
-        // peersContainer.innerHTML="";
-        coffeeCont.append(peerContent);
+      if (mssg_response['break']&&!isHostHere) {
+        // var peerContent = h(
+        //   "img",
+        //   {
+        //     style: "width:100%;aspect-ratio:16/9;z-index:200;",
+        //     src: "img/coffee.png"
+        //   },
+        // );
+        // // peersContainer.innerHTML="";
+        // coffeeCont.append(peerContent);
       }
       else if (mssg_response['mssg'] != '' && !isGuesthere && !isHostHere) {
         console.log(JSON.parse(message.data)['mssg']);
@@ -517,9 +526,11 @@ webSocketClient.onopen = function () {
   // Leaving the room
   function leaveRoom() {
     if (leave_count > 0) {
-      hmsActions.leave();
+
+
       console.log('Data.front: ', data.front);
       if (data && username == data.front) {
+        hmsActions.leave();
         feedback_check_username = username
         username = '<none>';
         inQueue = false;
@@ -529,12 +540,50 @@ webSocketClient.onopen = function () {
 
       }
       else {
-        webSocketClient.send('/stopRecording');
-        try {
-          media_recorder.stop();
-        } catch (error) {
-          console.log(error);
+
+        if(!isBreak){
+          hmsActions.leave();
+          webSocketClient.send('/stopRecording');
+          try {
+            media_recorder.stop();
+          } catch (error) {
+            console.log(error);
+          }
         }
+
+        else{
+          screenOverlay = true;
+          peersContainer.style.display = "none";
+          closeAlert1.style.display = "flex";
+          const leaveYes = document.getElementById('close-yes');
+          const leaveNo = document.getElementById('close-no');
+          leaveYes.addEventListener('click',(event)=>{
+            event.stopImmediatePropagation();
+            hmsActions.leave();
+            webSocketClient.send('/stopRecording');
+            try {
+              media_recorder.stop();
+            } catch (error) {
+              console.log(error);
+            }
+            closeAlert1.style.display = "none";
+            closeAlert2.style.display = "flex";
+            const roomOpen = document.getElementById('room-open');
+            roomOpen.addEventListener('click',(event)=>{
+              event.stopImmediatePropagation();
+              closeAlert2.style.display = "none";
+                  peersContainer.style.display = "none";
+                  joinBtn.click();
+                  setTimeout(()=>{
+                    screenOverlay = false;
+                  },5000);
+                  screenOverlay = false;
+            });
+  
+  
+          });
+        }
+
       }
 
       //   async function stop() {
@@ -1044,16 +1093,54 @@ webSocketClient.onopen = function () {
 
           document.getElementById('coffee-break').addEventListener('click', (event) => {
             event.stopImmediatePropagation();
-            if (!coffeeBreak) {
-              coffeeBreak = true;
-              webSocketClient.send('/coffeeBreak');
-              coffeeCont.style.display = "block";
-            }
-            else {
-              coffeeBreak = false;
-              webSocketClient.send('/breakOver');
-              coffeeCont.style.display = "none";
-            }
+            document.getElementById('coffee-break').setAttribute('disabled',true);
+            // screenOverlay = true;
+            // peersContainer.style.display = "none";
+            // coffee1.style.display = "flex";
+            // const timesetBtn = document.getElementById('timeset');
+            // const plus5Btn = document.getElementById('plus5');
+            // const minus5Btn = document.getElementById('minus5');
+            // var currentVal = 10;
+            // plus5Btn.addEventListener('click',(event)=>{
+            //   event.stopImmediatePropagation();
+            //   currentVal = parseInt(timesetBtn.innerText);
+            //   if(currentVal<=55)
+            //   {
+            //     timesetBtn.innerText = currentVal + 5;
+            //     currentVal+=5;
+            //   }
+            // });
+
+            // minus5Btn.addEventListener('click',(event)=>{
+            //   event.stopImmediatePropagation();
+            //   currentVal = parseInt(timesetBtn.innerText);
+            //   if(currentVal>=15){
+            //     timesetBtn.innerText = currentVal - 5;
+            //     currentVal-=5;
+            //   }
+            // });
+
+            // const takeBreak = document.getElementById('take-break')
+            // takeBreak.addEventListener('click',(event)=>{
+            //   event.stopImmediatePropagation();
+            //   webSocketClient.send('/coffeeBreak');
+            //   coffee1.style.display = "none";
+            //   coffee2.style.display = "flex";
+            //   var countdown = document.getElementById('countdown');
+            //   countdown.innerText = currentVal;
+
+            // });
+
+            // if (!coffeeBreak) {
+            //   coffeeBreak = true;
+            //   webSocketClient.send('/coffeeBreak');
+              
+            // }
+            // else {
+            //   coffeeBreak = false;
+            //   webSocketClient.send('/breakOver');
+            //   coffeeCont.style.display = "none";
+            // }
           });
 
         }
@@ -1212,16 +1299,56 @@ webSocketClient.onopen = function () {
 
         document.getElementById('coffee-break').addEventListener('click', (event) => {
           event.stopImmediatePropagation();
-          if (!coffeeBreak) {
-            coffeeBreak = true;
-            webSocketClient.send('/coffeeBreak');
-            coffeeCont.style.display = "block";
-          }
-          else {
-            coffeeBreak = false;
-            webSocketClient.send('/breakOver');
-            coffeeCont.style.display = "none";
-          }
+          document.getElementById('coffee-break').setAttribute('disabled',false);
+          screenOverlay = true;
+            peersContainer.style.display = "none";
+            coffee1.style.display = "flex";
+            const timesetBtn = document.getElementById('timeset');
+            const plus5Btn = document.getElementById('plus5');
+            const minus5Btn = document.getElementById('minus5');
+            var currentVal = 10;
+            plus5Btn.addEventListener('click',(event)=>{
+              event.stopImmediatePropagation();
+              currentVal = parseInt(timesetBtn.innerText);
+              if(currentVal<=55)
+              {
+                timesetBtn.innerText = currentVal + 5;
+                currentVal+=5;
+              }
+            });
+
+            minus5Btn.addEventListener('click',(event)=>{
+              event.stopImmediatePropagation();
+              currentVal = parseInt(timesetBtn.innerText);
+              if(currentVal>=15){
+                timesetBtn.innerText = currentVal - 5;
+                currentVal-=5;
+              }
+            });
+
+            const takeBreak = document.getElementById('take-break')
+            takeBreak.addEventListener('click',(event)=>{
+              event.stopImmediatePropagation();
+              webSocketClient.send('/coffeeBreak');
+              coffee1.style.display = "none";
+              coffee2.style.display = "flex";
+              var countdown = document.getElementById('countdown');
+              countdown.innerText = currentVal;
+              leaveRoom();
+              var openRoom = document.getElementById('open-room');
+              openRoom.addEventListener('click',(event)=>{
+                event.stopImmediatePropagation();
+                coffee2.style.display = "none";
+                peersContainer.style.display = "none";
+                webSocketClient.send('/breakOver');
+                isBreak = true;
+                joinBtn.click();
+                setTimeout(()=>{
+                  screenOverlay = false;
+                },5000);
+              });
+
+            });
         });
       }
     }
