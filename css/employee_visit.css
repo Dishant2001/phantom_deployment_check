@@ -834,6 +834,29 @@ button{
     cursor: pointer;
 }
 
+.break-notice{
+    display: none;
+    z-index: 200;
+    flex-direction: column;
+    justify-content: center;
+    width: 50%;
+    aspect-ratio: 16/9;
+    padding: min(32px,3vw);
+    margin: auto;
+    border-radius: 24px;
+    background-color: #36F599;
+    font-family: 'Manrope', sans-serif;
+    font-style: normal;
+    font-size: min(32px,3vw);
+}
+.break-notice-item{
+    text-align: center;
+}
+
+.break-notice-item span{
+    font-weight: 600;
+}
+
 /* .controls{
     position: absolute;
     top:82%;

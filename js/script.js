@@ -42,7 +42,7 @@ const queueBtns = document.getElementById('candidate-queue-btn');
 
 const queueBtns2 = document.getElementById('candidate-queue-btn2');
 
-const feedbackCont = document.getElementById('candidate-feedback-1')
+const feedbackCont = document.getElementById('candidate-feedback-1');
 
 const leaveQ = document.getElementById('leaveQ');
 
@@ -51,6 +51,8 @@ const coffee2 = document.getElementById('coffee-2');
 
 const closeAlert1 = document.getElementById('close-alert1');
 const closeAlert2 = document.getElementById('close-alert2');
+
+const breakNotice = document.getElementById('break-notice');
 
 // const muteAud = document.getElementById("mute-aud");
 // const muteVid = document.getElementById("mute-vid");
@@ -287,7 +289,7 @@ webSocketClient.onopen = function () {
             let x = Math.floor(Math.random() * colors.length);
             console.log(colors[x]);
             var ith_guest = queue[i];
-            if(ith_guest!='<checkpoint>'){
+            
               console.log(ith_guest);
               const queueEle = h(
                 "div",
@@ -305,7 +307,6 @@ webSocketClient.onopen = function () {
               );
   
               queueContainer.append(queueEle);
-            }
           }
         }
 
@@ -318,7 +319,7 @@ webSocketClient.onopen = function () {
           const rightBtn = document.getElementById('right-btn');
           rightBtn.style.backgroundColor = "#4c67f4";
           rightBtn.style.color = "#ffffff";
-          if(inQueue){
+          if(inQueue&&!isGuesthere){
             leftBtn2.style.display="none";
             leftBtn1.addEventListener('click',(event)=>{
               event.stopImmediatePropagation();
@@ -357,6 +358,10 @@ webSocketClient.onopen = function () {
             }
 
           }
+          else if(isGuesthere){
+            leftBtn1.style.display = "none";
+            rightBtn.style.display = "none";
+          }
           else{
             if(data.closed){
               leftBtn1.style.display="none";
@@ -364,7 +369,7 @@ webSocketClient.onopen = function () {
               rightBtn.style.backgroundColor = "#ff3b4e";
               rightBtn.style.color = "#ffffff";
             }
-            else{
+            else if(!isGuesthere){
               queueBtns.style.display="none";
               queueBtns2.style.display="flex";
               const rightBtn2 = document.getElementById('right-btn2');
