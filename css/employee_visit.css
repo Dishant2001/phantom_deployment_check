@@ -248,27 +248,44 @@ button{
     flex-direction: column;
     background-color: #F1F4FB;
     padding: min(1.5vw,1.5vh);
-    justify-content: center;
+    justify-content: space-evenly;
     /* justify-content: space-aroun; */
     border-radius: 0 15px 15px 0 ;
 }
+
+.hostControls2{
+    height: 60%;
+}
+
 .hostControls div,.hostControls2 div{
     display: flex;
     margin: auto;
     /* padding: 1em; */
     width: 90%;
     aspect-ratio: 1/1;
-    background-color: #4C67F4;
     border-radius: 20px;
     cursor: pointer;
 }
-#remove-person,#remove-person2{
-    background-color: #ff3459;
-    /* margin-left: 20%; */
+
+.hostControls div p{
+    font-family: 'Manrope', sans-serif;
+    font-style: normal;
+    font-weight: 600;
+    text-align: center;
+    font-size: min(10px,1vw);
+    margin: auto;
 }
-/* #coffee-break{
-    margin-right: 20%;
-} */
+
+.hostControls2 div p{
+    font-family: 'Manrope', sans-serif;
+    font-style: normal;
+    font-weight: 600;
+    text-align: center;
+    font-size: min(10px,1vw);
+    margin: auto;
+}
+
+
 
 .controls div{
     cursor: pointer;
@@ -351,7 +368,7 @@ button{
     z-index: 200;
     flex-direction: column;
     justify-content: space-around;
-    width: 60%;
+    width: 55%;
     aspect-ratio: 16/9;
     padding: min(32px,3vw);
     margin: auto;

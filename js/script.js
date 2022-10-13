@@ -392,6 +392,29 @@ webSocketClient.onopen = function () {
   };
 
 
+  var tooltip = h(
+    "div",
+    {
+      class:"tooltip",
+      id:"tooltip",
+      style:"display:flex;background-color:#ffffff;position:absolute;top:3%;right:1%;"
+    },
+    h(
+      "span",
+      {
+        style:"float:right;"
+      },
+      "X"
+    ),
+    h(
+      "div",
+      {
+
+      },
+      "content"
+    )
+  );
+
 
 
   var guests = {};
@@ -417,7 +440,7 @@ webSocketClient.onopen = function () {
     hmsActions.join({
       userName: document.getElementById("name").value,
       // authToken: host_key,
-      authToken: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3Nfa2V5IjoiNjMxMmVmZjdiMWU3ODBlNzhjM2NlZDI0IiwidHlwZSI6ImFwcCIsInZlcnNpb24iOjIsInJvb21faWQiOiI2MzE2ZTFjM2IxZTc4MGU3OGMzZDFkY2YiLCJ1c2VyX2lkIjoidTEiLCJyb2xlIjoiaG9zdCIsImp0aSI6IjBlMDkyZDgzLTAyZmItNGIxYy1iMzgyLTQyNmNiYmIxZGYzMiIsImV4cCI6MTY2NTU5MzQ3MCwiaWF0IjoxNjY1NTA3MDcwLCJuYmYiOjE2NjU1MDcwNzB9.e0bGdHSjbhh58MjM780Bn0ETzpbfE2dIrcpLpVyZOEI",
+      authToken: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3Nfa2V5IjoiNjMxMmVmZjdiMWU3ODBlNzhjM2NlZDI0IiwidHlwZSI6ImFwcCIsInZlcnNpb24iOjIsInJvb21faWQiOiI2MzE2ZTFjM2IxZTc4MGU3OGMzZDFkY2YiLCJ1c2VyX2lkIjoidTEiLCJyb2xlIjoiaG9zdCIsImp0aSI6IjcyMDUyNjQyLWUxNDYtNGM3My1hYjg4LWRkZTgzMDVhNWQ2MCIsImV4cCI6MTY2NTc1NjYxNiwiaWF0IjoxNjY1NjcwMjE2LCJuYmYiOjE2NjU2NzAyMTZ9.nOM4c4oj-UFfz4LT2ih1nA-7pQ76GJ2P6Cm8Fg1euQQ",
       settings: {
         isAudioMuted: true,
         isVideoMuted: false
@@ -583,8 +606,8 @@ webSocketClient.onopen = function () {
                   joinBtn.click();
                   setTimeout(()=>{
                     screenOverlay = false;
-                  },5000);
-                  screenOverlay = false;
+                  },1000);
+                  // screenOverlay = false;
             });
   
   
@@ -618,9 +641,11 @@ webSocketClient.onopen = function () {
   // Cleanup if user refreshes the tab or navigates away
   window.onunload = window.onbeforeunload = () => {
     if (leave_count > 0)
-      leaveRoom;
+      leaveRoom();
   };
   leaveBtn.addEventListener("click", leaveRoom);
+
+
 
   // helper function to create html elements
   function h(tag, attrs = {}, ...children) {
@@ -642,7 +667,7 @@ webSocketClient.onopen = function () {
 
   function buttonControl() {
     const mic = document.getElementById('mic');
-    const call = document.getElementById('call');
+    // const call = document.getElementById('call');
     const cam = document.getElementById('video');
     const chat = document.getElementById('chat');
 
@@ -652,7 +677,9 @@ webSocketClient.onopen = function () {
         const audioEnabled = !hmsStore.getState(selectIsLocalAudioEnabled);
         hmsActions.setLocalAudioEnabled(audioEnabled);
         console.log('Audio: ', audioEnabled);
-        mic.style.backgroundColor = audioEnabled ? "#fafafb" : "#ff3459";
+        const mic_img = document.getElementById('mic-img');
+        mic_img.src = audioEnabled?"img/mic.png":"img/mic_red.png";
+        // mic.style.backgroundColor = audioEnabled ? "#fafafb" : "#ff3459";
         mic.setAttribute('listener', 'true');
       });
     }
@@ -662,7 +689,9 @@ webSocketClient.onopen = function () {
         event.stopImmediatePropagation();
         const videoEnabled = !hmsStore.getState(selectIsLocalVideoEnabled);
         hmsActions.setLocalVideoEnabled(videoEnabled);
-        cam.style.backgroundColor = videoEnabled ? "#fafafb" : "#ff3459";
+        const cam_img = document.getElementById('cam-img');
+        cam_img.src = videoEnabled?"img/cam.png":"img/cam_red.png";
+        // cam.style.backgroundColor = videoEnabled ? "#fafafb" : "#ff3459";
         // var color = cam.style.backgroundColor;
         // if(color=="#fafafb")
         //   cam.style.backgroundColor="#ff3459";
@@ -673,13 +702,13 @@ webSocketClient.onopen = function () {
       });
     }
 
-    if (call.getAttribute('listener') !== 'true') {
-      call.addEventListener('click', (event) => {
-        event.stopImmediatePropagation();
-        call.setAttribute('listener', 'true');
-        leaveRoom();
-      });
-    }
+    // if (call.getAttribute('listener') !== 'true') {
+    //   call.addEventListener('click', (event) => {
+    //     event.stopImmediatePropagation();
+    //     call.setAttribute('listener', 'true');
+    //     leaveRoom();
+    //   });
+    // }
 
     // if (chat.getAttribute('listener') !== 'true') {
     //   chat.addEventListener('click', () => {
@@ -730,7 +759,7 @@ webSocketClient.onopen = function () {
     "div",
     {
       class: "controls",
-      style: "position: absolute;top:86%;display: flex;flex-direction: row;justify-content: center;background:none;width: 70%;height: 10%;z-index: 0;"
+      style: "border-radius:min(20px,1.5vw);position: absolute;top:86%;left:3%;display: flex;flex-direction: row;justify-content: center;background-color:#ffffff;width: 20%;height: 10%;z-index: 0;"
     },
     h(
       "div",
@@ -752,41 +781,43 @@ webSocketClient.onopen = function () {
       {
         id: "mic",
         listener: 'false',
-        style: "margin:auto;display: flex;background-color: #FF3459;height: 80%;aspect-ratio:1;z-index: 0;border-radius:15px;"
+        style: "margin:auto;display: flex;background:none;height: 80%;aspect-ratio:1;z-index: 0;border-radius:15px;"
       },
       h(
         "img",
         {
-          src: "img/mic.png",
+          id:"mic-img",
+          src: "img/mic_red.png",
           style: "margin:auto;width:50%;"
         }
       )
     ),
-    h(
-      "div",
-      {
-        id: "call",
-        listener: 'false',
-        style: "margin:auto;display: flex;background-color: #4C67F4;height: 100%;aspect-ratio:1;z-index: 0;border-radius:23px;"
-      },
-      h(
-        "img",
-        {
-          src: "img/receiver.png",
-          style: "margin:auto;width:50%;"
-        }
-      )
-    ),
+    // h(
+    //   "div",
+    //   {
+    //     id: "call",
+    //     listener: 'false',
+    //     style: "margin:auto;display: flex;background-color: #4C67F4;height: 100%;aspect-ratio:1;z-index: 0;border-radius:23px;"
+    //   },
+    //   h(
+    //     "img",
+    //     {
+    //       src: "img/receiver.png",
+    //       style: "margin:auto;width:50%;"
+    //     }
+    //   )
+    // ),
     h(
       "div",
       {
         id: "video",
         listener: 'false',
-        style: "margin:auto;display: flex;background-color:#fafafb;height: 80%;aspect-ratio:1;z-index: 0;border-radius:15px;"
+        style: "margin:auto;display: flex;background:none;height: 80%;aspect-ratio:1;z-index: 0;border-radius:15px;"
       },
       h(
         "img",
         {
+          id:'cam-img',
           src: "img/cam.png",
           style: "margin:auto;width:50%;"
         }
@@ -828,7 +859,7 @@ webSocketClient.onopen = function () {
       hmsActions.join({
         userName: username,
         // authToken: guest_key,
-        authToken: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3Nfa2V5IjoiNjMxMmVmZjdiMWU3ODBlNzhjM2NlZDI0IiwidHlwZSI6ImFwcCIsInZlcnNpb24iOjIsInJvb21faWQiOiI2MzE2ZTFjM2IxZTc4MGU3OGMzZDFkY2YiLCJ1c2VyX2lkIjoidTIiLCJyb2xlIjoiZ3Vlc3QiLCJqdGkiOiJjNjk5YjczYi1kOTkzLTQ5NTUtODIxNi1iNDU3ZTAyODg2NWIiLCJleHAiOjE2NjU1OTM0NzAsImlhdCI6MTY2NTUwNzA3MCwibmJmIjoxNjY1NTA3MDcwfQ.vbqbK5aqAx88hsxKDL-hf_NnsE2lfAdnskpmzUSRAGc',
+        authToken: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3Nfa2V5IjoiNjMxMmVmZjdiMWU3ODBlNzhjM2NlZDI0IiwidHlwZSI6ImFwcCIsInZlcnNpb24iOjIsInJvb21faWQiOiI2MzE2ZTFjM2IxZTc4MGU3OGMzZDFkY2YiLCJ1c2VyX2lkIjoidTIiLCJyb2xlIjoiZ3Vlc3QiLCJqdGkiOiIzNTVhN2UwOS01MTlmLTRhM2EtOTE2NC01NWZjZTE0NGZlMjQiLCJleHAiOjE2NjU3NTY2MTYsImlhdCI6MTY2NTY3MDIxNiwibmJmIjoxNjY1NjcwMjE2fQ.0caskDoucu-yBuV2c2yMfXYlwT5nzOR01CT9Bijkpqs',
         settings: {
           isAudioMuted: true,
           isVideoMuted: false
@@ -874,22 +905,73 @@ webSocketClient.onopen = function () {
           id: "remove-person",
         },
         h(
-          "img",
+          "p",
           {
-            src: "img/out.png",
-            style: "margin:auto;width:50%;"
-          }
+            style:"margin:auto;"
+          },
+          "Evict"
         )
+        // h(
+        //   "img",
+        //   {
+        //     src: "img/out.png",
+        //     style: "margin:auto;width:50%;"
+        //   }
+        // )
       ),
       h(
         "div",
         {
-          id: "add-person"
+          id: "add-person",
+          // style:"background-color: #4C67F4;"
+        },
+        h(
+          "p",
+          {
+            style:"margin:auto;"
+          },
+          "Next"
+        )
+        // h(
+        //   "img",
+        //   {
+        //     src: "img/person.png",
+        //     style: "margin:auto;width:50%;"
+        //   }
+        // )
+      ),
+      h(
+        "div",
+        {
+          id: "q-close",
+          // style:"background-color:"+( queueOpen?"#4C67F4;":"#ff3459;")
+        },
+        h(
+          "p",
+          {
+            id:"q-close-para",
+            style:"margin:auto;"
+          },
+          "Pause"
+        )
+        // h(
+        //   "img",
+        //   {
+        //     src: "img/Q.png",
+        //     style: "margin:auto;width:50%;"
+        //   }
+        // )
+      ),
+      h(
+        "div",
+        {
+          id: "chat",
+          // style:"background-color: #4C67F4;"
         },
         h(
           "img",
           {
-            src: "img/person.png",
+            src: "img/chat.png",
             style: "margin:auto;width:50%;"
           }
         )
@@ -897,20 +979,8 @@ webSocketClient.onopen = function () {
       h(
         "div",
         {
-          id: "q-close"
-        },
-        h(
-          "img",
-          {
-            src: "img/Q.png",
-            style: "margin:auto;width:50%;"
-          }
-        )
-      ),
-      h(
-        "div",
-        {
-          id: "coffee-break"
+          id: "coffee-break",
+          // style:"background-color: #4C67F4;"
         },
         h(
           "img",
@@ -923,15 +993,23 @@ webSocketClient.onopen = function () {
       h(
         "div",
         {
-          id: "chat"
+          id: "call",
+          // style:"background-color: #4C67F4;"
         },
         h(
-          "img",
+          "p",
           {
-            src: "img/chat.png",
-            style: "margin:auto;width:50%;"
-          }
+            style:"margin:auto;"
+          },
+          "Stop"
         )
+        // h(
+        //   "img",
+        //   {
+        //     src: "img/chat.png",
+        //     style: "margin:auto;width:50%;"
+        //   }
+        // )
       )
     );
 
@@ -1056,10 +1134,12 @@ webSocketClient.onopen = function () {
             event.stopImmediatePropagation();
             if (queueOpen) {
               webSocketClient.send('/closeQueue');
+              document.getElementById('q-close-para').innerText = "Allow";
               queueOpen = false;
             }
             else {
               webSocketClient.send('/openQueue');
+              document.getElementById('q-close-para').innerText = "Pause";
               queueOpen = true;
             }
 
@@ -1097,6 +1177,12 @@ webSocketClient.onopen = function () {
               });
               // mssg.value="";
             });
+          });
+
+          document.getElementById('call').addEventListener('click', (event) => {
+            event.stopImmediatePropagation();
+            call.setAttribute('listener', 'true');
+            leaveRoom();
           });
 
 
@@ -1240,6 +1326,7 @@ webSocketClient.onopen = function () {
           event.stopImmediatePropagation();
           var remPer = document.getElementById('remove-person');
           remPer.setAttribute("disabled", true);
+          peerContainer.append(tooltip);
           // await hmsActions.removePeer(ele.id, '');
           // // webSocketClient.send('pop');
           // webSocketClient.send(`remove/${ele.name}`);
@@ -1250,10 +1337,12 @@ webSocketClient.onopen = function () {
           event.stopImmediatePropagation();
           if (queueOpen) {
             webSocketClient.send('/closeQueue');
+            document.getElementById('q-close-para').innerText = "Allow";
             queueOpen = false;
           }
           else {
             webSocketClient.send('/openQueue');
+            document.getElementById('q-close-para').innerText = "Pause";
             queueOpen = true;
           }
 
@@ -1311,6 +1400,12 @@ webSocketClient.onopen = function () {
             });
             // mssg.value="";
           });
+        });
+
+        document.getElementById('call').addEventListener('click', (event) => {
+          event.stopImmediatePropagation();
+          call.setAttribute('listener', 'true');
+          leaveRoom();
         });
 
         document.getElementById('coffee-break').addEventListener('click', (event) => {
