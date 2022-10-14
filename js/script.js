@@ -70,6 +70,8 @@ var screenOverlay = false;
 var isBreak = false;
 
 var tooltipActive = false;
+var readyToOpenRoom = false;
+var recentBreak = false;
 
 
 
@@ -132,17 +134,20 @@ webSocketClient.onopen = function () {
       if (!screenOverlay)
         peersContainer.style.display = "block";
 
-      if (mssg_response['break']&&!isHostHere) {
-        // var peerContent = h(
-        //   "img",
-        //   {
-        //     style: "width:100%;aspect-ratio:16/9;z-index:200;",
-        //     src: "img/coffee.png"
-        //   },
-        // );
-        // // peersContainer.innerHTML="";
-        // coffeeCont.append(peerContent);
+      if(!mssg_response['break']&&recentBreak){
+        // peersContainer.style.display = "block";
+        screenOverlay = false;
+        breakNotice.style.display = "none";
+        recentBreak = false;
       }
+
+      if (mssg_response['break']&&!isHostHere) {
+        peersContainer.style.display = "none";
+        screenOverlay = true;
+        breakNotice.style.display = "flex";
+        recentBreak = true;
+      }
+
       else if (mssg_response['mssg'] != '' && !isGuesthere && !isHostHere) {
         console.log(JSON.parse(message.data)['mssg']);
         mssg = JSON.parse(message.data)['mssg'];
@@ -418,7 +423,7 @@ webSocketClient.onopen = function () {
     hmsActions.join({
       userName: document.getElementById("name").value,
       // authToken: host_key,
-      authToken: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3Nfa2V5IjoiNjMxMmVmZjdiMWU3ODBlNzhjM2NlZDI0IiwidHlwZSI6ImFwcCIsInZlcnNpb24iOjIsInJvb21faWQiOiI2MzE2ZTFjM2IxZTc4MGU3OGMzZDFkY2YiLCJ1c2VyX2lkIjoidTEiLCJyb2xlIjoiaG9zdCIsImp0aSI6IjcyMDUyNjQyLWUxNDYtNGM3My1hYjg4LWRkZTgzMDVhNWQ2MCIsImV4cCI6MTY2NTc1NjYxNiwiaWF0IjoxNjY1NjcwMjE2LCJuYmYiOjE2NjU2NzAyMTZ9.nOM4c4oj-UFfz4LT2ih1nA-7pQ76GJ2P6Cm8Fg1euQQ",
+      authToken: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3Nfa2V5IjoiNjMxMmVmZjdiMWU3ODBlNzhjM2NlZDI0IiwidHlwZSI6ImFwcCIsInZlcnNpb24iOjIsInJvb21faWQiOiI2MzE2ZTFjM2IxZTc4MGU3OGMzZDFkY2YiLCJ1c2VyX2lkIjoidTEiLCJyb2xlIjoiaG9zdCIsImp0aSI6IjQ1ZDUxMmQ4LTNjNzItNGYyYy1hY2Y2LTQzMTU2ZWU4Mzg0ZiIsImV4cCI6MTY2NTg0ODU3MiwiaWF0IjoxNjY1NzYyMTcyLCJuYmYiOjE2NjU3NjIxNzJ9.3P6oeA4RavSjKpfh1Y4sPHNGkx0obUr5EhO8Nvw7nIg",
       settings: {
         isAudioMuted: true,
         isVideoMuted: false
@@ -837,7 +842,7 @@ webSocketClient.onopen = function () {
       hmsActions.join({
         userName: username,
         // authToken: guest_key,
-        authToken: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3Nfa2V5IjoiNjMxMmVmZjdiMWU3ODBlNzhjM2NlZDI0IiwidHlwZSI6ImFwcCIsInZlcnNpb24iOjIsInJvb21faWQiOiI2MzE2ZTFjM2IxZTc4MGU3OGMzZDFkY2YiLCJ1c2VyX2lkIjoidTIiLCJyb2xlIjoiZ3Vlc3QiLCJqdGkiOiIzNTVhN2UwOS01MTlmLTRhM2EtOTE2NC01NWZjZTE0NGZlMjQiLCJleHAiOjE2NjU3NTY2MTYsImlhdCI6MTY2NTY3MDIxNiwibmJmIjoxNjY1NjcwMjE2fQ.0caskDoucu-yBuV2c2yMfXYlwT5nzOR01CT9Bijkpqs',
+        authToken: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3Nfa2V5IjoiNjMxMmVmZjdiMWU3ODBlNzhjM2NlZDI0IiwidHlwZSI6ImFwcCIsInZlcnNpb24iOjIsInJvb21faWQiOiI2MzE2ZTFjM2IxZTc4MGU3OGMzZDFkY2YiLCJ1c2VyX2lkIjoidTIiLCJyb2xlIjoiZ3Vlc3QiLCJqdGkiOiI2NmQ2NzQ1Yi03MjU5LTQwNWMtOTdlMy1iNjkyMTU1ODc2N2EiLCJleHAiOjE2NjU4NDg1NzIsImlhdCI6MTY2NTc2MjE3MiwibmJmIjoxNjY1NzYyMTcyfQ.9HZ1T13WCosMIDQdF6IFjtJcW-GuKJqIn2oG89S4svs',
         settings: {
           isAudioMuted: true,
           isVideoMuted: false
@@ -1693,6 +1698,7 @@ webSocketClient.onopen = function () {
           event.stopImmediatePropagation();
           document.getElementById('coffee-break').setAttribute('disabled',false);
           screenOverlay = true;
+          readyToOpenRoom = false;
             peersContainer.style.display = "none";
             coffee1.style.display = "flex";
             const timesetBtn = document.getElementById('timeset');
@@ -1718,6 +1724,7 @@ webSocketClient.onopen = function () {
               }
             });
 
+
             const takeBreak = document.getElementById('take-break')
             takeBreak.addEventListener('click',(event)=>{
               event.stopImmediatePropagation();
@@ -1725,12 +1732,37 @@ webSocketClient.onopen = function () {
               coffee1.style.display = "none";
               coffee2.style.display = "flex";
               var countdown = document.getElementById('countdown');
-              countdown.innerText = currentVal;
+              var timeInSeconds = currentVal*60;
+              (async function timer(){
+                if(currentVal>0&&!readyToOpenRoom){
+                  setTimeout(()=>{
+                    var minutes = Math.floor(timeInSeconds/60);
+                    var seconds = timeInSeconds%60;
+                    if(seconds>=10)
+                      countdown.innerText = `${minutes}:${seconds}`;
+                    else
+                      countdown.innerText = `${minutes}:0${seconds}`;
+                    timeInSeconds--;
+                    timer();
+                  },1000);
+                }
+                else{
+                  console.log("Timer over!");
+                  // currentVal = 0;
+                  // timeInSeconds = 0;
+                  readyToOpenRoom = false;
+                  countdown.innerText = "";
+                }
+              })();
               isBreak = true;
               leaveRoom();
               var openRoom = document.getElementById('open-room');
               openRoom.addEventListener('click',(event)=>{
                 event.stopImmediatePropagation();
+                readyToOpenRoom = true;
+                countdown.innerText = "";
+                // currentVal = 0;
+                  // timeInSeconds = 0;
                 coffee2.style.display = "none";
                 peersContainer.style.display = "none";
                 webSocketClient.send('/breakOver');
