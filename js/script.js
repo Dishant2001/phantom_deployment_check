@@ -145,7 +145,33 @@ webSocketClient.onopen = function () {
         peersContainer.style.display = "none";
         screenOverlay = true;
         breakNotice.style.display = "flex";
+        var duration = mssg_response['breakDuration'];
         recentBreak = true;
+
+        const timeRemaining = document.getElementById('time-remaining');
+        var timeInSeconds = duration*60;
+              (async function timer(){
+                if(timeInSeconds>0){
+                  setTimeout(()=>{
+                    var minutes = Math.floor(timeInSeconds/60);
+                    var seconds = timeInSeconds%60;
+                    if(seconds>=10)
+                      timeRemaining.innerText = `${minutes}:${seconds}`;
+                    else
+                      timeRemaining.innerText = `${minutes}:0${seconds}`;
+                    timeInSeconds--;
+                    timer();
+                  },1000);
+                }
+                else{
+                  console.log("Timer over!");
+                  // currentVal = 0;
+                  // timeInSeconds = 0;
+                  // readyToOpenRoom = false;
+                  timeRemaining.innerText = "";
+                }
+              })();
+
       }
 
       else if (mssg_response['mssg'] != '' && !isGuesthere && !isHostHere) {
@@ -1728,13 +1754,13 @@ webSocketClient.onopen = function () {
             const takeBreak = document.getElementById('take-break')
             takeBreak.addEventListener('click',(event)=>{
               event.stopImmediatePropagation();
-              webSocketClient.send('/coffeeBreak');
+              webSocketClient.send(`/coffeeBreak/${currentVal}`);
               coffee1.style.display = "none";
               coffee2.style.display = "flex";
               var countdown = document.getElementById('countdown');
               var timeInSeconds = currentVal*60;
               (async function timer(){
-                if(currentVal>0&&!readyToOpenRoom){
+                if(timeInSeconds>0&&!readyToOpenRoom){
                   setTimeout(()=>{
                     var minutes = Math.floor(timeInSeconds/60);
                     var seconds = timeInSeconds%60;
