@@ -888,6 +888,14 @@ webSocketClient.onopen = function () {
             style:"margin:auto;"
           },
           "Evict"
+        ),
+        h(
+          "div",
+          {
+            id:"remove-person-hover",
+            style:"position:absolute;top:5%;left:100%;display:none;font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);padding:min(8px,0.8vw);background-color:#ff3459;color:#ffffff;width:110%;aspect-ratio:5;"
+          },
+          "Remove from the room"
         )
         // h(
         //   "img",
@@ -909,6 +917,14 @@ webSocketClient.onopen = function () {
             style:"margin:auto;"
           },
           "Next"
+        ),
+        h(
+          "div",
+          {
+            id:"add-person-hover",
+            style:"position:absolute;top:20%;left:100%;display:none;font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);padding:min(8px,0.8vw);background-color:#ffffff;color:black;width:110%;aspect-ratio:5;"
+          },
+          "Ask next to enter"
         )
         // h(
         //   "img",
@@ -931,6 +947,14 @@ webSocketClient.onopen = function () {
             style:"margin:auto;"
           },
           "Pause"
+        ),
+        h(
+          "div",
+          {
+            id:"pause-person-hover",
+            style:"position:absolute;top:35%;left:100%;display:none;font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);padding:min(8px,0.8vw);background-color:#ffffff;color:black;width:110%;aspect-ratio:5;"
+          },
+          "Stop more candidates to join"
         )
         // h(
         //   "img",
@@ -952,6 +976,14 @@ webSocketClient.onopen = function () {
             src: "img/chat.png",
             style: "margin:auto;width:50%;"
           }
+        ),
+        h(
+          "div",
+          {
+            id:"announce-person-hover",
+            style:"position:absolute;top:50%;left:100%;display:none;font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);padding:min(8px,0.8vw);background-color:#ffffff;color:black;width:110%;aspect-ratio:5;"
+          },
+          "Announce a message to everyone"
         )
       ),
       h(
@@ -966,6 +998,14 @@ webSocketClient.onopen = function () {
             src: "img/coffee.png",
             style: "margin:auto;width:50%;"
           }
+        ),
+        h(
+          "div",
+          {
+            id:"break-person-hover",
+            style:"position:absolute;top:65%;left:100%;display:none;font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);padding:min(8px,0.8vw);background-color:#ffffff;color:black;width:110%;aspect-ratio:5;"
+          },
+          "Go for a break"
         )
       ),
       h(
@@ -980,6 +1020,14 @@ webSocketClient.onopen = function () {
             style:"margin:auto;"
           },
           "Stop"
+        ),
+        h(
+          "div",
+          {
+            id:"call-person-hover",
+            style:"position:absolute;top:80%;left:100%;display:none;font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);padding:min(8px,0.8vw);background-color:#ffffff;color:black;width:110%;aspect-ratio:5;"
+          },
+          "Close the room"
         )
         // h(
         //   "img",
@@ -990,6 +1038,8 @@ webSocketClient.onopen = function () {
         // )
       )
     );
+
+
 
     var hosts = [], guests = [];
     var countHost = 0;
@@ -1097,6 +1147,54 @@ webSocketClient.onopen = function () {
           peersContainer.append(peerContainer);
 
           buttonControl();
+
+          // var removePersonBtn = document.getElementById('remove-person')
+          // removePersonBtn.addEventListener('mouseover',()=>{
+          //   document.getElementById('remove-person-hover').style.display = "block";
+          // });
+          // removePersonBtn.addEventListener('mouseleave',()=>{
+          //   document.getElementById('remove-person-hover').style.display = "none";
+          // });
+
+          // var addPersonBtn = document.getElementById('add-person')
+          // addPersonBtn.addEventListener('mouseover',()=>{
+          //   document.getElementById('add-person-hover').style.display = "block";
+          // });
+          // addPersonBtn.addEventListener('mouseleave',()=>{
+          //   document.getElementById('add-person-hover').style.display = "none";
+          // });
+
+          // var pausePersonBtn = document.getElementById('q-close')
+          // pausePersonBtn.addEventListener('mouseover',()=>{
+          //   document.getElementById('pause-person-hover').style.display = "block";
+          // });
+          // pausePersonBtn.addEventListener('mouseleave',()=>{
+          //   document.getElementById('pause-person-hover').style.display = "none";
+          // });
+
+          // var announcePersonBtn = document.getElementById('chat')
+          // announcePersonBtn.addEventListener('mouseover',()=>{
+          //   document.getElementById('announce-person-hover').style.display = "block";
+          // });
+          // announcePersonBtn.addEventListener('mouseleave',()=>{
+          //   document.getElementById('announce-person-hover').style.display = "none";
+          // });
+
+          // var breakPersonBtn = document.getElementById('coffee-break')
+          // breakPersonBtn.addEventListener('mouseover',()=>{
+          //   document.getElementById('break-person-hover').style.display = "block";
+          // });
+          // breakPersonBtn.addEventListener('mouseleave',()=>{
+          //   document.getElementById('break-person-hover').style.display = "none";
+          // });
+
+          // var closePersonBtn = document.getElementById('call')
+          // closePersonBtn.addEventListener('mouseover',()=>{
+          //   document.getElementById('call-person-hover').style.display = "block";
+          // });
+          // closePersonBtn.addEventListener('mouseleave',()=>{
+          //   document.getElementById('call-person-hover').style.display = "none";
+          // });
 
           document.getElementById('remove-person').addEventListener('click', (event) => {
             event.stopImmediatePropagation();
@@ -1414,6 +1512,54 @@ webSocketClient.onopen = function () {
         // });
 
         buttonControl();
+
+        // var removePersonBtn = document.getElementById('remove-person')
+        // removePersonBtn.addEventListener('mouseenter',()=>{
+        //   document.getElementById('remove-person-hover').style.display = "block";
+        // });
+        // removePersonBtn.addEventListener('mouseleave',()=>{
+        //   document.getElementById('remove-person-hover').style.display = "none";
+        // });
+
+        // var addPersonBtn = document.getElementById('add-person')
+        //   addPersonBtn.addEventListener('mouseover',()=>{
+        //     document.getElementById('add-person-hover').style.display = "block";
+        //   });
+        //   addPersonBtn.addEventListener('mouseleave',()=>{
+        //     document.getElementById('add-person-hover').style.display = "none";
+        //   });
+
+        //   var pausePersonBtn = document.getElementById('q-close')
+        //   pausePersonBtn.addEventListener('mouseover',()=>{
+        //     document.getElementById('pause-person-hover').style.display = "block";
+        //   });
+        //   pausePersonBtn.addEventListener('mouseleave',()=>{
+        //     document.getElementById('pause-person-hover').style.display = "none";
+        //   });
+
+        //   var announcePersonBtn = document.getElementById('chat')
+        //   announcePersonBtn.addEventListener('mouseover',()=>{
+        //     document.getElementById('announce-person-hover').style.display = "block";
+        //   });
+        //   announcePersonBtn.addEventListener('mouseleave',()=>{
+        //     document.getElementById('announce-person-hover').style.display = "none";
+        //   });
+
+        //   var breakPersonBtn = document.getElementById('coffee-break')
+        //   breakPersonBtn.addEventListener('mouseover',()=>{
+        //     document.getElementById('break-person-hover').style.display = "block";
+        //   });
+        //   breakPersonBtn.addEventListener('mouseleave',()=>{
+        //     document.getElementById('break-person-hover').style.display = "none";
+        //   });
+
+        //   var closePersonBtn = document.getElementById('call')
+        //   closePersonBtn.addEventListener('mouseover',()=>{
+        //     document.getElementById('call-person-hover').style.display = "block";
+        //   });
+        //   closePersonBtn.addEventListener('mouseleave',()=>{
+        //     document.getElementById('call-person-hover').style.display = "none";
+        //   });
 
         document.getElementById('remove-person').addEventListener('click', async (event) => {
           event.stopImmediatePropagation();
