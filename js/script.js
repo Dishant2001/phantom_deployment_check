@@ -985,7 +985,7 @@ webSocketClient.onopen = function () {
             id:"pause-person-hover",
             style:"position:absolute;top:35%;left:100%;display:none;font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);padding:min(8px,0.8vw);background-color:#ffffff;color:black;width:110%;aspect-ratio:5;"
           },
-          "Stop more candidates to join"
+          queueOpen?"Stop more candidates to join":"Allow more candidates to join"
         )
         // h(
         //   "img",
@@ -1036,7 +1036,7 @@ webSocketClient.onopen = function () {
             id:"break-person-hover",
             style:"position:absolute;top:65%;left:100%;display:none;font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);padding:min(8px,0.8vw);background-color:#ffffff;color:black;width:110%;aspect-ratio:5;"
           },
-          "Go for a break"
+          "Take a break"
         )
       ),
       h(
@@ -1248,7 +1248,7 @@ webSocketClient.onopen = function () {
                   "div",
                   {
                     id:"close-tip",
-                    style:"position:absolute;top:-4%;right:-4%;background-color:#ffffff;font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);padding:min(8px,0.8vw);border-radius:50%;font-weight:500;cursor:pointer;"
+                    style:"position:absolute;top:-4%;right:-4%;background-color:#ffffff;font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);padding:min(8px,0.8vw);border-radius:50%;font-weight:600;cursor:pointer;"
                   },
                   "x"
                 ),
@@ -1267,7 +1267,7 @@ webSocketClient.onopen = function () {
                   h(
                     "p",
                     {
-                      style:"font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);font-weight:500;padding:min(10px,1vw);"
+                      style:"font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);font-weight:600;padding:min(10px,1vw);cursor:pointer;"
                     },
                     h(
                       "span",
@@ -1355,14 +1355,196 @@ webSocketClient.onopen = function () {
           document.getElementById('q-close').addEventListener('click', (event) => {
             event.stopImmediatePropagation();
             if (queueOpen) {
-              webSocketClient.send('/closeQueue');
-              document.getElementById('q-close-para').innerText = "Allow";
-              queueOpen = false;
+
+
+              if(!tooltipActive){
+                console.log("Yahan bhi aa gaya!");
+                tooltipActive = true;
+                var closeQ = document.getElementById('q-close');
+                var queuetooltip = h(
+                  "div",
+                  {
+                    class:"tooltip",
+                    id:"queuetooltip",
+                    style:"width:50%;display:flex;background-color:#ffffff;position:absolute;top:3%;right:1%;z-index:100;border-radius:min(15px,1.5vw);"
+                  },
+                  h(
+                    "div",
+                    {
+                      id:"close-tip",
+                      style:"position:absolute;top:-4%;right:-4%;background-color:#ffffff;font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);padding:min(8px,0.8vw);border-radius:50%;font-weight:600;cursor:pointer;"
+                    },
+                    "x"
+                  ),
+                  h(
+                    "div",
+                    {
+                      id:"queue-close-tip",
+                    },
+                    h(
+                      "p",
+                      {
+                        style:"font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);padding:min(10px,1vw);"
+                      },
+                      "This indicates you dont want any more candidates to to appear for the interview in this room, at this time. Are you sure that you dont want any more candidates?"
+                    ),
+                    h(
+                      "p",
+                      {
+                        style:"font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);font-weight:600;padding:min(10px,1vw);cursor:pointer;"
+                      },
+                      h(
+                        "span",
+                        {
+                          id:"remove-yes"
+                        },
+                        "Yes"
+                      ),
+                      h(
+                        "span",
+                        {
+                          style:"font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);font-weight:500;padding:min(10px,1vw);"
+                        },
+                        " | "
+                      ),
+                      h(
+                        "span",
+                        {
+                          id:"remove-no"
+                        },
+                        "No"
+                      )
+                    )
+                  )
+                );
+                peerContainer.append(queuetooltip);
+      
+                const closeTip = document.getElementById('close-tip');
+                closeTip.addEventListener('click',(event)=>{
+                  event.stopImmediatePropagation();
+                  const currentTip = document.getElementById('queuetooltip');
+                  peerContainer.removeChild(currentTip);
+                  tooltipActive = false;
+                });
+    
+                const removeYes = document.getElementById('remove-yes');
+                removeYes.addEventListener('click',async (event)=>{
+                  event.stopImmediatePropagation();
+                  webSocketClient.send('/closeQueue');
+                  document.getElementById('q-close-para').innerText = "Allow";
+                  queueOpen = false; 
+                  tooltipActive = false;
+                  const currentTip = document.getElementById('queuetooltip');
+                peerContainer.removeChild(currentTip);
+  
+                });
+    
+                const removeNo = document.getElementById('remove-no');
+                removeNo.addEventListener('click',(event)=>{
+                  event.stopImmediatePropagation();
+                  const currentTip = document.getElementById('queuetooltip');
+                  peerContainer.removeChild(currentTip);
+                  tooltipActive = false;
+                });
+              }
+
+
+
             }
             else {
-              webSocketClient.send('/openQueue');
-              document.getElementById('q-close-para').innerText = "Halt";
-              queueOpen = true;
+              
+
+              if(!tooltipActive){
+                console.log("Yahan bhi aa gaya!");
+                tooltipActive = true;
+                var closeQ = document.getElementById('q-close');
+                var queuetooltip = h(
+                  "div",
+                  {
+                    class:"tooltip",
+                    id:"queuetooltip",
+                    style:"width:50%;display:flex;background-color:#ffffff;position:absolute;top:3%;right:1%;z-index:100;border-radius:min(15px,1.5vw);"
+                  },
+                  h(
+                    "div",
+                    {
+                      id:"close-tip",
+                      style:"position:absolute;top:-4%;right:-4%;background-color:#ffffff;font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);padding:min(8px,0.8vw);border-radius:50%;font-weight:600;cursor:pointer;"
+                    },
+                    "x"
+                  ),
+                  h(
+                    "div",
+                    {
+                      id:"queue-close-tip",
+                    },
+                    h(
+                      "p",
+                      {
+                        style:"font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);padding:min(10px,1vw);"
+                      },
+                      "You are allowing candidates to join and appear for the interview. in this room . Are you sure?"
+                    ),
+                    h(
+                      "p",
+                      {
+                        style:"font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);font-weight:600;padding:min(10px,1vw);cursor:pointer;"
+                      },
+                      h(
+                        "span",
+                        {
+                          id:"remove-yes"
+                        },
+                        "Yes"
+                      ),
+                      h(
+                        "span",
+                        {
+                          style:"font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);font-weight:500;padding:min(10px,1vw);"
+                        },
+                        " | "
+                      ),
+                      h(
+                        "span",
+                        {
+                          id:"remove-no"
+                        },
+                        "No"
+                      )
+                    )
+                  )
+                );
+                peerContainer.append(queuetooltip);
+      
+                const closeTip = document.getElementById('close-tip');
+                closeTip.addEventListener('click',(event)=>{
+                  event.stopImmediatePropagation();
+                  const currentTip = document.getElementById('queuetooltip');
+                  peerContainer.removeChild(currentTip);
+                  tooltipActive = false;
+                });
+    
+                const removeYes = document.getElementById('remove-yes');
+                removeYes.addEventListener('click',async (event)=>{
+                  event.stopImmediatePropagation();
+                  webSocketClient.send('/openQueue');
+                  document.getElementById('q-close-para').innerText = "Halt";
+                  queueOpen = true; 
+                  tooltipActive = false;
+                  const currentTip = document.getElementById('queuetooltip');
+                peerContainer.removeChild(currentTip);
+  
+                });
+    
+                const removeNo = document.getElementById('remove-no');
+                removeNo.addEventListener('click',(event)=>{
+                  event.stopImmediatePropagation();
+                  const currentTip = document.getElementById('queuetooltip');
+                  peerContainer.removeChild(currentTip);
+                  tooltipActive = false;
+                });
+              }
+
             }
 
           });
@@ -1410,14 +1592,99 @@ webSocketClient.onopen = function () {
 
           document.getElementById('add-person').addEventListener('click', (event) => {
             event.stopImmediatePropagation();
-            var addPer = document.getElementById('add-person');
-            addPer.setAttribute('disabled', true);
+            
+
+            if(!tooltipActive){
+              console.log("Yahan bhi aa gaya!");
+              tooltipActive = true;
+              var addPer = document.getElementById('add-person');
+              addPer.setAttribute("disabled", true);
+    
+              var addPertooltip = h(
+                "div",
+                {
+                  class:"tooltip",
+                  id:"addPertooltip",
+                  style:"width:50%;display:flex;background-color:#ffffff;position:absolute;top:3%;right:1%;z-index:100;border-radius:min(15px,1.5vw);"
+                },
+                h(
+                  "div",
+                  {
+                    id:"close-tip",
+                    style:"position:absolute;top:-4%;right:-4%;background-color:#ffffff;font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);padding:min(8px,0.8vw);border-radius:50%;font-weight:600;cursor:pointer;"
+                  },
+                  "x"
+                ),
+                h(
+                  "div",
+                  {
+                    id:"remove-tip",
+                    style:"font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);padding:min(10px,1vw);"
+                  },
+                  "This button is used to call next candidate in the Q to join the room when its empty."
+                )
+              );
+              peerContainer.append(addPertooltip);
+    
+              const closeTip = document.getElementById('close-tip');
+              closeTip.addEventListener('click',(event)=>{
+                event.stopImmediatePropagation();
+                console.log("Close Tip Pressed!");
+                const currentTip = document.getElementById('addPertooltip');
+                peerContainer.removeChild(currentTip);
+                tooltipActive = false;
+              });
+            }
+
             // webSocketClient.send('pop');
           });
 
           document.getElementById('coffee-break').addEventListener('click', (event) => {
             event.stopImmediatePropagation();
-            document.getElementById('coffee-break').setAttribute('disabled',true);
+            
+
+            if(!tooltipActive){
+              console.log("Yahan bhi aa gaya!");
+              tooltipActive = true;
+              var coffeeBreak = document.getElementById('coffee-break');
+              coffeeBreak.setAttribute("disabled", true);
+    
+              var coffeetooltip = h(
+                "div",
+                {
+                  class:"tooltip",
+                  id:"coffeetooltip",
+                  style:"width:50%;display:flex;background-color:#ffffff;position:absolute;top:3%;right:1%;z-index:100;border-radius:min(15px,1.5vw);"
+                },
+                h(
+                  "div",
+                  {
+                    id:"close-tip",
+                    style:"position:absolute;top:-4%;right:-4%;background-color:#ffffff;font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);padding:min(8px,0.8vw);border-radius:50%;font-weight:600;cursor:pointer;"
+                  },
+                  "x"
+                ),
+                h(
+                  "div",
+                  {
+                    id:"remove-tip",
+                    style:"font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);padding:min(10px,1vw);"
+                  },
+                  "You can take coffee break when the room is empty"
+                )
+              );
+              peerContainer.append(coffeetooltip);
+    
+              const closeTip = document.getElementById('close-tip');
+              closeTip.addEventListener('click',(event)=>{
+                event.stopImmediatePropagation();
+                console.log("Close Tip Pressed!");
+                const currentTip = document.getElementById('coffeetooltip');
+                peerContainer.removeChild(currentTip);
+                tooltipActive = false;
+              });
+            }
+
             // screenOverlay = true;
             // peersContainer.style.display = "none";
             // coffee1.style.display = "flex";
@@ -1612,7 +1879,7 @@ webSocketClient.onopen = function () {
                 "div",
                 {
                   id:"close-tip",
-                  style:"position:absolute;top:-4%;right:-4%;background-color:#ffffff;font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);padding:min(8px,0.8vw);border-radius:50%;font-weight:500;cursor:pointer;"
+                  style:"position:absolute;top:-4%;right:-4%;background-color:#ffffff;font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);padding:min(8px,0.8vw);border-radius:50%;font-weight:600;cursor:pointer;"
                 },
                 "x"
               ),
@@ -1645,14 +1912,196 @@ webSocketClient.onopen = function () {
         document.getElementById('q-close').addEventListener('click', (event) => {
           event.stopImmediatePropagation();
           if (queueOpen) {
-            webSocketClient.send('/closeQueue');
-            document.getElementById('q-close-para').innerText = "Allow";
-            queueOpen = false;
+
+
+            if(!tooltipActive){
+              console.log("Yahan bhi aa gaya!");
+              tooltipActive = true;
+              var closeQ = document.getElementById('q-close');
+              var queuetooltip = h(
+                "div",
+                {
+                  class:"tooltip",
+                  id:"queuetooltip",
+                  style:"width:50%;display:flex;background-color:#ffffff;position:absolute;top:3%;right:1%;z-index:100;border-radius:min(15px,1.5vw);"
+                },
+                h(
+                  "div",
+                  {
+                    id:"close-tip",
+                    style:"position:absolute;top:-4%;right:-4%;background-color:#ffffff;font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);padding:min(8px,0.8vw);border-radius:50%;font-weight:600;cursor:pointer;"
+                  },
+                  "x"
+                ),
+                h(
+                  "div",
+                  {
+                    id:"queue-close-tip",
+                  },
+                  h(
+                    "p",
+                    {
+                      style:"font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);padding:min(10px,1vw);"
+                    },
+                    "This indicates you dont want any more candidates to to appear for the interview in this room, at this time. Are you sure that you dont want any more candidates?"
+                  ),
+                  h(
+                    "p",
+                    {
+                      style:"font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);font-weight:600;padding:min(10px,1vw);cursor:pointer;"
+                    },
+                    h(
+                      "span",
+                      {
+                        id:"remove-yes"
+                      },
+                      "Yes"
+                    ),
+                    h(
+                      "span",
+                      {
+                        style:"font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);font-weight:500;padding:min(10px,1vw);"
+                      },
+                      " | "
+                    ),
+                    h(
+                      "span",
+                      {
+                        id:"remove-no"
+                      },
+                      "No"
+                    )
+                  )
+                )
+              );
+              peerContainer.append(queuetooltip);
+    
+              const closeTip = document.getElementById('close-tip');
+              closeTip.addEventListener('click',(event)=>{
+                event.stopImmediatePropagation();
+                const currentTip = document.getElementById('queuetooltip');
+                peerContainer.removeChild(currentTip);
+                tooltipActive = false;
+              });
+  
+              const removeYes = document.getElementById('remove-yes');
+              removeYes.addEventListener('click',async (event)=>{
+                event.stopImmediatePropagation();
+                webSocketClient.send('/closeQueue');
+                document.getElementById('q-close-para').innerText = "Allow";
+                queueOpen = false; 
+                tooltipActive = false;
+                const currentTip = document.getElementById('queuetooltip');
+                peerContainer.removeChild(currentTip);
+
+              });
+  
+              const removeNo = document.getElementById('remove-no');
+              removeNo.addEventListener('click',(event)=>{
+                event.stopImmediatePropagation();
+                const currentTip = document.getElementById('queuetooltip');
+                peerContainer.removeChild(currentTip);
+                tooltipActive = false;
+              });
+            }
+
+
+
           }
           else {
-            webSocketClient.send('/openQueue');
-            document.getElementById('q-close-para').innerText = "Halt";
-            queueOpen = true;
+            
+
+            if(!tooltipActive){
+              console.log("Yahan bhi aa gaya!");
+              tooltipActive = true;
+              var closeQ = document.getElementById('q-close');
+              var queuetooltip = h(
+                "div",
+                {
+                  class:"tooltip",
+                  id:"queuetooltip",
+                  style:"width:50%;display:flex;background-color:#ffffff;position:absolute;top:3%;right:1%;z-index:100;border-radius:min(15px,1.5vw);"
+                },
+                h(
+                  "div",
+                  {
+                    id:"close-tip",
+                    style:"position:absolute;top:-4%;right:-4%;background-color:#ffffff;font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);padding:min(8px,0.8vw);border-radius:50%;font-weight:600;cursor:pointer;"
+                  },
+                  "x"
+                ),
+                h(
+                  "div",
+                  {
+                    id:"queue-close-tip",
+                  },
+                  h(
+                    "p",
+                    {
+                      style:"font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);padding:min(10px,1vw);"
+                    },
+                    "You are allowing candidates to join and appear for the interview. in this room . Are you sure?"
+                  ),
+                  h(
+                    "p",
+                    {
+                      style:"font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);font-weight:600;padding:min(10px,1vw);cursor:pointer;"
+                    },
+                    h(
+                      "span",
+                      {
+                        id:"remove-yes"
+                      },
+                      "Yes"
+                    ),
+                    h(
+                      "span",
+                      {
+                        style:"font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);font-weight:500;padding:min(10px,1vw);"
+                      },
+                      " | "
+                    ),
+                    h(
+                      "span",
+                      {
+                        id:"remove-no"
+                      },
+                      "No"
+                    )
+                  )
+                )
+              );
+              peerContainer.append(queuetooltip);
+    
+              const closeTip = document.getElementById('close-tip');
+              closeTip.addEventListener('click',(event)=>{
+                event.stopImmediatePropagation();
+                const currentTip = document.getElementById('queuetooltip');
+                peerContainer.removeChild(currentTip);
+                tooltipActive = false;
+              });
+  
+              const removeYes = document.getElementById('remove-yes');
+              removeYes.addEventListener('click',async (event)=>{
+                event.stopImmediatePropagation();
+                webSocketClient.send('/openQueue');
+                document.getElementById('q-close-para').innerText = "Halt";
+                queueOpen = true; 
+                tooltipActive = false;
+                const currentTip = document.getElementById('queuetooltip');
+                peerContainer.removeChild(currentTip);
+
+              });
+  
+              const removeNo = document.getElementById('remove-no');
+              removeNo.addEventListener('click',(event)=>{
+                event.stopImmediatePropagation();
+                const currentTip = document.getElementById('queuetooltip');
+                peerContainer.removeChild(currentTip);
+                tooltipActive = false;
+              });
+            }
+
           }
 
         });
@@ -1662,6 +2111,48 @@ webSocketClient.onopen = function () {
         addPer.addEventListener('click', (event) => {
           event.stopImmediatePropagation();
           webSocketClient.send('pop');
+
+          if(!tooltipActive){
+            console.log("Yahan bhi aa gaya!");
+            tooltipActive = true;
+            var addPer = document.getElementById('add-person');
+            addPer.setAttribute("disabled", true);
+  
+            var addPertooltip = h(
+              "div",
+              {
+                class:"tooltip",
+                id:"addPertooltip",
+                style:"width:50%;display:flex;background-color:#ffffff;position:absolute;top:3%;right:1%;z-index:100;border-radius:min(15px,1.5vw);"
+              },
+              h(
+                "div",
+                {
+                  id:"close-tip",
+                  style:"position:absolute;top:-4%;right:-4%;background-color:#ffffff;font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);padding:min(8px,0.8vw);border-radius:50%;font-weight:600;cursor:pointer;"
+                },
+                "x"
+              ),
+              h(
+                "div",
+                {
+                  id:"remove-tip",
+                  style:"font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);padding:min(10px,1vw);"
+                },
+                "We are asking the next candidate in the Q to join the room"
+              )
+            );
+            peerContainer.append(addPertooltip);
+  
+            const closeTip = document.getElementById('close-tip');
+            closeTip.addEventListener('click',(event)=>{
+              event.stopImmediatePropagation();
+              console.log("Close Tip Pressed!");
+              const currentTip = document.getElementById('addPertooltip');
+              peerContainer.removeChild(currentTip);
+              tooltipActive = false;
+            });
+          }
 
           // screenOverlay = true
           //       peersContainer.style.display = "none";
