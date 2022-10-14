@@ -977,7 +977,7 @@ webSocketClient.onopen = function () {
             id:"q-close-para",
             style:"margin:auto;"
           },
-          "Pause"
+          queueOpen?"Halt":"Allow"
         ),
         h(
           "div",
@@ -1179,53 +1179,53 @@ webSocketClient.onopen = function () {
 
           buttonControl();
 
-          // var removePersonBtn = document.getElementById('remove-person')
-          // removePersonBtn.addEventListener('mouseover',()=>{
-          //   document.getElementById('remove-person-hover').style.display = "block";
-          // });
-          // removePersonBtn.addEventListener('mouseleave',()=>{
-          //   document.getElementById('remove-person-hover').style.display = "none";
-          // });
+          var removePersonBtn = document.getElementById('remove-person')
+          removePersonBtn.addEventListener('mouseover',()=>{
+            document.getElementById('remove-person-hover').style.display = "block";
+          });
+          removePersonBtn.addEventListener('mouseleave',()=>{
+            document.getElementById('remove-person-hover').style.display = "none";
+          });
 
-          // var addPersonBtn = document.getElementById('add-person')
-          // addPersonBtn.addEventListener('mouseover',()=>{
-          //   document.getElementById('add-person-hover').style.display = "block";
-          // });
-          // addPersonBtn.addEventListener('mouseleave',()=>{
-          //   document.getElementById('add-person-hover').style.display = "none";
-          // });
+          var addPersonBtn = document.getElementById('add-person')
+          addPersonBtn.addEventListener('mouseover',()=>{
+            document.getElementById('add-person-hover').style.display = "block";
+          });
+          addPersonBtn.addEventListener('mouseleave',()=>{
+            document.getElementById('add-person-hover').style.display = "none";
+          });
 
-          // var pausePersonBtn = document.getElementById('q-close')
-          // pausePersonBtn.addEventListener('mouseover',()=>{
-          //   document.getElementById('pause-person-hover').style.display = "block";
-          // });
-          // pausePersonBtn.addEventListener('mouseleave',()=>{
-          //   document.getElementById('pause-person-hover').style.display = "none";
-          // });
+          var pausePersonBtn = document.getElementById('q-close')
+          pausePersonBtn.addEventListener('mouseover',()=>{
+            document.getElementById('pause-person-hover').style.display = "block";
+          });
+          pausePersonBtn.addEventListener('mouseleave',()=>{
+            document.getElementById('pause-person-hover').style.display = "none";
+          });
 
-          // var announcePersonBtn = document.getElementById('chat')
-          // announcePersonBtn.addEventListener('mouseover',()=>{
-          //   document.getElementById('announce-person-hover').style.display = "block";
-          // });
-          // announcePersonBtn.addEventListener('mouseleave',()=>{
-          //   document.getElementById('announce-person-hover').style.display = "none";
-          // });
+          var announcePersonBtn = document.getElementById('chat')
+          announcePersonBtn.addEventListener('mouseover',()=>{
+            document.getElementById('announce-person-hover').style.display = "block";
+          });
+          announcePersonBtn.addEventListener('mouseleave',()=>{
+            document.getElementById('announce-person-hover').style.display = "none";
+          });
 
-          // var breakPersonBtn = document.getElementById('coffee-break')
-          // breakPersonBtn.addEventListener('mouseover',()=>{
-          //   document.getElementById('break-person-hover').style.display = "block";
-          // });
-          // breakPersonBtn.addEventListener('mouseleave',()=>{
-          //   document.getElementById('break-person-hover').style.display = "none";
-          // });
+          var breakPersonBtn = document.getElementById('coffee-break')
+          breakPersonBtn.addEventListener('mouseover',()=>{
+            document.getElementById('break-person-hover').style.display = "block";
+          });
+          breakPersonBtn.addEventListener('mouseleave',()=>{
+            document.getElementById('break-person-hover').style.display = "none";
+          });
 
-          // var closePersonBtn = document.getElementById('call')
-          // closePersonBtn.addEventListener('mouseover',()=>{
-          //   document.getElementById('call-person-hover').style.display = "block";
-          // });
-          // closePersonBtn.addEventListener('mouseleave',()=>{
-          //   document.getElementById('call-person-hover').style.display = "none";
-          // });
+          var closePersonBtn = document.getElementById('call')
+          closePersonBtn.addEventListener('mouseover',()=>{
+            document.getElementById('call-person-hover').style.display = "block";
+          });
+          closePersonBtn.addEventListener('mouseleave',()=>{
+            document.getElementById('call-person-hover').style.display = "none";
+          });
 
           document.getElementById('remove-person').addEventListener('click', (event) => {
             event.stopImmediatePropagation();
@@ -1361,7 +1361,7 @@ webSocketClient.onopen = function () {
             }
             else {
               webSocketClient.send('/openQueue');
-              document.getElementById('q-close-para').innerText = "Pause";
+              document.getElementById('q-close-para').innerText = "Halt";
               queueOpen = true;
             }
 
@@ -1544,53 +1544,53 @@ webSocketClient.onopen = function () {
 
         buttonControl();
 
-        // var removePersonBtn = document.getElementById('remove-person')
-        // removePersonBtn.addEventListener('mouseenter',()=>{
-        //   document.getElementById('remove-person-hover').style.display = "block";
-        // });
-        // removePersonBtn.addEventListener('mouseleave',()=>{
-        //   document.getElementById('remove-person-hover').style.display = "none";
-        // });
+        var removePersonBtn = document.getElementById('remove-person')
+        removePersonBtn.addEventListener('mouseenter',()=>{
+          document.getElementById('remove-person-hover').style.display = "block";
+        });
+        removePersonBtn.addEventListener('mouseleave',()=>{
+          document.getElementById('remove-person-hover').style.display = "none";
+        });
 
-        // var addPersonBtn = document.getElementById('add-person')
-        //   addPersonBtn.addEventListener('mouseover',()=>{
-        //     document.getElementById('add-person-hover').style.display = "block";
-        //   });
-        //   addPersonBtn.addEventListener('mouseleave',()=>{
-        //     document.getElementById('add-person-hover').style.display = "none";
-        //   });
+        var addPersonBtn = document.getElementById('add-person')
+          addPersonBtn.addEventListener('mouseover',()=>{
+            document.getElementById('add-person-hover').style.display = "block";
+          });
+          addPersonBtn.addEventListener('mouseleave',()=>{
+            document.getElementById('add-person-hover').style.display = "none";
+          });
 
-        //   var pausePersonBtn = document.getElementById('q-close')
-        //   pausePersonBtn.addEventListener('mouseover',()=>{
-        //     document.getElementById('pause-person-hover').style.display = "block";
-        //   });
-        //   pausePersonBtn.addEventListener('mouseleave',()=>{
-        //     document.getElementById('pause-person-hover').style.display = "none";
-        //   });
+          var pausePersonBtn = document.getElementById('q-close')
+          pausePersonBtn.addEventListener('mouseover',()=>{
+            document.getElementById('pause-person-hover').style.display = "block";
+          });
+          pausePersonBtn.addEventListener('mouseleave',()=>{
+            document.getElementById('pause-person-hover').style.display = "none";
+          });
 
-        //   var announcePersonBtn = document.getElementById('chat')
-        //   announcePersonBtn.addEventListener('mouseover',()=>{
-        //     document.getElementById('announce-person-hover').style.display = "block";
-        //   });
-        //   announcePersonBtn.addEventListener('mouseleave',()=>{
-        //     document.getElementById('announce-person-hover').style.display = "none";
-        //   });
+          var announcePersonBtn = document.getElementById('chat')
+          announcePersonBtn.addEventListener('mouseover',()=>{
+            document.getElementById('announce-person-hover').style.display = "block";
+          });
+          announcePersonBtn.addEventListener('mouseleave',()=>{
+            document.getElementById('announce-person-hover').style.display = "none";
+          });
 
-        //   var breakPersonBtn = document.getElementById('coffee-break')
-        //   breakPersonBtn.addEventListener('mouseover',()=>{
-        //     document.getElementById('break-person-hover').style.display = "block";
-        //   });
-        //   breakPersonBtn.addEventListener('mouseleave',()=>{
-        //     document.getElementById('break-person-hover').style.display = "none";
-        //   });
+          var breakPersonBtn = document.getElementById('coffee-break')
+          breakPersonBtn.addEventListener('mouseover',()=>{
+            document.getElementById('break-person-hover').style.display = "block";
+          });
+          breakPersonBtn.addEventListener('mouseleave',()=>{
+            document.getElementById('break-person-hover').style.display = "none";
+          });
 
-        //   var closePersonBtn = document.getElementById('call')
-        //   closePersonBtn.addEventListener('mouseover',()=>{
-        //     document.getElementById('call-person-hover').style.display = "block";
-        //   });
-        //   closePersonBtn.addEventListener('mouseleave',()=>{
-        //     document.getElementById('call-person-hover').style.display = "none";
-        //   });
+          var closePersonBtn = document.getElementById('call')
+          closePersonBtn.addEventListener('mouseover',()=>{
+            document.getElementById('call-person-hover').style.display = "block";
+          });
+          closePersonBtn.addEventListener('mouseleave',()=>{
+            document.getElementById('call-person-hover').style.display = "none";
+          });
 
         document.getElementById('remove-person').addEventListener('click', async (event) => {
           event.stopImmediatePropagation();
@@ -1651,7 +1651,7 @@ webSocketClient.onopen = function () {
           }
           else {
             webSocketClient.send('/openQueue');
-            document.getElementById('q-close-para').innerText = "Pause";
+            document.getElementById('q-close-para').innerText = "Halt";
             queueOpen = true;
           }
 
