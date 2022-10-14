@@ -62,12 +62,16 @@ var media_recorder = null;
 var camera_stream = null;
 var isHostHere = false, isGuesthere = false;
 
+var evictedSomeone = false, evictedId = "<none>";
+
 var someoneInQueue = false, checkTurn = 1;
 
 var queueOpen = true;
 var screenOverlay = false;
 
 var isBreak = false;
+
+var tooltipActive = false;
 
 
 
@@ -101,319 +105,327 @@ webSocketClient.onopen = function () {
       checkTurn = 2;
     }
 
-    if(!isHostHere&&mssg_response['recentCandidate']==feedback_check_username){
-      screenOverlay = true;
-      feedback_check_username = "<none>";
-      username = "<none>";
+
+    if(evictedSomeone&&evictedId!="<none>"){
+      console.log("Kar sakte hain kuch. Yahan aa gaye!");
+      evictedSomeone =false;
+      evictedId = "<none>";
+      // screenOverlay = true;
       peersContainer.style.display = "none";
-      feedbackCont.style.display = "flex";
-      const submitFeedbackBtn = document.getElementById('submit-feedback');
-      submitFeedbackBtn.addEventListener('click',(event)=>{
-        event.stopImmediatePropagation();
-        var feedbackCont2 = document.getElementById('candidate-feedback-2');
-        feedbackCont.style.display = "none";
-        feedbackCont2.style.display = "flex";
-      });
+              // peersContainer.innerHTML = "";
+              reviewPage1.style.display = "flex";
+              var nextButton = document.getElementById('review-next');
+              nextButton.addEventListener('click', (event) => {
+                event.stopImmediatePropagation();
+                reviewPage1.style.display = "none";
+                reviewPage2.style.display = "flex";
+                var submitFeed = document.getElementById('review-submit');
+                submitFeed.addEventListener('click', (event) => {
+                  event.stopImmediatePropagation();
+                  reviewPage2.style.display = "none";
+                  // screenOverlay = false;
+                  console.log("Screen Overlay: ",screenOverlay);
+                  peersContainer.style.display = "block";
+                  // peersContainer.append(peerContainer);
+                  webSocketClient.send('pop');
+                  console.log("Yahan tak aa gaya!!");
+                });
+              });
     }
 
-    // if (mssg_response['closed'] && !mssg_response['queue'].includes(username) && !isHostHere) {
-    //   console.log("Queue has been closed! Sorry!");
-    //   // queueClosedMssg.style.display = "block";
-    //   // peersContainer.style.display = "none";
-    //   queueBtns.style.display="none";
-    //           queueBtns2.style.display="flex";
-    // }
-
-    if(true) {
-
-      queueClosedMssg.style.display = "none";
-      if (!screenOverlay)
-        peersContainer.style.display = "block";
-
-      if (mssg_response['break']&&!isHostHere) {
-        // var peerContent = h(
-        //   "img",
-        //   {
-        //     style: "width:100%;aspect-ratio:16/9;z-index:200;",
-        //     src: "img/coffee.png"
-        //   },
-        // );
-        // // peersContainer.innerHTML="";
-        // coffeeCont.append(peerContent);
+    else{
+      if(!isHostHere&&mssg_response['recentCandidate']==feedback_check_username){
+        screenOverlay = true;
+        feedback_check_username = "<none>";
+        username = "<none>";
+        peersContainer.style.display = "none";
+        feedbackCont.style.display = "flex";
+        const submitFeedbackBtn = document.getElementById('submit-feedback');
+        submitFeedbackBtn.addEventListener('click',(event)=>{
+          event.stopImmediatePropagation();
+          var feedbackCont2 = document.getElementById('candidate-feedback-2');
+          feedbackCont.style.display = "none";
+          feedbackCont2.style.display = "flex";
+        });
       }
-      else if (mssg_response['mssg'] != '' && !isGuesthere && !isHostHere) {
-        console.log(JSON.parse(message.data)['mssg']);
-        mssg = JSON.parse(message.data)['mssg'];
-
-        // peersContainer.append(mssgCont);
-        // mssgCont.style.display="flex";
-
-      }
-      // else if (mssg_response['blobData']!='') {
-      //   var recData = mssg_response['blobData']
-      //   console.log(recData);
-      //   if (!isHostHere && !isGuesthere) {
-      //     peersContainer.innerHTML = "";
-
-      //     var mssgCont = h(
-      //       "div",
-      //       {
-      //         id: "announcement-mssg",
-      //         style:"background-color:#F1F4FB;display: flex;padding: min(15px,1.5vw);z-index: 200;flex-direction: row;justify-content: space-evenly;border-radius: 20px;width: 50%;aspect-ratio: 20/3;margin: auto;margin-top: -20%;font-family: 'Manrope', sans-serif;font-style: normal;font-weight: 500;text-align: center;font-size: min(15px,1.5vw);"
-      //       },
-      //       h(
-      //         "div",
-      //         {
-      //           id: "mssg-img"
-      //         },
-      //         h(
-      //           "img",
-      //           {
-      //             src: "img/hand.png"
-      //           },
-      //           ""
-      //         ),
-      //       ),
-      //       h(
-      //         "div",
-      //         {
-      //           id: "mssg-mssg"
-      //         },
-      //         mssg
-      //       )
-      //     );
-
-      //     var video_rec = h(
-      //       "video",
-      //       {
-      //         style: "width:100%;aspect-ratio:16/9;border-radius:24px;",
-      //         src: recData,
-      //         autoplay: true,
-      //         muted: true,
-      //         playsinline: true,
-      //       }
-      //     );
-      //     // recVideo.src=recData['blobData'];
-      //     peersContainer.append(video_rec);
-      //     if(mssg!=undefined)
-      //       peersContainer.append(mssgCont);
-      //   }
-      // }
-
-      else {
-
-
-        var recData = mssg_response['blobData'];
-        if(recData!=''){
-          console.log(recData);
-          if (!isHostHere && !isGuesthere) {
-            peersContainer.innerHTML = "";
-
-            var mssgCont = h(
-              "div",
-              {
-                id: "announcement-mssg",
-                style:"background-color:#F1F4FB;display: flex;padding: min(15px,1.5vw);z-index: 200;flex-direction: row;justify-content: space-evenly;border-radius: 20px;width: 50%;aspect-ratio: 20/3;margin: auto;margin-top: -20%;font-family: 'Manrope', sans-serif;font-style: normal;font-weight: 500;text-align: center;font-size: min(15px,1.5vw);"
-              },
-              h(
-                "div",
-                {
-                  id: "mssg-img"
-                },
-                h(
-                  "img",
-                  {
-                    src: "img/hand.png"
-                  },
-                  ""
-                ),
-              ),
-              h(
-                "div",
-                {
-                  id: "mssg-mssg"
-                },
-                mssg
-              )
-            );
-
-            var video_rec = h(
-              "video",
-              {
-                style: "width:100%;aspect-ratio:16/9;border-radius:24px;",
-                src: recData,
-                autoplay: true,
-                muted: true,
-                playsinline: true,
-              }
-            );
-            // recVideo.src=recData['blobData'];
-            peersContainer.append(video_rec);
-            if(mssg!=undefined)
-              peersContainer.append(mssgCont);
-          }
-        }
-
-
-
-
-        data = mssg_response;
-        var conf = false;
-        console.log("Received: ", data);
-        console.log(`Username:${username}  Queue Front:${data.front}`);
-        if (data && data.front == username) {
-          console.log('Its your turn');
-          if (count == 1)
-            // conf = confirm('Host is inviting you inside. Are you ready?');
-            confCont.style.display = "flex";
-          const confBtn = document.getElementById('confirm-btn');
-          confBtn.addEventListener('click', () => {
-            --count;
-            confCont.style.display = "none";
-            hmsStore.subscribe(renderPeers, selectPeers);
-          });
-        }
-        if (data && data.next == username) {
-          console.log('You are next');
-          if (nextcount == 1)
-            alert('You are next!');
-          --nextcount;
-        }
-
-        queueContainer.innerHTML = "";
-
-        if (data) {
-          queue = data.queue;
-          var colors = ['#36F599', '#ff3b4e', '#4c67f4', '#ffad0e', '#8f3eb5', '#faf25d'];
-          for (var i = 0; i < queue.length; ++i) {
-            let x = Math.floor(Math.random() * colors.length);
-            console.log(colors[x]);
-            var ith_guest = queue[i];
-            
-              console.log(ith_guest);
-              const queueEle = h(
-                "div",
-                {
-                  class: "queue-ele",
-                  style: "background-color:" + colors[x] + ";"
-                },
-                h(
-                  "span",
-                  {
   
+      // if (mssg_response['closed'] && !mssg_response['queue'].includes(username) && !isHostHere) {
+      //   console.log("Queue has been closed! Sorry!");
+      //   // queueClosedMssg.style.display = "block";
+      //   // peersContainer.style.display = "none";
+      //   queueBtns.style.display="none";
+      //           queueBtns2.style.display="flex";
+      // }
+  
+      if(true) {
+  
+        queueClosedMssg.style.display = "none";
+        if (!screenOverlay)
+          peersContainer.style.display = "block";
+  
+        if (mssg_response['break']&&!isHostHere) {
+          // var peerContent = h(
+          //   "img",
+          //   {
+          //     style: "width:100%;aspect-ratio:16/9;z-index:200;",
+          //     src: "img/coffee.png"
+          //   },
+          // );
+          // // peersContainer.innerHTML="";
+          // coffeeCont.append(peerContent);
+        }
+        else if (mssg_response['mssg'] != '' && !isGuesthere && !isHostHere) {
+          console.log(JSON.parse(message.data)['mssg']);
+          mssg = JSON.parse(message.data)['mssg'];
+  
+          // peersContainer.append(mssgCont);
+          // mssgCont.style.display="flex";
+  
+        }
+        // else if (mssg_response['blobData']!='') {
+        //   var recData = mssg_response['blobData']
+        //   console.log(recData);
+        //   if (!isHostHere && !isGuesthere) {
+        //     peersContainer.innerHTML = "";
+  
+        //     var mssgCont = h(
+        //       "div",
+        //       {
+        //         id: "announcement-mssg",
+        //         style:"background-color:#F1F4FB;display: flex;padding: min(15px,1.5vw);z-index: 200;flex-direction: row;justify-content: space-evenly;border-radius: 20px;width: 50%;aspect-ratio: 20/3;margin: auto;margin-top: -20%;font-family: 'Manrope', sans-serif;font-style: normal;font-weight: 500;text-align: center;font-size: min(15px,1.5vw);"
+        //       },
+        //       h(
+        //         "div",
+        //         {
+        //           id: "mssg-img"
+        //         },
+        //         h(
+        //           "img",
+        //           {
+        //             src: "img/hand.png"
+        //           },
+        //           ""
+        //         ),
+        //       ),
+        //       h(
+        //         "div",
+        //         {
+        //           id: "mssg-mssg"
+        //         },
+        //         mssg
+        //       )
+        //     );
+  
+        //     var video_rec = h(
+        //       "video",
+        //       {
+        //         style: "width:100%;aspect-ratio:16/9;border-radius:24px;",
+        //         src: recData,
+        //         autoplay: true,
+        //         muted: true,
+        //         playsinline: true,
+        //       }
+        //     );
+        //     // recVideo.src=recData['blobData'];
+        //     peersContainer.append(video_rec);
+        //     if(mssg!=undefined)
+        //       peersContainer.append(mssgCont);
+        //   }
+        // }
+  
+        else {
+  
+  
+          var recData = mssg_response['blobData'];
+          if(recData!=''){
+            console.log(recData);
+            if (!isHostHere && !isGuesthere) {
+              peersContainer.innerHTML = "";
+  
+              var mssgCont = h(
+                "div",
+                {
+                  id: "announcement-mssg",
+                  style:"background-color:#F1F4FB;display: flex;padding: min(15px,1.5vw);z-index: 200;flex-direction: row;justify-content: space-evenly;border-radius: 20px;width: 50%;aspect-ratio: 20/3;margin: auto;margin-top: -20%;font-family: 'Manrope', sans-serif;font-style: normal;font-weight: 500;text-align: center;font-size: min(15px,1.5vw);"
+                },
+                h(
+                  "div",
+                  {
+                    id: "mssg-img"
                   },
-                  ith_guest[0].toUpperCase()
+                  h(
+                    "img",
+                    {
+                      src: "img/hand.png"
+                    },
+                    ""
+                  ),
+                ),
+                h(
+                  "div",
+                  {
+                    id: "mssg-mssg"
+                  },
+                  mssg
                 )
               );
   
-              queueContainer.append(queueEle);
-          }
-        }
-
-
-        if(!isHostHere){
-          queueBtns.style.display="flex";
-          queueBtns2.style.display="none";
-          const leftBtn1 = document.getElementById('left-btn1');
-          const leftBtn2 = document.getElementById('left-btn2');
-          const rightBtn = document.getElementById('right-btn');
-          rightBtn.style.backgroundColor = "#4c67f4";
-          rightBtn.style.color = "#ffffff";
-          if(inQueue&&!isGuesthere){
-            leftBtn2.style.display="none";
-            leftBtn1.addEventListener('click',(event)=>{
-              event.stopImmediatePropagation();
-              screenOverlay = true;
-              peersContainer.style.display="none";
-              leaveQ.style.display="flex";
-              var yesBtn = document.getElementById('leave-yes');
-              var noBtn = document.getElementById('leave-no');
-              yesBtn.addEventListener('click',(event)=>{
-                event.stopImmediatePropagation();
-                var index = data.queue.indexOf(username);
-                webSocketClient.send(`<leave>/${index}`);
-                inQueue = false;
-                username = "<none>";
-                leaveQ.style.display="none";
-                peersContainer.style.display="block";
-              });
-              noBtn.addEventListener('click',(event)=>{
-                event.stopImmediatePropagation();
-                leaveQ.style.display="none";
-                peersContainer.style.display="block";
-              });
-
-            });
-            if(username==data.next){
-              leftBtn1.style.display="block";
-              rightBtn.innerHTML = "You are next. The room will open soon...";
+              var video_rec = h(
+                "video",
+                {
+                  style: "width:100%;aspect-ratio:16/9;border-radius:24px;",
+                  src: recData,
+                  autoplay: true,
+                  muted: true,
+                  playsinline: true,
+                }
+              );
+              // recVideo.src=recData['blobData'];
+              peersContainer.append(video_rec);
+              if(mssg!=undefined)
+                peersContainer.append(mssgCont);
             }
-            else if(username==data.queue[2]){
-              leftBtn1.style.display="block";
-              rightBtn.innerHTML = "You are 2<sup>nd</sup> in the Q now.";
+          }
+  
+  
+  
+  
+          data = mssg_response;
+          var conf = false;
+          console.log("Received: ", data);
+          console.log(`Username:${username}  Queue Front:${data.front}`);
+          if (data && data.front == username) {
+            console.log('Its your turn');
+            if (count == 1)
+              // conf = confirm('Host is inviting you inside. Are you ready?');
+              confCont.style.display = "flex";
+            const confBtn = document.getElementById('confirm-btn');
+            confBtn.addEventListener('click', () => {
+              --count;
+              confCont.style.display = "none";
+              hmsStore.subscribe(renderPeers, selectPeers);
+            });
+          }
+          if (data && data.next == username) {
+            console.log('You are next');
+            if (nextcount == 1)
+              alert('You are next!');
+            --nextcount;
+          }
+  
+          queueContainer.innerHTML = "";
+  
+          if (data) {
+            queue = data.queue;
+            var colors = ['#36F599', '#ff3b4e', '#4c67f4', '#ffad0e', '#8f3eb5', '#faf25d'];
+            for (var i = 0; i < queue.length; ++i) {
+              let x = Math.floor(Math.random() * colors.length);
+              console.log(colors[x]);
+              var ith_guest = queue[i];
+              
+                console.log(ith_guest);
+                const queueEle = h(
+                  "div",
+                  {
+                    class: "queue-ele",
+                    style: "background-color:" + colors[x] + ";"
+                  },
+                  h(
+                    "span",
+                    {
+    
+                    },
+                    ith_guest[0].toUpperCase()
+                  )
+                );
+    
+                queueContainer.append(queueEle);
+            }
+          }
+  
+  
+          if(!isHostHere){
+            queueBtns.style.display="flex";
+            queueBtns2.style.display="none";
+            const leftBtn1 = document.getElementById('left-btn1');
+            const leftBtn2 = document.getElementById('left-btn2');
+            const rightBtn = document.getElementById('right-btn');
+            rightBtn.style.backgroundColor = "#4c67f4";
+            rightBtn.style.color = "#ffffff";
+            if(inQueue&&!isGuesthere){
+              leftBtn2.style.display="none";
+              leftBtn1.addEventListener('click',(event)=>{
+                event.stopImmediatePropagation();
+                screenOverlay = true;
+                peersContainer.style.display="none";
+                leaveQ.style.display="flex";
+                var yesBtn = document.getElementById('leave-yes');
+                var noBtn = document.getElementById('leave-no');
+                yesBtn.addEventListener('click',(event)=>{
+                  event.stopImmediatePropagation();
+                  var index = data.queue.indexOf(username);
+                  webSocketClient.send(`<leave>/${index}`);
+                  inQueue = false;
+                  username = "<none>";
+                  leaveQ.style.display="none";
+                  peersContainer.style.display="block";
+                });
+                noBtn.addEventListener('click',(event)=>{
+                  event.stopImmediatePropagation();
+                  leaveQ.style.display="none";
+                  peersContainer.style.display="block";
+                });
+  
+              });
+              if(username==data.next){
+                leftBtn1.style.display="block";
+                rightBtn.innerHTML = "You are next. The room will open soon...";
+              }
+              else if(username==data.queue[2]){
+                leftBtn1.style.display="block";
+                rightBtn.innerHTML = "You are 2<sup>nd</sup> in the Q now.";
+              }
+              else{
+                leftBtn1.style.display="block";
+                rightBtn.innerHTML = "Please wait. You are in the queue";
+              }
+  
+            }
+            else if(isGuesthere){
+              leftBtn1.style.display = "none";
+              rightBtn.style.display = "none";
             }
             else{
-              leftBtn1.style.display="block";
-              rightBtn.innerHTML = "Please wait. You are in the queue";
+              if(data.closed){
+                leftBtn1.style.display="none";
+                rightBtn.innerHTML = "Interviewer is not taking any more Walk-In at this moment";
+                rightBtn.style.backgroundColor = "#ff3b4e";
+                rightBtn.style.color = "#ffffff";
+              }
+              else if(!isGuesthere){
+                queueBtns.style.display="none";
+                queueBtns2.style.display="flex";
+                const rightBtn2 = document.getElementById('right-btn2');
+                rightBtn2.style.cursor = 'pointer';
+                rightBtn2.addEventListener('click',(event)=>{
+                  event.stopImmediatePropagation();
+                  joinBtnGuest.click();
+                });
+              }
             }
-
+  
           }
-          else if(isGuesthere){
-            leftBtn1.style.display = "none";
-            rightBtn.style.display = "none";
-          }
-          else{
-            if(data.closed){
-              leftBtn1.style.display="none";
-              rightBtn.innerHTML = "Interviewer is not taking any more Walk-In at this moment";
-              rightBtn.style.backgroundColor = "#ff3b4e";
-              rightBtn.style.color = "#ffffff";
-            }
-            else if(!isGuesthere){
-              queueBtns.style.display="none";
-              queueBtns2.style.display="flex";
-              const rightBtn2 = document.getElementById('right-btn2');
-              rightBtn2.style.cursor = 'pointer';
-              rightBtn2.addEventListener('click',(event)=>{
-                event.stopImmediatePropagation();
-                joinBtnGuest.click();
-              });
-            }
-          }
-
+  
+  
         }
-
-
       }
     }
+
+
 
 
 
   };
-
-
-  var tooltip = h(
-    "div",
-    {
-      class:"tooltip",
-      id:"tooltip",
-      style:"display:flex;background-color:#ffffff;position:absolute;top:3%;right:1%;"
-    },
-    h(
-      "span",
-      {
-        style:"float:right;"
-      },
-      "X"
-    ),
-    h(
-      "div",
-      {
-
-      },
-      "content"
-    )
-  );
 
 
 
@@ -457,7 +469,7 @@ webSocketClient.onopen = function () {
       cameraScreenStart.style.display = "none";
       peersContainer.style.display = "block";
       hmsStore.subscribe(renderPeers, selectPeers);
-      webSocketClient.send('/startRecording');
+      // webSocketClient.send('/startRecording');
     }, 5000);
 
 
@@ -573,7 +585,7 @@ webSocketClient.onopen = function () {
 
         if(isBreak){
           hmsActions.leave();
-          webSocketClient.send('/stopRecording');
+          // webSocketClient.send('/stopRecording');
           try {
             media_recorder.stop();
           } catch (error) {
@@ -590,7 +602,7 @@ webSocketClient.onopen = function () {
           leaveYes.addEventListener('click',(event)=>{
             event.stopImmediatePropagation();
             hmsActions.leave();
-            webSocketClient.send('/stopRecording');
+            // webSocketClient.send('/stopRecording');
             try {
               media_recorder.stop();
             } catch (error) {
@@ -1055,6 +1067,7 @@ webSocketClient.onopen = function () {
         }
       }
 
+
       if (ele != undefined && ele.videoTrack && video != undefined) {
 
         var video_guest;
@@ -1120,12 +1133,124 @@ webSocketClient.onopen = function () {
 
           buttonControl();
 
-          document.getElementById('remove-person').addEventListener('click', async (event) => {
+          document.getElementById('remove-person').addEventListener('click', (event) => {
             event.stopImmediatePropagation();
-            var remPer = document.getElementById('remove-person');
-            remPer.setAttribute("disabled", false);
-            await hmsActions.removePeer(ele.id, '');
-            webSocketClient.send(`<feedback>/${ele.name}`);
+            
+            if(!tooltipActive){
+              tooltipActive = true;
+              var remPer = document.getElementById('remove-person');
+              remPer.setAttribute("disabled", false);
+              var removetooltip = h(
+                "div",
+                {
+                  class:"tooltip",
+                  id:"removetooltip",
+                  style:"width:50%;display:flex;background-color:#ffffff;position:absolute;top:3%;right:1%;z-index:100;border-radius:min(15px,1.5vw);"
+                },
+                h(
+                  "div",
+                  {
+                    id:"close-tip",
+                    style:"position:absolute;top:-4%;right:-4%;background-color:#ffffff;font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);padding:min(8px,0.8vw);border-radius:50%;font-weight:500;cursor:pointer;"
+                  },
+                  "x"
+                ),
+                h(
+                  "div",
+                  {
+                    id:"remove-tip",
+                  },
+                  h(
+                    "p",
+                    {
+                      style:"font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);padding:min(10px,1vw);"
+                    },
+                    "Are you sure you want to evict the candidate from the room?"
+                  ),
+                  h(
+                    "p",
+                    {
+                      style:"font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);font-weight:500;padding:min(10px,1vw);"
+                    },
+                    h(
+                      "span",
+                      {
+                        id:"remove-yes"
+                      },
+                      "Yes"
+                    ),
+                    h(
+                      "span",
+                      {
+                        style:"font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);font-weight:500;padding:min(10px,1vw);"
+                      },
+                      " | "
+                    ),
+                    h(
+                      "span",
+                      {
+                        id:"remove-no"
+                      },
+                      "No"
+                    )
+                  )
+                )
+              );
+              peerContainer.append(removetooltip);
+    
+              const closeTip = document.getElementById('close-tip');
+              closeTip.addEventListener('click',(event)=>{
+                event.stopImmediatePropagation();
+                const currentTip = document.getElementById('removetooltip');
+                peerContainer.removeChild(currentTip);
+                tooltipActive = false;
+              });
+  
+              const removeYes = document.getElementById('remove-yes');
+              removeYes.addEventListener('click',async (event)=>{
+                event.stopImmediatePropagation();
+                evictedSomeone = true;
+                evictedId = ele.id;
+                await hmsActions.removePeer(ele.id, '');
+                webSocketClient.send(`<feedback>/${ele.name}`);  
+
+
+                // screenOverlay = true;
+                // console.log("Screen Overlay: ",screenOverlay);
+                // peersContainer.style.display = "none";
+                // // peersContainer.innerHTML = "";
+                // reviewPage1.style.display = "flex";
+                // var nextButton = document.getElementById('review-next');
+                // nextButton.addEventListener('click', (event) => {
+                //   event.stopImmediatePropagation();
+                //   reviewPage1.style.display = "none";
+                //   reviewPage2.style.display = "flex";
+                //   var submitFeed = document.getElementById('review-submit');
+                //   submitFeed.addEventListener('click', (event) => {
+                //     event.stopImmediatePropagation();
+                //     reviewPage2.style.display = "none";
+                //     // screenOverlay = false;
+                //     console.log("Screen Overlay: ",screenOverlay);
+                //     peersContainer.style.display = "block";
+                //     // peersContainer.append(peerContainer);
+                //     webSocketClient.send('pop');
+                //     console.log("Yahan tak aa gaya!!");
+                //   });
+                // });
+
+
+              });
+  
+              const removeNo = document.getElementById('remove-no');
+              removeNo.addEventListener('click',(event)=>{
+                event.stopImmediatePropagation();
+                const currentTip = document.getElementById('removetooltip');
+                peerContainer.removeChild(currentTip);
+                tooltipActive = false;
+              });
+            }
+
+
             // webSocketClient.send(`remove/${ele.name}`);
             // webSocketClient.send('pop');
           });
@@ -1279,6 +1404,9 @@ webSocketClient.onopen = function () {
       }
 
       else if (isHostHere && !screenOverlay) {
+
+        console.log("Entered here again");
+
         const peerContainer = h(
           "div",
           {
@@ -1324,9 +1452,46 @@ webSocketClient.onopen = function () {
 
         document.getElementById('remove-person').addEventListener('click', async (event) => {
           event.stopImmediatePropagation();
-          var remPer = document.getElementById('remove-person');
-          remPer.setAttribute("disabled", true);
-          peerContainer.append(tooltip);
+          if(!tooltipActive){
+            tooltipActive = true;
+            var remPer = document.getElementById('remove-person');
+            remPer.setAttribute("disabled", true);
+  
+            var removetooltip = h(
+              "div",
+              {
+                class:"tooltip",
+                id:"removetooltip",
+                style:"width:50%;display:flex;background-color:#ffffff;position:absolute;top:3%;right:1%;z-index:100;border-radius:min(15px,1.5vw);"
+              },
+              h(
+                "div",
+                {
+                  id:"close-tip",
+                  style:"position:absolute;top:-4%;right:-4%;background-color:#ffffff;font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);padding:min(8px,0.8vw);border-radius:50%;font-weight:500;cursor:pointer;"
+                },
+                "x"
+              ),
+              h(
+                "div",
+                {
+                  id:"remove-tip",
+                  style:"font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);padding:min(10px,1vw);"
+                },
+                "No one is in the room. You can can use this feature to remove the candidate from the interview room"
+              )
+            );
+            peerContainer.append(removetooltip);
+  
+            const closeTip = document.getElementById('close-tip');
+            closeTip.addEventListener('click',(event)=>{
+              event.stopImmediatePropagation();
+              console.log("Close Tip Pressed!");
+              const currentTip = document.getElementById('removetooltip');
+              peerContainer.removeChild(currentTip);
+              tooltipActive = false;
+            });
+          }
           // await hmsActions.removePeer(ele.id, '');
           // // webSocketClient.send('pop');
           // webSocketClient.send(`remove/${ele.name}`);
@@ -1352,23 +1517,25 @@ webSocketClient.onopen = function () {
         addPer.setAttribute('disabled', false);
         addPer.addEventListener('click', (event) => {
           event.stopImmediatePropagation();
-          screenOverlay = true
-          peersContainer.style.display = "none";
-          reviewPage1.style.display = "flex";
-          var nextButton = document.getElementById('review-next');
-          nextButton.addEventListener('click', (event) => {
-            event.stopImmediatePropagation();
-            reviewPage1.style.display = "none";
-            reviewPage2.style.display = "flex";
-            var submitFeed = document.getElementById('review-submit');
-            submitFeed.addEventListener('click', (event) => {
-              event.stopImmediatePropagation();
-              reviewPage2.style.display = "none";
-              peersContainer.style.display = "block";
-              screenOverlay = false;
-              webSocketClient.send('pop');
-            });
-          });
+
+          // screenOverlay = true
+          //       peersContainer.style.display = "none";
+          //       reviewPage1.style.display = "flex";
+          //       var nextButton = document.getElementById('review-next');
+          //       nextButton.addEventListener('click', (event) => {
+          //         event.stopImmediatePropagation();
+          //         reviewPage1.style.display = "none";
+          //         reviewPage2.style.display = "flex";
+          //         var submitFeed = document.getElementById('review-submit');
+          //         submitFeed.addEventListener('click', (event) => {
+          //           event.stopImmediatePropagation();
+          //           reviewPage2.style.display = "none";
+          //           screenOverlay = false;
+          //           peersContainer.style.display = "block";
+          //           webSocketClient.send('pop');
+          //         });
+          //       });
+          
         });
 
         document.getElementById('chat').addEventListener('click', (event) => {
