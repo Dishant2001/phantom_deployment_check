@@ -416,27 +416,32 @@ webSocketClient.onopen = function () {
           queue = data.queue;
           var colors = ['#36F599', '#ff3b4e', '#4c67f4', '#ffad0e', '#8f3eb5', '#faf25d'];
           for (var i = 0; i < queue.length; ++i) {
-            let x = Math.floor(Math.random() * colors.length);
-            console.log(colors[x]);
-            var ith_guest = queue[i];
 
-            console.log(ith_guest);
-            const queueEle = h(
-              "div",
-              {
-                class: "queue-ele",
-                style: "background-color:" + colors[x] + ";"
-              },
-              h(
-                "span",
+            if(queue[i]!='<start>'){
+
+              let x = Math.floor(Math.random() * colors.length);
+              console.log(colors[x]);
+              var ith_guest = queue[i];
+  
+              console.log(ith_guest);
+              const queueEle = h(
+                "div",
                 {
-
+                  class: "queue-ele",
+                  style: "background-color:" + colors[x] + ";"
                 },
-                ith_guest[0].toUpperCase()
-              )
-            );
+                h(
+                  "span",
+                  {
+  
+                  },
+                  ith_guest[0].toUpperCase()
+                )
+              );
+  
+              queueContainer.append(queueEle);
+            }
 
-            queueContainer.append(queueEle);
           }
         }
 
