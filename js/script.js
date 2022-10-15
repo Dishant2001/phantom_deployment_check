@@ -78,8 +78,8 @@ var recentBreak = false;
 
 
 
-// const webSocketClient = new WebSocket("wss://3.137.162.168:5000");
-const webSocketClient = new WebSocket("ws://localhost:5000");
+const webSocketClient = new WebSocket("wss://3.137.162.168:5000");
+// const webSocketClient = new WebSocket("ws://localhost:5000");
 
 webSocketClient.onclose = function () {
   console.log("Connection closed!");
