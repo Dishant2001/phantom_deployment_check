@@ -105,14 +105,14 @@ webSocketClient.onopen = function () {
       checkTurn = 2;
     }
 
-    if(!isHostHere&&mssg_response['recentCandidate']==feedback_check_username){
+    if (!isHostHere && mssg_response['recentCandidate'] == feedback_check_username) {
       screenOverlay = true;
       feedback_check_username = "<none>";
       username = "<none>";
       peersContainer.style.display = "none";
       feedbackCont.style.display = "flex";
       const submitFeedbackBtn = document.getElementById('submit-feedback');
-      submitFeedbackBtn.addEventListener('click',(event)=>{
+      submitFeedbackBtn.addEventListener('click', (event) => {
         event.stopImmediatePropagation();
         var feedbackCont2 = document.getElementById('candidate-feedback-2');
         feedbackCont.style.display = "none";
@@ -128,20 +128,20 @@ webSocketClient.onopen = function () {
     //           queueBtns2.style.display="flex";
     // }
 
-    if(true) {
+    if (true) {
 
       queueClosedMssg.style.display = "none";
       if (!screenOverlay)
         peersContainer.style.display = "block";
 
-      if(!mssg_response['break']&&recentBreak){
+      if (!mssg_response['break'] && recentBreak) {
         // peersContainer.style.display = "block";
         screenOverlay = false;
         breakNotice.style.display = "none";
         recentBreak = false;
       }
 
-      if (mssg_response['break']&&!isHostHere) {
+      if (mssg_response['break'] && !isHostHere) {
         peersContainer.style.display = "none";
         screenOverlay = true;
         breakNotice.style.display = "flex";
@@ -149,28 +149,28 @@ webSocketClient.onopen = function () {
         recentBreak = true;
 
         const timeRemaining = document.getElementById('time-remaining');
-        var timeInSeconds = duration*60;
-              (async function timer(){
-                if(timeInSeconds>0){
-                  setTimeout(()=>{
-                    var minutes = Math.floor(timeInSeconds/60);
-                    var seconds = timeInSeconds%60;
-                    if(seconds>=10)
-                      timeRemaining.innerText = `${minutes}:${seconds}`;
-                    else
-                      timeRemaining.innerText = `${minutes}:0${seconds}`;
-                    timeInSeconds--;
-                    timer();
-                  },1000);
-                }
-                else{
-                  console.log("Timer over!");
-                  // currentVal = 0;
-                  // timeInSeconds = 0;
-                  // readyToOpenRoom = false;
-                  timeRemaining.innerText = "";
-                }
-              })();
+        var timeInSeconds = duration * 60;
+        (async function timer() {
+          if (timeInSeconds > 0) {
+            setTimeout(() => {
+              var minutes = Math.floor(timeInSeconds / 60);
+              var seconds = timeInSeconds % 60;
+              if (seconds >= 10)
+                timeRemaining.innerText = `${minutes}:${seconds}`;
+              else
+                timeRemaining.innerText = `${minutes}:0${seconds}`;
+              timeInSeconds--;
+              timer();
+            }, 1000);
+          }
+          else {
+            console.log("Timer over!");
+            // currentVal = 0;
+            // timeInSeconds = 0;
+            // readyToOpenRoom = false;
+            timeRemaining.innerText = "";
+          }
+        })();
 
       }
 
@@ -236,7 +236,90 @@ webSocketClient.onopen = function () {
       else {
 
 
+
+        // if(mssg_response.hasOwnProperty('videoBlob')){
+        //   // const reader = new FileReader();
+
+        //   // var arrayBuff = reader.readAsArrayBuffer(mssg_response['videoBlob']);
+        //   var byteCharacters = mssg_response['videoBlob']; 
+        //   console.log('Base64 string received: ',byteCharacters);
+        //   // var byteCharacters = atob(vidBlob);
+
+        //   // const byteNumbers = new Array(byteCharacters.length);
+        //   // for (let i = 0; i < byteCharacters.length; i++) {
+        //   //     byteNumbers[i] = byteCharacters.charCodeAt(i);
+        //   // }
+
+        //   // const byteArray = new Uint8Array(byteNumbers);
+
+        //   // const blob = new Blob([byteArray], {type: 'video/webm'});
+
+        //   // // var myReceivedBlob = new Blob(vidBlob, { type: 'video/webm' })
+        //   // console.log("Video Blob: ",blob); 
+
+        // }
+
         var recData = mssg_response['blobData'];
+        // var byteCharacters = mssg_response['videoBlob'];
+
+        // (async function recordStream() {
+        //   if (byteCharacters != '') {
+        //     // console.log("Byte Data: ",byteCharacters);
+
+        //     const base64Response = await fetch(`${byteCharacters}`);
+        //     const blob = await base64Response.blob();
+
+        //     var recData = URL.createObjectURL(blob);
+        //     console.log("Received video: ", blob);
+        //     if (!isHostHere && !isGuesthere) {
+        //       peersContainer.innerHTML = "";
+
+        //       var mssgCont = h(
+        //         "div",
+        //         {
+        //           id: "announcement-mssg",
+        //           style: "background-color:#F1F4FB;display: flex;padding: min(15px,1.5vw);z-index: 200;flex-direction: row;justify-content: space-evenly;border-radius: 20px;width: 50%;aspect-ratio: 20/3;margin: auto;margin-top: -20%;font-family: 'Manrope', sans-serif;font-style: normal;font-weight: 500;text-align: center;font-size: min(15px,1.5vw);"
+        //         },
+        //         h(
+        //           "div",
+        //           {
+        //             id: "mssg-img"
+        //           },
+        //           h(
+        //             "img",
+        //             {
+        //               src: "img/hand.png"
+        //             },
+        //             ""
+        //           ),
+        //         ),
+        //         h(
+        //           "div",
+        //           {
+        //             id: "mssg-mssg"
+        //           },
+        //           mssg
+        //         )
+        //       );
+
+        //       var video_rec = h(
+        //         "video",
+        //         {
+        //           style: "width:100%;aspect-ratio:16/9;border-radius:24px;",
+        //           src: recData,
+        //           autoplay: true,
+        //           muted: true,
+        //           playsinline: true,
+        //         }
+        //       );
+        //       // recVideo.src=recData['blobData'];
+        //       peersContainer.append(video_rec);
+        //       if (mssg != undefined)
+        //         peersContainer.append(mssgCont);
+        //     }
+        //   }
+        // })();
+
         if(recData!=''){
           console.log(recData);
           if (!isHostHere && !isGuesthere) {
@@ -322,92 +405,92 @@ webSocketClient.onopen = function () {
             let x = Math.floor(Math.random() * colors.length);
             console.log(colors[x]);
             var ith_guest = queue[i];
-            
-              console.log(ith_guest);
-              const queueEle = h(
-                "div",
+
+            console.log(ith_guest);
+            const queueEle = h(
+              "div",
+              {
+                class: "queue-ele",
+                style: "background-color:" + colors[x] + ";"
+              },
+              h(
+                "span",
                 {
-                  class: "queue-ele",
-                  style: "background-color:" + colors[x] + ";"
+
                 },
-                h(
-                  "span",
-                  {
-  
-                  },
-                  ith_guest[0].toUpperCase()
-                )
-              );
-  
-              queueContainer.append(queueEle);
+                ith_guest[0].toUpperCase()
+              )
+            );
+
+            queueContainer.append(queueEle);
           }
         }
 
 
-        if(!isHostHere){
-          queueBtns.style.display="flex";
-          queueBtns2.style.display="none";
+        if (!isHostHere) {
+          queueBtns.style.display = "flex";
+          queueBtns2.style.display = "none";
           const leftBtn1 = document.getElementById('left-btn1');
           const leftBtn2 = document.getElementById('left-btn2');
           const rightBtn = document.getElementById('right-btn');
           rightBtn.style.backgroundColor = "#4c67f4";
           rightBtn.style.color = "#ffffff";
-          if(inQueue&&!isGuesthere){
-            leftBtn2.style.display="none";
-            leftBtn1.addEventListener('click',(event)=>{
+          if (inQueue && !isGuesthere) {
+            leftBtn2.style.display = "none";
+            leftBtn1.addEventListener('click', (event) => {
               event.stopImmediatePropagation();
               screenOverlay = true;
-              peersContainer.style.display="none";
-              leaveQ.style.display="flex";
+              peersContainer.style.display = "none";
+              leaveQ.style.display = "flex";
               var yesBtn = document.getElementById('leave-yes');
               var noBtn = document.getElementById('leave-no');
-              yesBtn.addEventListener('click',(event)=>{
+              yesBtn.addEventListener('click', (event) => {
                 event.stopImmediatePropagation();
                 var index = data.queue.indexOf(username);
                 webSocketClient.send(`<leave>/${index}`);
                 inQueue = false;
                 username = "<none>";
-                leaveQ.style.display="none";
-                peersContainer.style.display="block";
+                leaveQ.style.display = "none";
+                peersContainer.style.display = "block";
               });
-              noBtn.addEventListener('click',(event)=>{
+              noBtn.addEventListener('click', (event) => {
                 event.stopImmediatePropagation();
-                leaveQ.style.display="none";
-                peersContainer.style.display="block";
+                leaveQ.style.display = "none";
+                peersContainer.style.display = "block";
               });
 
             });
-            if(username==data.next){
-              leftBtn1.style.display="block";
+            if (username == data.next) {
+              leftBtn1.style.display = "block";
               rightBtn.innerHTML = "You are next. The room will open soon...";
             }
-            else if(username==data.queue[2]){
-              leftBtn1.style.display="block";
+            else if (username == data.queue[2]) {
+              leftBtn1.style.display = "block";
               rightBtn.innerHTML = "You are 2<sup>nd</sup> in the Q now.";
             }
-            else{
-              leftBtn1.style.display="block";
+            else {
+              leftBtn1.style.display = "block";
               rightBtn.innerHTML = "Please wait. You are in the queue";
             }
 
           }
-          else if(isGuesthere){
+          else if (isGuesthere) {
             leftBtn1.style.display = "none";
             rightBtn.style.display = "none";
           }
-          else{
-            if(data.closed){
-              leftBtn1.style.display="none";
+          else {
+            if (data.closed) {
+              leftBtn1.style.display = "none";
               rightBtn.innerHTML = "Interviewer is not taking any more Walk-In at this moment";
               rightBtn.style.backgroundColor = "#ff3b4e";
               rightBtn.style.color = "#ffffff";
             }
-            else if(!isGuesthere){
-              queueBtns.style.display="none";
-              queueBtns2.style.display="flex";
+            else if (!isGuesthere) {
+              queueBtns.style.display = "none";
+              queueBtns2.style.display = "flex";
               const rightBtn2 = document.getElementById('right-btn2');
               rightBtn2.style.cursor = 'pointer';
-              rightBtn2.addEventListener('click',(event)=>{
+              rightBtn2.addEventListener('click', (event) => {
                 event.stopImmediatePropagation();
                 joinBtnGuest.click();
               });
@@ -466,6 +549,7 @@ webSocketClient.onopen = function () {
       cameraScreenStart.style.display = "none";
       peersContainer.style.display = "block";
       hmsStore.subscribe(renderPeers, selectPeers);
+      // webSocketClient.send(JSON.stringify({ 'enqueue': "<start>" }));
       // webSocketClient.send('/startRecording');
     }, 5000);
 
@@ -498,6 +582,18 @@ webSocketClient.onopen = function () {
         console.log("video url: ", video_local);
         // recVideo.src=video_local;
         webSocketClient.send(JSON.stringify({ 'blobData': video_local }));
+        // var myblob = new Blob(blobs_recorded, { type: 'video/webm' });
+
+        // var reader = new FileReader();
+        // reader.readAsDataURL(myblob);
+        // reader.onloadend = function () {
+        //   var base64String = reader.result;
+        //   // console.log('Base64 String - ', base64String);
+        //   // console.log("Blob data before sending: ",myblob);
+        //   webSocketClient.send(base64String);
+
+        // }
+
 
       });
       media_recorder.start();
@@ -541,7 +637,7 @@ webSocketClient.onopen = function () {
     //   headers: { "Content-Type": "application/json"},
     //   body: JSON.stringify({'user':username})
     // });
-    webSocketClient.send(username);
+    webSocketClient.send(JSON.stringify({ 'enqueue': username }));
     inQueue = true;
 
     // console.log(resp_data);
@@ -580,7 +676,7 @@ webSocketClient.onopen = function () {
       }
       else {
 
-        if(isBreak){
+        if (isBreak) {
           hmsActions.leave();
           // webSocketClient.send('/stopRecording');
           try {
@@ -590,13 +686,13 @@ webSocketClient.onopen = function () {
           }
         }
 
-        else{
+        else {
           screenOverlay = true;
           peersContainer.style.display = "none";
           closeAlert1.style.display = "flex";
           const leaveYes = document.getElementById('close-yes');
           const leaveNo = document.getElementById('close-no');
-          leaveYes.addEventListener('click',(event)=>{
+          leaveYes.addEventListener('click', (event) => {
             event.stopImmediatePropagation();
             hmsActions.leave();
             // webSocketClient.send('/stopRecording');
@@ -608,21 +704,21 @@ webSocketClient.onopen = function () {
             closeAlert1.style.display = "none";
             closeAlert2.style.display = "flex";
             const roomOpen = document.getElementById('room-open');
-            roomOpen.addEventListener('click',(event)=>{
+            roomOpen.addEventListener('click', (event) => {
               event.stopImmediatePropagation();
               closeAlert2.style.display = "none";
-                  peersContainer.style.display = "none";
-                  joinBtn.click();
-                  setTimeout(()=>{
-                    screenOverlay = false;
-                  },1000);
-                  // screenOverlay = false;
+              peersContainer.style.display = "none";
+              joinBtn.click();
+              setTimeout(() => {
+                screenOverlay = false;
+              }, 1000);
+              // screenOverlay = false;
             });
-  
-  
+
+
           });
 
-          leaveNo.addEventListener('click',(event)=>{
+          leaveNo.addEventListener('click', (event) => {
             event.stopImmediatePropagation();
             closeAlert1.style.display = "none";
             screenOverlay = false;
@@ -687,7 +783,7 @@ webSocketClient.onopen = function () {
         hmsActions.setLocalAudioEnabled(audioEnabled);
         console.log('Audio: ', audioEnabled);
         const mic_img = document.getElementById('mic-img');
-        mic_img.src = audioEnabled?"img/mic.png":"img/mic_red.png";
+        mic_img.src = audioEnabled ? "img/mic.png" : "img/mic_red.png";
         // mic.style.backgroundColor = audioEnabled ? "#fafafb" : "#ff3459";
         mic.setAttribute('listener', 'true');
       });
@@ -699,7 +795,7 @@ webSocketClient.onopen = function () {
         const videoEnabled = !hmsStore.getState(selectIsLocalVideoEnabled);
         hmsActions.setLocalVideoEnabled(videoEnabled);
         const cam_img = document.getElementById('cam-img');
-        cam_img.src = videoEnabled?"img/cam.png":"img/cam_red.png";
+        cam_img.src = videoEnabled ? "img/cam.png" : "img/cam_red.png";
         // cam.style.backgroundColor = videoEnabled ? "#fafafb" : "#ff3459";
         // var color = cam.style.backgroundColor;
         // if(color=="#fafafb")
@@ -795,7 +891,7 @@ webSocketClient.onopen = function () {
       h(
         "img",
         {
-          id:"mic-img",
+          id: "mic-img",
           src: "img/mic_red.png",
           style: "margin:auto;width:50%;"
         }
@@ -826,7 +922,7 @@ webSocketClient.onopen = function () {
       h(
         "img",
         {
-          id:'cam-img',
+          id: 'cam-img',
           src: "img/cam.png",
           style: "margin:auto;width:50%;"
         }
@@ -916,15 +1012,15 @@ webSocketClient.onopen = function () {
         h(
           "p",
           {
-            style:"margin:auto;"
+            style: "margin:auto;"
           },
           "Evict"
         ),
         h(
           "div",
           {
-            id:"remove-person-hover",
-            style:"position:absolute;top:5%;left:100%;display:none;font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);padding:min(8px,0.8vw);background-color:#ff3459;color:#ffffff;width:110%;aspect-ratio:5;"
+            id: "remove-person-hover",
+            style: "position:absolute;top:5%;left:100%;display:none;font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);padding:min(8px,0.8vw);background-color:#ff3459;color:#ffffff;width:110%;aspect-ratio:5;"
           },
           "Remove from the room"
         )
@@ -945,15 +1041,15 @@ webSocketClient.onopen = function () {
         h(
           "p",
           {
-            style:"margin:auto;"
+            style: "margin:auto;"
           },
           "Next"
         ),
         h(
           "div",
           {
-            id:"add-person-hover",
-            style:"position:absolute;top:20%;left:100%;display:none;font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);padding:min(8px,0.8vw);background-color:#ffffff;color:black;width:110%;aspect-ratio:5;"
+            id: "add-person-hover",
+            style: "position:absolute;top:20%;left:100%;display:none;font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);padding:min(8px,0.8vw);background-color:#ffffff;color:black;width:110%;aspect-ratio:5;"
           },
           "Ask next to enter"
         )
@@ -974,18 +1070,18 @@ webSocketClient.onopen = function () {
         h(
           "p",
           {
-            id:"q-close-para",
-            style:"margin:auto;"
+            id: "q-close-para",
+            style: "margin:auto;"
           },
-          queueOpen?"Halt":"Allow"
+          queueOpen ? "Halt" : "Allow"
         ),
         h(
           "div",
           {
-            id:"pause-person-hover",
-            style:"position:absolute;top:35%;left:100%;display:none;font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);padding:min(8px,0.8vw);background-color:#ffffff;color:black;width:110%;aspect-ratio:5;"
+            id: "pause-person-hover",
+            style: "position:absolute;top:35%;left:100%;display:none;font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);padding:min(8px,0.8vw);background-color:#ffffff;color:black;width:110%;aspect-ratio:5;"
           },
-          queueOpen?"Stop more candidates to join":"Allow more candidates to join"
+          queueOpen ? "Stop more candidates to join" : "Allow more candidates to join"
         )
         // h(
         //   "img",
@@ -1011,8 +1107,8 @@ webSocketClient.onopen = function () {
         h(
           "div",
           {
-            id:"announce-person-hover",
-            style:"position:absolute;top:50%;left:100%;display:none;font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);padding:min(8px,0.8vw);background-color:#ffffff;color:black;width:110%;aspect-ratio:5;"
+            id: "announce-person-hover",
+            style: "position:absolute;top:50%;left:100%;display:none;font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);padding:min(8px,0.8vw);background-color:#ffffff;color:black;width:110%;aspect-ratio:5;"
           },
           "Announce a message to everyone"
         )
@@ -1033,8 +1129,8 @@ webSocketClient.onopen = function () {
         h(
           "div",
           {
-            id:"break-person-hover",
-            style:"position:absolute;top:65%;left:100%;display:none;font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);padding:min(8px,0.8vw);background-color:#ffffff;color:black;width:110%;aspect-ratio:5;"
+            id: "break-person-hover",
+            style: "position:absolute;top:65%;left:100%;display:none;font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);padding:min(8px,0.8vw);background-color:#ffffff;color:black;width:110%;aspect-ratio:5;"
           },
           "Take a break"
         )
@@ -1048,15 +1144,15 @@ webSocketClient.onopen = function () {
         h(
           "p",
           {
-            style:"margin:auto;"
+            style: "margin:auto;"
           },
           "Stop"
         ),
         h(
           "div",
           {
-            id:"call-person-hover",
-            style:"position:absolute;top:80%;left:100%;display:none;font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);padding:min(8px,0.8vw);background-color:#ffffff;color:black;width:110%;aspect-ratio:5;"
+            id: "call-person-hover",
+            style: "position:absolute;top:80%;left:100%;display:none;font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);padding:min(8px,0.8vw);background-color:#ffffff;color:black;width:110%;aspect-ratio:5;"
           },
           "Close the room"
         )
@@ -1180,50 +1276,50 @@ webSocketClient.onopen = function () {
           buttonControl();
 
           var removePersonBtn = document.getElementById('remove-person')
-          removePersonBtn.addEventListener('mouseover',()=>{
+          removePersonBtn.addEventListener('mouseover', () => {
             document.getElementById('remove-person-hover').style.display = "block";
           });
-          removePersonBtn.addEventListener('mouseleave',()=>{
+          removePersonBtn.addEventListener('mouseleave', () => {
             document.getElementById('remove-person-hover').style.display = "none";
           });
 
           var addPersonBtn = document.getElementById('add-person')
-          addPersonBtn.addEventListener('mouseover',()=>{
+          addPersonBtn.addEventListener('mouseover', () => {
             document.getElementById('add-person-hover').style.display = "block";
           });
-          addPersonBtn.addEventListener('mouseleave',()=>{
+          addPersonBtn.addEventListener('mouseleave', () => {
             document.getElementById('add-person-hover').style.display = "none";
           });
 
           var pausePersonBtn = document.getElementById('q-close')
-          pausePersonBtn.addEventListener('mouseover',()=>{
+          pausePersonBtn.addEventListener('mouseover', () => {
             document.getElementById('pause-person-hover').style.display = "block";
           });
-          pausePersonBtn.addEventListener('mouseleave',()=>{
+          pausePersonBtn.addEventListener('mouseleave', () => {
             document.getElementById('pause-person-hover').style.display = "none";
           });
 
           var announcePersonBtn = document.getElementById('chat')
-          announcePersonBtn.addEventListener('mouseover',()=>{
+          announcePersonBtn.addEventListener('mouseover', () => {
             document.getElementById('announce-person-hover').style.display = "block";
           });
-          announcePersonBtn.addEventListener('mouseleave',()=>{
+          announcePersonBtn.addEventListener('mouseleave', () => {
             document.getElementById('announce-person-hover').style.display = "none";
           });
 
           var breakPersonBtn = document.getElementById('coffee-break')
-          breakPersonBtn.addEventListener('mouseover',()=>{
+          breakPersonBtn.addEventListener('mouseover', () => {
             document.getElementById('break-person-hover').style.display = "block";
           });
-          breakPersonBtn.addEventListener('mouseleave',()=>{
+          breakPersonBtn.addEventListener('mouseleave', () => {
             document.getElementById('break-person-hover').style.display = "none";
           });
 
           var closePersonBtn = document.getElementById('call')
-          closePersonBtn.addEventListener('mouseover',()=>{
+          closePersonBtn.addEventListener('mouseover', () => {
             document.getElementById('call-person-hover').style.display = "block";
           });
-          closePersonBtn.addEventListener('mouseleave',()=>{
+          closePersonBtn.addEventListener('mouseleave', () => {
             document.getElementById('call-person-hover').style.display = "none";
           });
 
@@ -1231,8 +1327,8 @@ webSocketClient.onopen = function () {
             event.stopImmediatePropagation();
 
             console.log('Evict btn clicked again');
-            
-            if(!tooltipActive){
+
+            if (!tooltipActive) {
               console.log("Yahan bhi aa gaya!");
               tooltipActive = true;
               var remPer = document.getElementById('remove-person');
@@ -1240,53 +1336,53 @@ webSocketClient.onopen = function () {
               var removetooltip = h(
                 "div",
                 {
-                  class:"tooltip",
-                  id:"removetooltip",
-                  style:"width:50%;display:flex;background-color:#ffffff;position:absolute;top:3%;right:1%;z-index:100;border-radius:min(15px,1.5vw);"
+                  class: "tooltip",
+                  id: "removetooltip",
+                  style: "width:50%;display:flex;background-color:#ffffff;position:absolute;top:3%;right:1%;z-index:100;border-radius:min(15px,1.5vw);"
                 },
                 h(
                   "div",
                   {
-                    id:"close-tip",
-                    style:"position:absolute;top:-4%;right:-4%;background-color:#ffffff;font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);padding:min(8px,0.8vw);border-radius:50%;font-weight:600;cursor:pointer;"
+                    id: "close-tip",
+                    style: "position:absolute;top:-4%;right:-4%;background-color:#ffffff;font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);padding:min(8px,0.8vw);border-radius:50%;font-weight:600;cursor:pointer;"
                   },
                   "x"
                 ),
                 h(
                   "div",
                   {
-                    id:"remove-tip",
+                    id: "remove-tip",
                   },
                   h(
                     "p",
                     {
-                      style:"font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);padding:min(10px,1vw);"
+                      style: "font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);padding:min(10px,1vw);"
                     },
                     "Are you sure you want to evict the candidate from the room?"
                   ),
                   h(
                     "p",
                     {
-                      style:"font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);font-weight:600;padding:min(10px,1vw);cursor:pointer;"
+                      style: "font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);font-weight:600;padding:min(10px,1vw);cursor:pointer;"
                     },
                     h(
                       "span",
                       {
-                        id:"remove-yes"
+                        id: "remove-yes"
                       },
                       "Yes"
                     ),
                     h(
                       "span",
                       {
-                        style:"font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);font-weight:500;padding:min(10px,1vw);"
+                        style: "font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);font-weight:500;padding:min(10px,1vw);"
                       },
                       " | "
                     ),
                     h(
                       "span",
                       {
-                        id:"remove-no"
+                        id: "remove-no"
                       },
                       "No"
                     )
@@ -1294,25 +1390,25 @@ webSocketClient.onopen = function () {
                 )
               );
               peerContainer.append(removetooltip);
-    
+
               const closeTip = document.getElementById('close-tip');
-              closeTip.addEventListener('click',(event)=>{
+              closeTip.addEventListener('click', (event) => {
                 event.stopImmediatePropagation();
                 const currentTip = document.getElementById('removetooltip');
                 peerContainer.removeChild(currentTip);
                 tooltipActive = false;
               });
-  
+
               const removeYes = document.getElementById('remove-yes');
-              removeYes.addEventListener('click',async (event)=>{
+              removeYes.addEventListener('click', async (event) => {
                 event.stopImmediatePropagation();
                 await hmsActions.removePeer(ele.id, '');
-                webSocketClient.send(`<feedback>/${ele.name}`);  
+                webSocketClient.send(`<feedback>/${ele.name}`);
                 tooltipActive = false;
 
 
                 screenOverlay = true;
-                console.log("Screen Overlay: ",screenOverlay);
+                console.log("Screen Overlay: ", screenOverlay);
                 peersContainer.style.display = "none";
                 // peersContainer.innerHTML = "";
                 reviewPage1.style.display = "flex";
@@ -1326,7 +1422,7 @@ webSocketClient.onopen = function () {
                     event.stopImmediatePropagation();
                     reviewPage2.style.display = "none";
                     screenOverlay = false;
-                    console.log("Screen Overlay: ",screenOverlay);
+                    console.log("Screen Overlay: ", screenOverlay);
                     peersContainer.style.display = "block";
                     // peersContainer.append(peerContainer);
                     // webSocketClient.send('pop');
@@ -1337,9 +1433,9 @@ webSocketClient.onopen = function () {
 
 
               });
-  
+
               const removeNo = document.getElementById('remove-no');
-              removeNo.addEventListener('click',(event)=>{
+              removeNo.addEventListener('click', (event) => {
                 event.stopImmediatePropagation();
                 const currentTip = document.getElementById('removetooltip');
                 peerContainer.removeChild(currentTip);
@@ -1357,60 +1453,60 @@ webSocketClient.onopen = function () {
             if (queueOpen) {
 
 
-              if(!tooltipActive){
+              if (!tooltipActive) {
                 console.log("Yahan bhi aa gaya!");
                 tooltipActive = true;
                 var closeQ = document.getElementById('q-close');
                 var queuetooltip = h(
                   "div",
                   {
-                    class:"tooltip",
-                    id:"queuetooltip",
-                    style:"width:50%;display:flex;background-color:#ffffff;position:absolute;top:3%;right:1%;z-index:100;border-radius:min(15px,1.5vw);"
+                    class: "tooltip",
+                    id: "queuetooltip",
+                    style: "width:50%;display:flex;background-color:#ffffff;position:absolute;top:3%;right:1%;z-index:100;border-radius:min(15px,1.5vw);"
                   },
                   h(
                     "div",
                     {
-                      id:"close-tip",
-                      style:"position:absolute;top:-4%;right:-4%;background-color:#ffffff;font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);padding:min(8px,0.8vw);border-radius:50%;font-weight:600;cursor:pointer;"
+                      id: "close-tip",
+                      style: "position:absolute;top:-4%;right:-4%;background-color:#ffffff;font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);padding:min(8px,0.8vw);border-radius:50%;font-weight:600;cursor:pointer;"
                     },
                     "x"
                   ),
                   h(
                     "div",
                     {
-                      id:"queue-close-tip",
+                      id: "queue-close-tip",
                     },
                     h(
                       "p",
                       {
-                        style:"font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);padding:min(10px,1vw);"
+                        style: "font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);padding:min(10px,1vw);"
                       },
                       "This indicates you dont want any more candidates to to appear for the interview in this room, at this time. Are you sure that you dont want any more candidates?"
                     ),
                     h(
                       "p",
                       {
-                        style:"font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);font-weight:600;padding:min(10px,1vw);cursor:pointer;"
+                        style: "font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);font-weight:600;padding:min(10px,1vw);cursor:pointer;"
                       },
                       h(
                         "span",
                         {
-                          id:"remove-yes"
+                          id: "remove-yes"
                         },
                         "Yes"
                       ),
                       h(
                         "span",
                         {
-                          style:"font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);font-weight:500;padding:min(10px,1vw);"
+                          style: "font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);font-weight:500;padding:min(10px,1vw);"
                         },
                         " | "
                       ),
                       h(
                         "span",
                         {
-                          id:"remove-no"
+                          id: "remove-no"
                         },
                         "No"
                       )
@@ -1418,29 +1514,29 @@ webSocketClient.onopen = function () {
                   )
                 );
                 peerContainer.append(queuetooltip);
-      
+
                 const closeTip = document.getElementById('close-tip');
-                closeTip.addEventListener('click',(event)=>{
+                closeTip.addEventListener('click', (event) => {
                   event.stopImmediatePropagation();
                   const currentTip = document.getElementById('queuetooltip');
                   peerContainer.removeChild(currentTip);
                   tooltipActive = false;
                 });
-    
+
                 const removeYes = document.getElementById('remove-yes');
-                removeYes.addEventListener('click',async (event)=>{
+                removeYes.addEventListener('click', async (event) => {
                   event.stopImmediatePropagation();
                   webSocketClient.send('/closeQueue');
                   document.getElementById('q-close-para').innerText = "Allow";
-                  queueOpen = false; 
+                  queueOpen = false;
                   tooltipActive = false;
                   const currentTip = document.getElementById('queuetooltip');
-                peerContainer.removeChild(currentTip);
-  
+                  peerContainer.removeChild(currentTip);
+
                 });
-    
+
                 const removeNo = document.getElementById('remove-no');
-                removeNo.addEventListener('click',(event)=>{
+                removeNo.addEventListener('click', (event) => {
                   event.stopImmediatePropagation();
                   const currentTip = document.getElementById('queuetooltip');
                   peerContainer.removeChild(currentTip);
@@ -1452,62 +1548,62 @@ webSocketClient.onopen = function () {
 
             }
             else {
-              
 
-              if(!tooltipActive){
+
+              if (!tooltipActive) {
                 console.log("Yahan bhi aa gaya!");
                 tooltipActive = true;
                 var closeQ = document.getElementById('q-close');
                 var queuetooltip = h(
                   "div",
                   {
-                    class:"tooltip",
-                    id:"queuetooltip",
-                    style:"width:50%;display:flex;background-color:#ffffff;position:absolute;top:3%;right:1%;z-index:100;border-radius:min(15px,1.5vw);"
+                    class: "tooltip",
+                    id: "queuetooltip",
+                    style: "width:50%;display:flex;background-color:#ffffff;position:absolute;top:3%;right:1%;z-index:100;border-radius:min(15px,1.5vw);"
                   },
                   h(
                     "div",
                     {
-                      id:"close-tip",
-                      style:"position:absolute;top:-4%;right:-4%;background-color:#ffffff;font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);padding:min(8px,0.8vw);border-radius:50%;font-weight:600;cursor:pointer;"
+                      id: "close-tip",
+                      style: "position:absolute;top:-4%;right:-4%;background-color:#ffffff;font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);padding:min(8px,0.8vw);border-radius:50%;font-weight:600;cursor:pointer;"
                     },
                     "x"
                   ),
                   h(
                     "div",
                     {
-                      id:"queue-close-tip",
+                      id: "queue-close-tip",
                     },
                     h(
                       "p",
                       {
-                        style:"font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);padding:min(10px,1vw);"
+                        style: "font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);padding:min(10px,1vw);"
                       },
                       "You are allowing candidates to join and appear for the interview. in this room . Are you sure?"
                     ),
                     h(
                       "p",
                       {
-                        style:"font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);font-weight:600;padding:min(10px,1vw);cursor:pointer;"
+                        style: "font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);font-weight:600;padding:min(10px,1vw);cursor:pointer;"
                       },
                       h(
                         "span",
                         {
-                          id:"remove-yes"
+                          id: "remove-yes"
                         },
                         "Yes"
                       ),
                       h(
                         "span",
                         {
-                          style:"font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);font-weight:500;padding:min(10px,1vw);"
+                          style: "font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);font-weight:500;padding:min(10px,1vw);"
                         },
                         " | "
                       ),
                       h(
                         "span",
                         {
-                          id:"remove-no"
+                          id: "remove-no"
                         },
                         "No"
                       )
@@ -1515,29 +1611,29 @@ webSocketClient.onopen = function () {
                   )
                 );
                 peerContainer.append(queuetooltip);
-      
+
                 const closeTip = document.getElementById('close-tip');
-                closeTip.addEventListener('click',(event)=>{
+                closeTip.addEventListener('click', (event) => {
                   event.stopImmediatePropagation();
                   const currentTip = document.getElementById('queuetooltip');
                   peerContainer.removeChild(currentTip);
                   tooltipActive = false;
                 });
-    
+
                 const removeYes = document.getElementById('remove-yes');
-                removeYes.addEventListener('click',async (event)=>{
+                removeYes.addEventListener('click', async (event) => {
                   event.stopImmediatePropagation();
                   webSocketClient.send('/openQueue');
                   document.getElementById('q-close-para').innerText = "Halt";
-                  queueOpen = true; 
+                  queueOpen = true;
                   tooltipActive = false;
                   const currentTip = document.getElementById('queuetooltip');
-                peerContainer.removeChild(currentTip);
-  
+                  peerContainer.removeChild(currentTip);
+
                 });
-    
+
                 const removeNo = document.getElementById('remove-no');
-                removeNo.addEventListener('click',(event)=>{
+                removeNo.addEventListener('click', (event) => {
                   event.stopImmediatePropagation();
                   const currentTip = document.getElementById('queuetooltip');
                   peerContainer.removeChild(currentTip);
@@ -1559,7 +1655,7 @@ webSocketClient.onopen = function () {
             // mic.click();
             peersContainer.style.display = "none";
             announcementScreen.style.display = "flex";
-    
+
             document.getElementById('announce').addEventListener('click', (event) => {
               event.stopImmediatePropagation();
               var mssg = document.getElementById('announcement');
@@ -1577,7 +1673,7 @@ webSocketClient.onopen = function () {
                 screenOverlay = false;
                 // cam.click()
                 // mic.click();
-    
+
               });
               // mssg.value="";
             });
@@ -1592,42 +1688,42 @@ webSocketClient.onopen = function () {
 
           document.getElementById('add-person').addEventListener('click', (event) => {
             event.stopImmediatePropagation();
-            
 
-            if(!tooltipActive){
+
+            if (!tooltipActive) {
               console.log("Yahan bhi aa gaya!");
               tooltipActive = true;
               var addPer = document.getElementById('add-person');
               addPer.setAttribute("disabled", true);
-    
+
               var addPertooltip = h(
                 "div",
                 {
-                  class:"tooltip",
-                  id:"addPertooltip",
-                  style:"width:50%;display:flex;background-color:#ffffff;position:absolute;top:3%;right:1%;z-index:100;border-radius:min(15px,1.5vw);"
+                  class: "tooltip",
+                  id: "addPertooltip",
+                  style: "width:50%;display:flex;background-color:#ffffff;position:absolute;top:3%;right:1%;z-index:100;border-radius:min(15px,1.5vw);"
                 },
                 h(
                   "div",
                   {
-                    id:"close-tip",
-                    style:"position:absolute;top:-4%;right:-4%;background-color:#ffffff;font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);padding:min(8px,0.8vw);border-radius:50%;font-weight:600;cursor:pointer;"
+                    id: "close-tip",
+                    style: "position:absolute;top:-4%;right:-4%;background-color:#ffffff;font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);padding:min(8px,0.8vw);border-radius:50%;font-weight:600;cursor:pointer;"
                   },
                   "x"
                 ),
                 h(
                   "div",
                   {
-                    id:"remove-tip",
-                    style:"font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);padding:min(10px,1vw);"
+                    id: "remove-tip",
+                    style: "font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);padding:min(10px,1vw);"
                   },
                   "This button is used to call next candidate in the Q to join the room when its empty."
                 )
               );
               peerContainer.append(addPertooltip);
-    
+
               const closeTip = document.getElementById('close-tip');
-              closeTip.addEventListener('click',(event)=>{
+              closeTip.addEventListener('click', (event) => {
                 event.stopImmediatePropagation();
                 console.log("Close Tip Pressed!");
                 const currentTip = document.getElementById('addPertooltip');
@@ -1641,42 +1737,42 @@ webSocketClient.onopen = function () {
 
           document.getElementById('coffee-break').addEventListener('click', (event) => {
             event.stopImmediatePropagation();
-            
 
-            if(!tooltipActive){
+
+            if (!tooltipActive) {
               console.log("Yahan bhi aa gaya!");
               tooltipActive = true;
               var coffeeBreak = document.getElementById('coffee-break');
               coffeeBreak.setAttribute("disabled", true);
-    
+
               var coffeetooltip = h(
                 "div",
                 {
-                  class:"tooltip",
-                  id:"coffeetooltip",
-                  style:"width:50%;display:flex;background-color:#ffffff;position:absolute;top:3%;right:1%;z-index:100;border-radius:min(15px,1.5vw);"
+                  class: "tooltip",
+                  id: "coffeetooltip",
+                  style: "width:50%;display:flex;background-color:#ffffff;position:absolute;top:3%;right:1%;z-index:100;border-radius:min(15px,1.5vw);"
                 },
                 h(
                   "div",
                   {
-                    id:"close-tip",
-                    style:"position:absolute;top:-4%;right:-4%;background-color:#ffffff;font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);padding:min(8px,0.8vw);border-radius:50%;font-weight:600;cursor:pointer;"
+                    id: "close-tip",
+                    style: "position:absolute;top:-4%;right:-4%;background-color:#ffffff;font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);padding:min(8px,0.8vw);border-radius:50%;font-weight:600;cursor:pointer;"
                   },
                   "x"
                 ),
                 h(
                   "div",
                   {
-                    id:"remove-tip",
-                    style:"font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);padding:min(10px,1vw);"
+                    id: "remove-tip",
+                    style: "font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);padding:min(10px,1vw);"
                   },
                   "You can take coffee break when the room is empty"
                 )
               );
               peerContainer.append(coffeetooltip);
-    
+
               const closeTip = document.getElementById('close-tip');
-              closeTip.addEventListener('click',(event)=>{
+              closeTip.addEventListener('click', (event) => {
                 event.stopImmediatePropagation();
                 console.log("Close Tip Pressed!");
                 const currentTip = document.getElementById('coffeetooltip');
@@ -1725,7 +1821,7 @@ webSocketClient.onopen = function () {
             // if (!coffeeBreak) {
             //   coffeeBreak = true;
             //   webSocketClient.send('/coffeeBreak');
-              
+
             // }
             // else {
             //   coffeeBreak = false;
@@ -1812,90 +1908,90 @@ webSocketClient.onopen = function () {
         buttonControl();
 
         var removePersonBtn = document.getElementById('remove-person')
-        removePersonBtn.addEventListener('mouseenter',()=>{
+        removePersonBtn.addEventListener('mouseenter', () => {
           document.getElementById('remove-person-hover').style.display = "block";
         });
-        removePersonBtn.addEventListener('mouseleave',()=>{
+        removePersonBtn.addEventListener('mouseleave', () => {
           document.getElementById('remove-person-hover').style.display = "none";
         });
 
         var addPersonBtn = document.getElementById('add-person')
-          addPersonBtn.addEventListener('mouseover',()=>{
-            document.getElementById('add-person-hover').style.display = "block";
-          });
-          addPersonBtn.addEventListener('mouseleave',()=>{
-            document.getElementById('add-person-hover').style.display = "none";
-          });
+        addPersonBtn.addEventListener('mouseover', () => {
+          document.getElementById('add-person-hover').style.display = "block";
+        });
+        addPersonBtn.addEventListener('mouseleave', () => {
+          document.getElementById('add-person-hover').style.display = "none";
+        });
 
-          var pausePersonBtn = document.getElementById('q-close')
-          pausePersonBtn.addEventListener('mouseover',()=>{
-            document.getElementById('pause-person-hover').style.display = "block";
-          });
-          pausePersonBtn.addEventListener('mouseleave',()=>{
-            document.getElementById('pause-person-hover').style.display = "none";
-          });
+        var pausePersonBtn = document.getElementById('q-close')
+        pausePersonBtn.addEventListener('mouseover', () => {
+          document.getElementById('pause-person-hover').style.display = "block";
+        });
+        pausePersonBtn.addEventListener('mouseleave', () => {
+          document.getElementById('pause-person-hover').style.display = "none";
+        });
 
-          var announcePersonBtn = document.getElementById('chat')
-          announcePersonBtn.addEventListener('mouseover',()=>{
-            document.getElementById('announce-person-hover').style.display = "block";
-          });
-          announcePersonBtn.addEventListener('mouseleave',()=>{
-            document.getElementById('announce-person-hover').style.display = "none";
-          });
+        var announcePersonBtn = document.getElementById('chat')
+        announcePersonBtn.addEventListener('mouseover', () => {
+          document.getElementById('announce-person-hover').style.display = "block";
+        });
+        announcePersonBtn.addEventListener('mouseleave', () => {
+          document.getElementById('announce-person-hover').style.display = "none";
+        });
 
-          var breakPersonBtn = document.getElementById('coffee-break')
-          breakPersonBtn.addEventListener('mouseover',()=>{
-            document.getElementById('break-person-hover').style.display = "block";
-          });
-          breakPersonBtn.addEventListener('mouseleave',()=>{
-            document.getElementById('break-person-hover').style.display = "none";
-          });
+        var breakPersonBtn = document.getElementById('coffee-break')
+        breakPersonBtn.addEventListener('mouseover', () => {
+          document.getElementById('break-person-hover').style.display = "block";
+        });
+        breakPersonBtn.addEventListener('mouseleave', () => {
+          document.getElementById('break-person-hover').style.display = "none";
+        });
 
-          var closePersonBtn = document.getElementById('call')
-          closePersonBtn.addEventListener('mouseover',()=>{
-            document.getElementById('call-person-hover').style.display = "block";
-          });
-          closePersonBtn.addEventListener('mouseleave',()=>{
-            document.getElementById('call-person-hover').style.display = "none";
-          });
+        var closePersonBtn = document.getElementById('call')
+        closePersonBtn.addEventListener('mouseover', () => {
+          document.getElementById('call-person-hover').style.display = "block";
+        });
+        closePersonBtn.addEventListener('mouseleave', () => {
+          document.getElementById('call-person-hover').style.display = "none";
+        });
 
         document.getElementById('remove-person').addEventListener('click', async (event) => {
           event.stopImmediatePropagation();
           console.log('Evict btn pressed!');
-          if(!tooltipActive){
+          if (!tooltipActive) {
             console.log("Yahan bhi aa gaya!");
             tooltipActive = true;
             var remPer = document.getElementById('remove-person');
             remPer.setAttribute("disabled", true);
-  
+
             var removetooltip = h(
               "div",
               {
-                class:"tooltip",
-                id:"removetooltip",
-                style:"width:50%;display:flex;background-color:#ffffff;position:absolute;top:3%;right:1%;z-index:100;border-radius:min(15px,1.5vw);"
+                class: "tooltip",
+                id: "removetooltip",
+                style: "width:50%;display:flex;background-color:#ffffff;position:absolute;top:3%;right:1%;z-index:100;border-radius:min(15px,1.5vw);"
               },
               h(
                 "div",
                 {
-                  id:"close-tip",
-                  style:"position:absolute;top:-4%;right:-4%;background-color:#ffffff;font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);padding:min(8px,0.8vw);border-radius:50%;font-weight:600;cursor:pointer;"
+                  id: "close-tip",
+                  style: "position:absolute;top:-4%;right:-4%;background-color:#ffffff;font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);padding:min(8px,0.8vw);border-radius:50%;font-weight:600;cursor:pointer;"
                 },
                 "x"
               ),
               h(
                 "div",
                 {
-                  id:"remove-tip",
-                  style:"font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);padding:min(10px,1vw);"
+                  id: "remove-tip",
+                  style: "font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);padding:min(10px,1vw);"
                 },
                 "No one is in the room. You can can use this feature to remove the candidate from the interview room"
               )
             );
             peerContainer.append(removetooltip);
-  
+
             const closeTip = document.getElementById('close-tip');
-            closeTip.addEventListener('click',(event)=>{
+            closeTip.addEventListener('click', (event) => {
               event.stopImmediatePropagation();
               console.log("Close Tip Pressed!");
               const currentTip = document.getElementById('removetooltip');
@@ -1914,60 +2010,60 @@ webSocketClient.onopen = function () {
           if (queueOpen) {
 
 
-            if(!tooltipActive){
+            if (!tooltipActive) {
               console.log("Yahan bhi aa gaya!");
               tooltipActive = true;
               var closeQ = document.getElementById('q-close');
               var queuetooltip = h(
                 "div",
                 {
-                  class:"tooltip",
-                  id:"queuetooltip",
-                  style:"width:50%;display:flex;background-color:#ffffff;position:absolute;top:3%;right:1%;z-index:100;border-radius:min(15px,1.5vw);"
+                  class: "tooltip",
+                  id: "queuetooltip",
+                  style: "width:50%;display:flex;background-color:#ffffff;position:absolute;top:3%;right:1%;z-index:100;border-radius:min(15px,1.5vw);"
                 },
                 h(
                   "div",
                   {
-                    id:"close-tip",
-                    style:"position:absolute;top:-4%;right:-4%;background-color:#ffffff;font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);padding:min(8px,0.8vw);border-radius:50%;font-weight:600;cursor:pointer;"
+                    id: "close-tip",
+                    style: "position:absolute;top:-4%;right:-4%;background-color:#ffffff;font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);padding:min(8px,0.8vw);border-radius:50%;font-weight:600;cursor:pointer;"
                   },
                   "x"
                 ),
                 h(
                   "div",
                   {
-                    id:"queue-close-tip",
+                    id: "queue-close-tip",
                   },
                   h(
                     "p",
                     {
-                      style:"font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);padding:min(10px,1vw);"
+                      style: "font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);padding:min(10px,1vw);"
                     },
                     "This indicates you dont want any more candidates to to appear for the interview in this room, at this time. Are you sure that you dont want any more candidates?"
                   ),
                   h(
                     "p",
                     {
-                      style:"font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);font-weight:600;padding:min(10px,1vw);cursor:pointer;"
+                      style: "font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);font-weight:600;padding:min(10px,1vw);cursor:pointer;"
                     },
                     h(
                       "span",
                       {
-                        id:"remove-yes"
+                        id: "remove-yes"
                       },
                       "Yes"
                     ),
                     h(
                       "span",
                       {
-                        style:"font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);font-weight:500;padding:min(10px,1vw);"
+                        style: "font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);font-weight:500;padding:min(10px,1vw);"
                       },
                       " | "
                     ),
                     h(
                       "span",
                       {
-                        id:"remove-no"
+                        id: "remove-no"
                       },
                       "No"
                     )
@@ -1975,29 +2071,29 @@ webSocketClient.onopen = function () {
                 )
               );
               peerContainer.append(queuetooltip);
-    
+
               const closeTip = document.getElementById('close-tip');
-              closeTip.addEventListener('click',(event)=>{
+              closeTip.addEventListener('click', (event) => {
                 event.stopImmediatePropagation();
                 const currentTip = document.getElementById('queuetooltip');
                 peerContainer.removeChild(currentTip);
                 tooltipActive = false;
               });
-  
+
               const removeYes = document.getElementById('remove-yes');
-              removeYes.addEventListener('click',async (event)=>{
+              removeYes.addEventListener('click', async (event) => {
                 event.stopImmediatePropagation();
                 webSocketClient.send('/closeQueue');
                 document.getElementById('q-close-para').innerText = "Allow";
-                queueOpen = false; 
+                queueOpen = false;
                 tooltipActive = false;
                 const currentTip = document.getElementById('queuetooltip');
                 peerContainer.removeChild(currentTip);
 
               });
-  
+
               const removeNo = document.getElementById('remove-no');
-              removeNo.addEventListener('click',(event)=>{
+              removeNo.addEventListener('click', (event) => {
                 event.stopImmediatePropagation();
                 const currentTip = document.getElementById('queuetooltip');
                 peerContainer.removeChild(currentTip);
@@ -2009,62 +2105,62 @@ webSocketClient.onopen = function () {
 
           }
           else {
-            
 
-            if(!tooltipActive){
+
+            if (!tooltipActive) {
               console.log("Yahan bhi aa gaya!");
               tooltipActive = true;
               var closeQ = document.getElementById('q-close');
               var queuetooltip = h(
                 "div",
                 {
-                  class:"tooltip",
-                  id:"queuetooltip",
-                  style:"width:50%;display:flex;background-color:#ffffff;position:absolute;top:3%;right:1%;z-index:100;border-radius:min(15px,1.5vw);"
+                  class: "tooltip",
+                  id: "queuetooltip",
+                  style: "width:50%;display:flex;background-color:#ffffff;position:absolute;top:3%;right:1%;z-index:100;border-radius:min(15px,1.5vw);"
                 },
                 h(
                   "div",
                   {
-                    id:"close-tip",
-                    style:"position:absolute;top:-4%;right:-4%;background-color:#ffffff;font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);padding:min(8px,0.8vw);border-radius:50%;font-weight:600;cursor:pointer;"
+                    id: "close-tip",
+                    style: "position:absolute;top:-4%;right:-4%;background-color:#ffffff;font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);padding:min(8px,0.8vw);border-radius:50%;font-weight:600;cursor:pointer;"
                   },
                   "x"
                 ),
                 h(
                   "div",
                   {
-                    id:"queue-close-tip",
+                    id: "queue-close-tip",
                   },
                   h(
                     "p",
                     {
-                      style:"font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);padding:min(10px,1vw);"
+                      style: "font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);padding:min(10px,1vw);"
                     },
                     "You are allowing candidates to join and appear for the interview. in this room . Are you sure?"
                   ),
                   h(
                     "p",
                     {
-                      style:"font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);font-weight:600;padding:min(10px,1vw);cursor:pointer;"
+                      style: "font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);font-weight:600;padding:min(10px,1vw);cursor:pointer;"
                     },
                     h(
                       "span",
                       {
-                        id:"remove-yes"
+                        id: "remove-yes"
                       },
                       "Yes"
                     ),
                     h(
                       "span",
                       {
-                        style:"font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);font-weight:500;padding:min(10px,1vw);"
+                        style: "font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);font-weight:500;padding:min(10px,1vw);"
                       },
                       " | "
                     ),
                     h(
                       "span",
                       {
-                        id:"remove-no"
+                        id: "remove-no"
                       },
                       "No"
                     )
@@ -2072,29 +2168,29 @@ webSocketClient.onopen = function () {
                 )
               );
               peerContainer.append(queuetooltip);
-    
+
               const closeTip = document.getElementById('close-tip');
-              closeTip.addEventListener('click',(event)=>{
+              closeTip.addEventListener('click', (event) => {
                 event.stopImmediatePropagation();
                 const currentTip = document.getElementById('queuetooltip');
                 peerContainer.removeChild(currentTip);
                 tooltipActive = false;
               });
-  
+
               const removeYes = document.getElementById('remove-yes');
-              removeYes.addEventListener('click',async (event)=>{
+              removeYes.addEventListener('click', async (event) => {
                 event.stopImmediatePropagation();
                 webSocketClient.send('/openQueue');
                 document.getElementById('q-close-para').innerText = "Halt";
-                queueOpen = true; 
+                queueOpen = true;
                 tooltipActive = false;
                 const currentTip = document.getElementById('queuetooltip');
                 peerContainer.removeChild(currentTip);
 
               });
-  
+
               const removeNo = document.getElementById('remove-no');
-              removeNo.addEventListener('click',(event)=>{
+              removeNo.addEventListener('click', (event) => {
                 event.stopImmediatePropagation();
                 const currentTip = document.getElementById('queuetooltip');
                 peerContainer.removeChild(currentTip);
@@ -2112,40 +2208,40 @@ webSocketClient.onopen = function () {
           event.stopImmediatePropagation();
           webSocketClient.send('pop');
 
-          if(!tooltipActive){
+          if (!tooltipActive) {
             console.log("Yahan bhi aa gaya!");
             tooltipActive = true;
             var addPer = document.getElementById('add-person');
             addPer.setAttribute("disabled", true);
-  
+
             var addPertooltip = h(
               "div",
               {
-                class:"tooltip",
-                id:"addPertooltip",
-                style:"width:50%;display:flex;background-color:#ffffff;position:absolute;top:3%;right:1%;z-index:100;border-radius:min(15px,1.5vw);"
+                class: "tooltip",
+                id: "addPertooltip",
+                style: "width:50%;display:flex;background-color:#ffffff;position:absolute;top:3%;right:1%;z-index:100;border-radius:min(15px,1.5vw);"
               },
               h(
                 "div",
                 {
-                  id:"close-tip",
-                  style:"position:absolute;top:-4%;right:-4%;background-color:#ffffff;font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);padding:min(8px,0.8vw);border-radius:50%;font-weight:600;cursor:pointer;"
+                  id: "close-tip",
+                  style: "position:absolute;top:-4%;right:-4%;background-color:#ffffff;font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);padding:min(8px,0.8vw);border-radius:50%;font-weight:600;cursor:pointer;"
                 },
                 "x"
               ),
               h(
                 "div",
                 {
-                  id:"remove-tip",
-                  style:"font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);padding:min(10px,1vw);"
+                  id: "remove-tip",
+                  style: "font-family: 'Manrope', sans-serif;font-style: normal;font-size:min(10px,1vw);padding:min(10px,1vw);"
                 },
                 "We are asking the next candidate in the Q to join the room"
               )
             );
             peerContainer.append(addPertooltip);
-  
+
             const closeTip = document.getElementById('close-tip');
-            closeTip.addEventListener('click',(event)=>{
+            closeTip.addEventListener('click', (event) => {
               event.stopImmediatePropagation();
               console.log("Close Tip Pressed!");
               const currentTip = document.getElementById('addPertooltip');
@@ -2171,7 +2267,7 @@ webSocketClient.onopen = function () {
           //           webSocketClient.send('pop');
           //         });
           //       });
-          
+
         });
 
         document.getElementById('chat').addEventListener('click', (event) => {
@@ -2182,7 +2278,7 @@ webSocketClient.onopen = function () {
           // mic.click();
           peersContainer.style.display = "none";
           announcementScreen.style.display = "flex";
-  
+
           document.getElementById('announce').addEventListener('click', (event) => {
             event.stopImmediatePropagation();
             var mssg = document.getElementById('announcement');
@@ -2199,7 +2295,7 @@ webSocketClient.onopen = function () {
               screenOverlay = false;
               // cam.click()
               // mic.click();
-  
+
             });
             // mssg.value="";
           });
@@ -2213,84 +2309,84 @@ webSocketClient.onopen = function () {
 
         document.getElementById('coffee-break').addEventListener('click', (event) => {
           event.stopImmediatePropagation();
-          document.getElementById('coffee-break').setAttribute('disabled',false);
+          document.getElementById('coffee-break').setAttribute('disabled', false);
           screenOverlay = true;
           readyToOpenRoom = false;
-            peersContainer.style.display = "none";
-            coffee1.style.display = "flex";
-            const timesetBtn = document.getElementById('timeset');
-            const plus5Btn = document.getElementById('plus5');
-            const minus5Btn = document.getElementById('minus5');
-            var currentVal = 10;
-            plus5Btn.addEventListener('click',(event)=>{
-              event.stopImmediatePropagation();
-              currentVal = parseInt(timesetBtn.innerText);
-              if(currentVal<=55)
-              {
-                timesetBtn.innerText = currentVal + 5;
-                currentVal+=5;
+          peersContainer.style.display = "none";
+          coffee1.style.display = "flex";
+          const timesetBtn = document.getElementById('timeset');
+          const plus5Btn = document.getElementById('plus5');
+          const minus5Btn = document.getElementById('minus5');
+          var currentVal = 10;
+          plus5Btn.addEventListener('click', (event) => {
+            event.stopImmediatePropagation();
+            currentVal = parseInt(timesetBtn.innerText);
+            if (currentVal <= 55) {
+              timesetBtn.innerText = currentVal + 5;
+              currentVal += 5;
+            }
+          });
+
+          minus5Btn.addEventListener('click', (event) => {
+            event.stopImmediatePropagation();
+            currentVal = parseInt(timesetBtn.innerText);
+            if (currentVal >= 15) {
+              timesetBtn.innerText = currentVal - 5;
+              currentVal -= 5;
+            }
+          });
+
+
+          const takeBreak = document.getElementById('take-break')
+          takeBreak.addEventListener('click', (event) => {
+            event.stopImmediatePropagation();
+            webSocketClient.send(`/coffeeBreak/${currentVal}`);
+            coffee1.style.display = "none";
+            coffee2.style.display = "flex";
+            var countdown = document.getElementById('countdown');
+            var timeInSeconds = currentVal * 60;
+            (async function timer() {
+              if (timeInSeconds > 0 && !readyToOpenRoom) {
+                setTimeout(() => {
+                  var minutes = Math.floor(timeInSeconds / 60);
+                  var seconds = timeInSeconds % 60;
+                  if (seconds >= 10)
+                    countdown.innerText = `${minutes}:${seconds}`;
+                  else
+                    countdown.innerText = `${minutes}:0${seconds}`;
+                  timeInSeconds--;
+                  timer();
+                }, 1000);
               }
-            });
-
-            minus5Btn.addEventListener('click',(event)=>{
-              event.stopImmediatePropagation();
-              currentVal = parseInt(timesetBtn.innerText);
-              if(currentVal>=15){
-                timesetBtn.innerText = currentVal - 5;
-                currentVal-=5;
-              }
-            });
-
-
-            const takeBreak = document.getElementById('take-break')
-            takeBreak.addEventListener('click',(event)=>{
-              event.stopImmediatePropagation();
-              webSocketClient.send(`/coffeeBreak/${currentVal}`);
-              coffee1.style.display = "none";
-              coffee2.style.display = "flex";
-              var countdown = document.getElementById('countdown');
-              var timeInSeconds = currentVal*60;
-              (async function timer(){
-                if(timeInSeconds>0&&!readyToOpenRoom){
-                  setTimeout(()=>{
-                    var minutes = Math.floor(timeInSeconds/60);
-                    var seconds = timeInSeconds%60;
-                    if(seconds>=10)
-                      countdown.innerText = `${minutes}:${seconds}`;
-                    else
-                      countdown.innerText = `${minutes}:0${seconds}`;
-                    timeInSeconds--;
-                    timer();
-                  },1000);
-                }
-                else{
-                  console.log("Timer over!");
-                  // currentVal = 0;
-                  // timeInSeconds = 0;
-                  readyToOpenRoom = false;
-                  countdown.innerText = "";
-                }
-              })();
-              isBreak = true;
-              leaveRoom();
-              var openRoom = document.getElementById('open-room');
-              openRoom.addEventListener('click',(event)=>{
-                event.stopImmediatePropagation();
-                readyToOpenRoom = true;
-                countdown.innerText = "";
+              else {
+                console.log("Timer over!");
                 // currentVal = 0;
-                  // timeInSeconds = 0;
-                coffee2.style.display = "none";
-                peersContainer.style.display = "none";
-                webSocketClient.send('/breakOver');
-                isBreak = false;
-                joinBtn.click();
-                setTimeout(()=>{
-                  screenOverlay = false;
-                },1000);
-              });
-
+                // timeInSeconds = 0;
+                readyToOpenRoom = false;
+                countdown.innerText = "";
+              }
+            })();
+            isBreak = true;
+            leaveRoom();
+            var openRoom = document.getElementById('open-room');
+            openRoom.addEventListener('click', (event) => {
+              event.stopImmediatePropagation();
+              readyToOpenRoom = true;
+              tooltipActive = false;
+              countdown.innerText = "";
+              // currentVal = 0;
+              // timeInSeconds = 0;
+              coffee2.style.display = "none";
+              peersContainer.style.display = "none";
+              webSocketClient.send('/breakOver');
+              isBreak = false;
+              joinBtn.click();
+              setTimeout(() => {
+                screenOverlay = false;
+              }, 1000);
             });
+
+          });
         });
       }
     }
