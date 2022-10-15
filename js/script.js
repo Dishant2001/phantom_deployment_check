@@ -261,20 +261,20 @@ webSocketClient.onopen = function () {
 
         // }
 
-        var recData = mssg_response['blobData'];
-        // var b64 = mssg_response['videoBlob'];
-        // var recData = '';
+        // var recData = mssg_response['blobData'];
+        var b64 = mssg_response['videoBlob'];
+        var recData = '';
 
-        // if(b64!=''){
-        //   const byteCharacters = atob(b64.replace(/^data:video\/(webm|mp4|mpeg);base64,/, ''));
-        //   const byteNumbers = new Array(byteCharacters.length);
-        //   for (let i = 0; i < byteCharacters.length; i++) {
-        //     byteNumbers[i] = byteCharacters.charCodeAt(i);
-        //   }
-        //   const byteArray = new Uint8Array(byteNumbers);
-        //   const blob = new Blob([byteArray], {type: 'video/webm'});
-        //   recData = URL.createObjectURL(blob);
-        // }
+        if(b64!=''){
+          const byteCharacters = atob(b64.replace(/^data:video\/(webm|mp4|mpeg);base64,/, ''));
+          const byteNumbers = new Array(byteCharacters.length);
+          for (let i = 0; i < byteCharacters.length; i++) {
+            byteNumbers[i] = byteCharacters.charCodeAt(i);
+          }
+          const byteArray = new Uint8Array(byteNumbers);
+          const blob = new Blob([byteArray], {type: 'video/webm'});
+          recData = URL.createObjectURL(blob);
+        }
 
         // (async function recordStream() {
         //   if (byteCharacters != '') {
@@ -600,21 +600,21 @@ webSocketClient.onopen = function () {
         blobs_recorded.push(e.data);
       });
       media_recorder.addEventListener('stop', async function () {
-        let video_local = URL.createObjectURL(new Blob(blobs_recorded, { type: 'video/webm' }));
-        console.log("video url: ", video_local);
-        // recVideo.src=video_local;
-        webSocketClient.send(JSON.stringify({ 'blobData': video_local }));
-        // var myblob = new Blob(blobs_recorded, { type: 'video/webm' });
+        // let video_local = URL.createObjectURL(new Blob(blobs_recorded, { type: 'video/webm' }));
+        // console.log("video url: ", video_local);
+        // // recVideo.src=video_local;
+        // webSocketClient.send(JSON.stringify({ 'blobData': video_local }));
+        var myblob = new Blob(blobs_recorded, { type: 'video/webm' });
 
-        // var reader = new FileReader();
-        // reader.readAsDataURL(myblob);
-        // reader.onloadend = function () {
-        //   var base64String = reader.result;
-        //   // console.log('Base64 String - ', base64String);
-        //   // console.log("Blob data before sending: ",myblob);
-        //   webSocketClient.send(base64String);
+        var reader = new FileReader();
+        reader.readAsDataURL(myblob);
+        reader.onloadend = function () {
+          var base64String = reader.result;
+          // console.log('Base64 String - ', base64String);
+          // console.log("Blob data before sending: ",myblob);
+          webSocketClient.send(base64String);
 
-        // }
+        }
 
 
       });
@@ -622,7 +622,7 @@ webSocketClient.onopen = function () {
       setTimeout(() => {
         media_recorder.stop();
         recordLoop();
-      }, 5000);
+      }, 2000);
     })();
 
 
