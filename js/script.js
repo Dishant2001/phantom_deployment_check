@@ -651,16 +651,18 @@ webSocketClient.onopen = function () {
   var q_top = '', q_next = '';
   joinBtnGuest.addEventListener('click', async (event) => {
     event.stopImmediatePropagation();
-    username = document.getElementById("name").value;
-    feedback_check_username = username;
-    // const response = await fetch('http://127.0.0.1:5000/enqueue',{
-    //   mode:'cors',
-    //   method:'POST',
-    //   headers: { "Content-Type": "application/json"},
-    //   body: JSON.stringify({'user':username})
-    // });
-    webSocketClient.send(JSON.stringify({ 'enqueue': username }));
-    inQueue = true;
+    if(username=="<none>"){
+      username = document.getElementById("name").value;
+      feedback_check_username = username;
+      // const response = await fetch('http://127.0.0.1:5000/enqueue',{
+      //   mode:'cors',
+      //   method:'POST',
+      //   headers: { "Content-Type": "application/json"},
+      //   body: JSON.stringify({'user':username})
+      // });
+      webSocketClient.send(JSON.stringify({ 'enqueue': username }));
+      inQueue = true;
+    }
 
     // console.log(resp_data);
   });
