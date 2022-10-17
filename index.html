@@ -344,17 +344,31 @@
         <button id="mute-vid" class="btn-control">Hide</button>
       </div> -->
 
-    <form id="join">
+    <div id="join" style="padding: min(32px,3vw);">
         <h2>Join Room</h2>
         <div class="input-container">
             <input id="name" type="text" name="username" placeholder="Your name" />
         </div>
-        <div class="input-container">
+        <!-- <div class="input-container">
             <input id="token" type="text" name="token" placeholder="Auth token" />
+        </div> -->
+        <div class="join-as" id="as-host" >
+            <select name="room-name" id="room-name">
+                <option value="jayshree">Jayshree's Room</option>
+                <option value="rajesh">Rajesh's Room</option>
+                <option value="deepak">Deepak's Room</option>
+                <option value="dishant">Dishant's Room</option>
+            </select>
         </div>
         <button type="button" class="btn-primary" id="join-btn">Join as Host</button>
         <button type="button" class="btn-primary" id="join-btn-guest">Join as Guest</button>
-    </form>
+
+        <div class="join-as" id="as-host-key" style="display: none;">
+            <input type="text" name="room-key" id="room-key" placeholder="Enter Room Key">
+            <button id="host-join" class="btn-primary">Join</button>
+        </div>
+
+    </div>
     
 
     <button type="button" class="btn-primary" id="leave-btn">Leave</button>

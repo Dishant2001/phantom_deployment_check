@@ -18,6 +18,9 @@ const hmsActions = hmsManager.getHMSActions();
 const form = document.getElementById("join");
 const joinBtn = document.getElementById("join-btn");
 const joinBtnGuest = document.getElementById('join-btn-guest');
+const roomName = document.getElementById('room-name');
+
+
 // const conference = document.getElementById("conference");
 const peersContainer = document.getElementById("hostContainer");
 const guestContainer = document.getElementById("guestContainer");
@@ -64,6 +67,8 @@ var isHostHere = false, isGuesthere = false;
 
 var someoneInQueue = false, checkTurn = 1;
 
+var roomSelect;
+
 var allowInitialQueueFront = false;
 
 var queueOpen = true;
@@ -98,429 +103,455 @@ webSocketClient.onopen = function () {
 
   var mssg;
 
+  var hostKey = undefined;
+
 
   webSocketClient.onmessage = function (message) {
     var mssg_response = JSON.parse(message.data);
-    if ((mssg_response['front'] != null || mssg_response['front'] != undefined) && checkTurn == 1) {
-      console.log("Someone is giving interview or had his interview done");
-      someoneInQueue = true;
-      checkTurn = 2;
-    }
 
-    if (!isHostHere && mssg_response['recentCandidate'] == feedback_check_username) {
-      screenOverlay = true;
-      feedback_check_username = "<none>";
-      username = "<none>";
-      peersContainer.style.display = "none";
-      feedbackCont.style.display = "flex";
-      const submitFeedbackBtn = document.getElementById('submit-feedback');
-      submitFeedbackBtn.addEventListener('click', (event) => {
-        event.stopImmediatePropagation();
-        var feedbackCont2 = document.getElementById('candidate-feedback-2');
-        feedbackCont.style.display = "none";
-        feedbackCont2.style.display = "flex";
-      });
-    }
-
-    // if (mssg_response['closed'] && !mssg_response['queue'].includes(username) && !isHostHere) {
-    //   console.log("Queue has been closed! Sorry!");
-    //   // queueClosedMssg.style.display = "block";
-    //   // peersContainer.style.display = "none";
-    //   queueBtns.style.display="none";
-    //           queueBtns2.style.display="flex";
+    // if(!isHostHere&&mssg_response.hasOwnProperty('guestToken')){
+    //   console.log("Entered in Guest Join message box");
+    //   var guestToken = mssg_response['guestToken'];
+    //   joinAsGuest(guestToken);
     // }
 
-    if (true) {
-
-      queueClosedMssg.style.display = "none";
-      if (!screenOverlay)
-        peersContainer.style.display = "block";
-
-      if (!mssg_response['break'] && recentBreak) {
-        // peersContainer.style.display = "block";
-        screenOverlay = false;
-        breakNotice.style.display = "none";
-        recentBreak = false;
+    if(mssg_response.hasOwnProperty('auth')){
+      if(mssg_response['auth']){
+        console.log(mssg_response['room_tokens']);
+        hostKey = mssg_response['room_tokens'][roomSelect]["host_key"];
+        joinAsHost(hostKey);
+        console.log("Joining again!");
       }
+      else{
+        alert("Wrong Key!");
+      }
+    }
 
-      if (mssg_response['break'] && !isHostHere) {
-        peersContainer.style.display = "none";
+    else{
+
+      if ((mssg_response['front'] != null || mssg_response['front'] != undefined) && checkTurn == 1) {
+        console.log("Someone is giving interview or had his interview done");
+        someoneInQueue = true;
+        checkTurn = 2;
+      }
+  
+      if (!isHostHere && mssg_response['recentCandidate'] == feedback_check_username) {
         screenOverlay = true;
-        breakNotice.style.display = "flex";
-        var duration = mssg_response['breakDuration'];
-        recentBreak = true;
-
-        const timeRemaining = document.getElementById('time-remaining');
-        var timeInSeconds = duration * 60;
-        (async function timer() {
-          if (timeInSeconds > 0) {
-            setTimeout(() => {
-              var minutes = Math.floor(timeInSeconds / 60);
-              var seconds = timeInSeconds % 60;
-              if (seconds >= 10)
-                timeRemaining.innerText = `${minutes}:${seconds}`;
-              else
-                timeRemaining.innerText = `${minutes}:0${seconds}`;
-              timeInSeconds--;
-              timer();
-            }, 1000);
-          }
-          else {
-            console.log("Timer over!");
-            // currentVal = 0;
-            // timeInSeconds = 0;
-            // readyToOpenRoom = false;
-            timeRemaining.innerText = "";
-          }
-        })();
-
+        feedback_check_username = "<none>";
+        username = "<none>";
+        peersContainer.style.display = "none";
+        feedbackCont.style.display = "flex";
+        const submitFeedbackBtn = document.getElementById('submit-feedback');
+        submitFeedbackBtn.addEventListener('click', (event) => {
+          event.stopImmediatePropagation();
+          var feedbackCont2 = document.getElementById('candidate-feedback-2');
+          feedbackCont.style.display = "none";
+          feedbackCont2.style.display = "flex";
+        });
       }
-
-      else if (mssg_response['mssg'] != '' && !isGuesthere && !isHostHere) {
-        console.log(JSON.parse(message.data)['mssg']);
-        mssg = JSON.parse(message.data)['mssg'];
-
-        // peersContainer.append(mssgCont);
-        // mssgCont.style.display="flex";
-
-      }
-      // else if (mssg_response['blobData']!='') {
-      //   var recData = mssg_response['blobData']
-      //   console.log(recData);
-      //   if (!isHostHere && !isGuesthere) {
-      //     peersContainer.innerHTML = "";
-
-      //     var mssgCont = h(
-      //       "div",
-      //       {
-      //         id: "announcement-mssg",
-      //         style:"background-color:#F1F4FB;display: flex;padding: min(15px,1.5vw);z-index: 200;flex-direction: row;justify-content: space-evenly;border-radius: 20px;width: 50%;aspect-ratio: 20/3;margin: auto;margin-top: -20%;font-family: 'Manrope', sans-serif;font-style: normal;font-weight: 500;text-align: center;font-size: min(15px,1.5vw);"
-      //       },
-      //       h(
-      //         "div",
-      //         {
-      //           id: "mssg-img"
-      //         },
-      //         h(
-      //           "img",
-      //           {
-      //             src: "img/hand.png"
-      //           },
-      //           ""
-      //         ),
-      //       ),
-      //       h(
-      //         "div",
-      //         {
-      //           id: "mssg-mssg"
-      //         },
-      //         mssg
-      //       )
-      //     );
-
-      //     var video_rec = h(
-      //       "video",
-      //       {
-      //         style: "width:100%;aspect-ratio:16/9;border-radius:24px;",
-      //         src: recData,
-      //         autoplay: true,
-      //         muted: true,
-      //         playsinline: true,
-      //       }
-      //     );
-      //     // recVideo.src=recData['blobData'];
-      //     peersContainer.append(video_rec);
-      //     if(mssg!=undefined)
-      //       peersContainer.append(mssgCont);
-      //   }
+  
+      // if (mssg_response['closed'] && !mssg_response['queue'].includes(username) && !isHostHere) {
+      //   console.log("Queue has been closed! Sorry!");
+      //   // queueClosedMssg.style.display = "block";
+      //   // peersContainer.style.display = "none";
+      //   queueBtns.style.display="none";
+      //           queueBtns2.style.display="flex";
       // }
-
-      else {
-
-
-
-        // if(mssg_response.hasOwnProperty('videoBlob')){
-        //   // const reader = new FileReader();
-
-        //   // var arrayBuff = reader.readAsArrayBuffer(mssg_response['videoBlob']);
-        //   var byteCharacters = mssg_response['videoBlob']; 
-        //   console.log('Base64 string received: ',byteCharacters);
-        //   // var byteCharacters = atob(vidBlob);
-
-        //   // const byteNumbers = new Array(byteCharacters.length);
-        //   // for (let i = 0; i < byteCharacters.length; i++) {
-        //   //     byteNumbers[i] = byteCharacters.charCodeAt(i);
-        //   // }
-
-        //   // const byteArray = new Uint8Array(byteNumbers);
-
-        //   // const blob = new Blob([byteArray], {type: 'video/webm'});
-
-        //   // // var myReceivedBlob = new Blob(vidBlob, { type: 'video/webm' })
-        //   // console.log("Video Blob: ",blob); 
-
-        // }
-
-        // var recData = mssg_response['blobData'];
-        var b64 = mssg_response['videoBlob'];
-        var recData = '';
-
-        if(b64!=''){
-          const byteCharacters = atob(b64.replace(/^data:video\/(webm|mp4|mpeg);base64,/, ''));
-          const byteNumbers = new Array(byteCharacters.length);
-          for (let i = 0; i < byteCharacters.length; i++) {
-            byteNumbers[i] = byteCharacters.charCodeAt(i);
-          }
-          const byteArray = new Uint8Array(byteNumbers);
-          const blob = new Blob([byteArray], {type: 'video/webm'});
-          recData = URL.createObjectURL(blob);
+  
+      if (true) {
+  
+        queueClosedMssg.style.display = "none";
+        if (!screenOverlay)
+          peersContainer.style.display = "block";
+  
+        if (!mssg_response['break'] && recentBreak) {
+          // peersContainer.style.display = "block";
+          screenOverlay = false;
+          breakNotice.style.display = "none";
+          recentBreak = false;
         }
-
-        // (async function recordStream() {
-        //   if (byteCharacters != '') {
-        //     // console.log("Byte Data: ",byteCharacters);
-
-        //     const base64Response = await fetch(`${byteCharacters}`);
-        //     const blob = await base64Response.blob();
-
-        //     var recData = URL.createObjectURL(blob);
-        //     console.log("Received video: ", blob);
-        //     if (!isHostHere && !isGuesthere) {
-        //       peersContainer.innerHTML = "";
-
-        //       var mssgCont = h(
+  
+        if (mssg_response['break'] && !isHostHere) {
+          peersContainer.style.display = "none";
+          screenOverlay = true;
+          breakNotice.style.display = "flex";
+          var duration = mssg_response['breakDuration'];
+          recentBreak = true;
+  
+          const timeRemaining = document.getElementById('time-remaining');
+          var timeInSeconds = duration * 60;
+          (async function timer() {
+            if (timeInSeconds > 0) {
+              setTimeout(() => {
+                var minutes = Math.floor(timeInSeconds / 60);
+                var seconds = timeInSeconds % 60;
+                if (seconds >= 10)
+                  timeRemaining.innerText = `${minutes}:${seconds}`;
+                else
+                  timeRemaining.innerText = `${minutes}:0${seconds}`;
+                timeInSeconds--;
+                timer();
+              }, 1000);
+            }
+            else {
+              console.log("Timer over!");
+              // currentVal = 0;
+              // timeInSeconds = 0;
+              // readyToOpenRoom = false;
+              timeRemaining.innerText = "";
+            }
+          })();
+  
+        }
+  
+        else if (mssg_response['mssg'] != '' && !isGuesthere && !isHostHere) {
+          console.log(JSON.parse(message.data)['mssg']);
+          mssg = JSON.parse(message.data)['mssg'];
+  
+          // peersContainer.append(mssgCont);
+          // mssgCont.style.display="flex";
+  
+        }
+        // else if (mssg_response['blobData']!='') {
+        //   var recData = mssg_response['blobData']
+        //   console.log(recData);
+        //   if (!isHostHere && !isGuesthere) {
+        //     peersContainer.innerHTML = "";
+  
+        //     var mssgCont = h(
+        //       "div",
+        //       {
+        //         id: "announcement-mssg",
+        //         style:"background-color:#F1F4FB;display: flex;padding: min(15px,1.5vw);z-index: 200;flex-direction: row;justify-content: space-evenly;border-radius: 20px;width: 50%;aspect-ratio: 20/3;margin: auto;margin-top: -20%;font-family: 'Manrope', sans-serif;font-style: normal;font-weight: 500;text-align: center;font-size: min(15px,1.5vw);"
+        //       },
+        //       h(
         //         "div",
         //         {
-        //           id: "announcement-mssg",
-        //           style: "background-color:#F1F4FB;display: flex;padding: min(15px,1.5vw);z-index: 200;flex-direction: row;justify-content: space-evenly;border-radius: 20px;width: 50%;aspect-ratio: 20/3;margin: auto;margin-top: -20%;font-family: 'Manrope', sans-serif;font-style: normal;font-weight: 500;text-align: center;font-size: min(15px,1.5vw);"
+        //           id: "mssg-img"
         //         },
         //         h(
-        //           "div",
+        //           "img",
         //           {
-        //             id: "mssg-img"
+        //             src: "img/hand.png"
         //           },
-        //           h(
-        //             "img",
-        //             {
-        //               src: "img/hand.png"
-        //             },
-        //             ""
-        //           ),
+        //           ""
         //         ),
-        //         h(
-        //           "div",
-        //           {
-        //             id: "mssg-mssg"
-        //           },
-        //           mssg
-        //         )
-        //       );
-
-        //       var video_rec = h(
-        //         "video",
+        //       ),
+        //       h(
+        //         "div",
         //         {
-        //           style: "width:100%;aspect-ratio:16/9;border-radius:24px;",
-        //           src: recData,
-        //           autoplay: true,
-        //           muted: true,
-        //           playsinline: true,
-        //         }
-        //       );
-        //       // recVideo.src=recData['blobData'];
-        //       peersContainer.append(video_rec);
-        //       if (mssg != undefined)
-        //         peersContainer.append(mssgCont);
-        //     }
+        //           id: "mssg-mssg"
+        //         },
+        //         mssg
+        //       )
+        //     );
+  
+        //     var video_rec = h(
+        //       "video",
+        //       {
+        //         style: "width:100%;aspect-ratio:16/9;border-radius:24px;",
+        //         src: recData,
+        //         autoplay: true,
+        //         muted: true,
+        //         playsinline: true,
+        //       }
+        //     );
+        //     // recVideo.src=recData['blobData'];
+        //     peersContainer.append(video_rec);
+        //     if(mssg!=undefined)
+        //       peersContainer.append(mssgCont);
         //   }
-        // })();
-
-        if(recData!=''){
-          console.log(recData);
-          if (!isHostHere && !isGuesthere) {
-            peersContainer.innerHTML = "";
-
-            var mssgCont = h(
-              "div",
-              {
-                id: "announcement-mssg",
-                style:"background-color:#F1F4FB;display: flex;padding: min(15px,1.5vw);z-index: 200;flex-direction: row;justify-content: space-evenly;border-radius: 20px;width: 50%;aspect-ratio: 20/3;margin: auto;margin-top: -20%;font-family: 'Manrope', sans-serif;font-style: normal;font-weight: 500;text-align: center;font-size: min(15px,1.5vw);"
-              },
-              h(
+        // }
+  
+        else {
+  
+  
+  
+          // if(mssg_response.hasOwnProperty('videoBlob')){
+          //   // const reader = new FileReader();
+  
+          //   // var arrayBuff = reader.readAsArrayBuffer(mssg_response['videoBlob']);
+          //   var byteCharacters = mssg_response['videoBlob']; 
+          //   console.log('Base64 string received: ',byteCharacters);
+          //   // var byteCharacters = atob(vidBlob);
+  
+          //   // const byteNumbers = new Array(byteCharacters.length);
+          //   // for (let i = 0; i < byteCharacters.length; i++) {
+          //   //     byteNumbers[i] = byteCharacters.charCodeAt(i);
+          //   // }
+  
+          //   // const byteArray = new Uint8Array(byteNumbers);
+  
+          //   // const blob = new Blob([byteArray], {type: 'video/webm'});
+  
+          //   // // var myReceivedBlob = new Blob(vidBlob, { type: 'video/webm' })
+          //   // console.log("Video Blob: ",blob); 
+  
+          // }
+  
+          var recData = mssg_response['blobData'];
+          // var b64 = mssg_response['videoBlob'];
+          // var recData = '';
+  
+          // if(b64!=''){
+          //   const byteCharacters = atob(b64.replace(/^data:video\/(webm|mp4|mpeg);base64,/, ''));
+          //   const byteNumbers = new Array(byteCharacters.length);
+          //   for (let i = 0; i < byteCharacters.length; i++) {
+          //     byteNumbers[i] = byteCharacters.charCodeAt(i);
+          //   }
+          //   const byteArray = new Uint8Array(byteNumbers);
+          //   const blob = new Blob([byteArray], {type: 'video/webm'});
+          //   recData = URL.createObjectURL(blob);
+          // }
+  
+          // (async function recordStream() {
+          //   if (byteCharacters != '') {
+          //     // console.log("Byte Data: ",byteCharacters);
+  
+          //     const base64Response = await fetch(`${byteCharacters}`);
+          //     const blob = await base64Response.blob();
+  
+          //     var recData = URL.createObjectURL(blob);
+          //     console.log("Received video: ", blob);
+          //     if (!isHostHere && !isGuesthere) {
+          //       peersContainer.innerHTML = "";
+  
+          //       var mssgCont = h(
+          //         "div",
+          //         {
+          //           id: "announcement-mssg",
+          //           style: "background-color:#F1F4FB;display: flex;padding: min(15px,1.5vw);z-index: 200;flex-direction: row;justify-content: space-evenly;border-radius: 20px;width: 50%;aspect-ratio: 20/3;margin: auto;margin-top: -20%;font-family: 'Manrope', sans-serif;font-style: normal;font-weight: 500;text-align: center;font-size: min(15px,1.5vw);"
+          //         },
+          //         h(
+          //           "div",
+          //           {
+          //             id: "mssg-img"
+          //           },
+          //           h(
+          //             "img",
+          //             {
+          //               src: "img/hand.png"
+          //             },
+          //             ""
+          //           ),
+          //         ),
+          //         h(
+          //           "div",
+          //           {
+          //             id: "mssg-mssg"
+          //           },
+          //           mssg
+          //         )
+          //       );
+  
+          //       var video_rec = h(
+          //         "video",
+          //         {
+          //           style: "width:100%;aspect-ratio:16/9;border-radius:24px;",
+          //           src: recData,
+          //           autoplay: true,
+          //           muted: true,
+          //           playsinline: true,
+          //         }
+          //       );
+          //       // recVideo.src=recData['blobData'];
+          //       peersContainer.append(video_rec);
+          //       if (mssg != undefined)
+          //         peersContainer.append(mssgCont);
+          //     }
+          //   }
+          // })();
+  
+          if(recData!=''){
+            console.log(recData);
+            if (!isHostHere && !isGuesthere) {
+              peersContainer.innerHTML = "";
+  
+              var mssgCont = h(
                 "div",
                 {
-                  id: "mssg-img"
+                  id: "announcement-mssg",
+                  style:"background-color:#F1F4FB;display: flex;padding: min(15px,1.5vw);z-index: 200;flex-direction: row;justify-content: space-evenly;border-radius: 20px;width: 50%;aspect-ratio: 20/3;margin: auto;margin-top: -20%;font-family: 'Manrope', sans-serif;font-style: normal;font-weight: 500;text-align: center;font-size: min(15px,1.5vw);"
                 },
                 h(
-                  "img",
+                  "div",
                   {
-                    src: "img/hand.png"
+                    id: "mssg-img"
                   },
-                  ""
+                  h(
+                    "img",
+                    {
+                      src: "img/hand.png"
+                    },
+                    ""
+                  ),
                 ),
-              ),
-              h(
-                "div",
-                {
-                  id: "mssg-mssg"
-                },
-                mssg
-              )
-            );
-
-            var video_rec = h(
-              "video",
-              {
-                style: "width:100%;aspect-ratio:16/9;border-radius:24px;",
-                src: recData,
-                autoplay: true,
-                muted: true,
-                playsinline: true,
-              }
-            );
-            // recVideo.src=recData['blobData'];
-            peersContainer.append(video_rec);
-            if(mssg!=undefined)
-              peersContainer.append(mssgCont);
-          }
-        }
-
-
-
-
-        data = mssg_response;
-        var conf = false;
-        console.log("Received: ", data);
-        console.log(`Username:${username}  Queue Front:${data.front}`);
-        if (data && data.front == username) {
-          console.log('Its your turn');
-          if (count == 1)
-            // conf = confirm('Host is inviting you inside. Are you ready?');
-            confCont.style.display = "flex";
-          const confBtn = document.getElementById('confirm-btn');
-          confBtn.addEventListener('click', () => {
-            --count;
-            confCont.style.display = "none";
-            hmsStore.subscribe(renderPeers, selectPeers);
-          });
-        }
-        if (data && data.next == username) {
-          console.log('You are next');
-          if (nextcount == 1)
-            alert('You are next!');
-          --nextcount;
-        }
-
-        queueContainer.innerHTML = "";
-
-        if (data) {
-          queue = data.queue;
-          var colors = ['#36F599', '#ff3b4e', '#4c67f4', '#ffad0e', '#8f3eb5', '#faf25d'];
-          for (var i = 0; i < queue.length; ++i) {
-
-            if(queue[i]!='<start>'){
-
-              let x = Math.floor(Math.random() * colors.length);
-              console.log(colors[x]);
-              var ith_guest = queue[i];
-  
-              console.log(ith_guest);
-              const queueEle = h(
-                "div",
-                {
-                  class: "queue-ele",
-                  style: "background-color:" + colors[x] + ";"
-                },
                 h(
-                  "span",
+                  "div",
                   {
-  
+                    id: "mssg-mssg"
                   },
-                  ith_guest[0].toUpperCase()
+                  mssg
                 )
               );
   
-              queueContainer.append(queueEle);
+              var video_rec = h(
+                "video",
+                {
+                  style: "width:100%;aspect-ratio:16/9;border-radius:24px;",
+                  src: recData,
+                  autoplay: true,
+                  muted: true,
+                  playsinline: true,
+                }
+              );
+              // recVideo.src=recData['blobData'];
+              peersContainer.append(video_rec);
+              if(mssg!=undefined)
+                peersContainer.append(mssgCont);
             }
-
           }
-        }
-
-
-        if (!isHostHere) {
-          queueBtns.style.display = "flex";
-          queueBtns2.style.display = "none";
-          const leftBtn1 = document.getElementById('left-btn1');
-          const leftBtn2 = document.getElementById('left-btn2');
-          const rightBtn = document.getElementById('right-btn');
-          rightBtn.style.backgroundColor = "#4c67f4";
-          rightBtn.style.color = "#ffffff";
-          if (inQueue && !isGuesthere) {
-            leftBtn2.style.display = "none";
-            leftBtn1.addEventListener('click', (event) => {
-              event.stopImmediatePropagation();
-              screenOverlay = true;
-              peersContainer.style.display = "none";
-              leaveQ.style.display = "flex";
-              var yesBtn = document.getElementById('leave-yes');
-              var noBtn = document.getElementById('leave-no');
-              yesBtn.addEventListener('click', (event) => {
-                event.stopImmediatePropagation();
-                var index = data.queue.indexOf(username);
-                webSocketClient.send(`<leave>/${index}`);
-                inQueue = false;
-                username = "<none>";
-                leaveQ.style.display = "none";
-                peersContainer.style.display = "block";
-              });
-              noBtn.addEventListener('click', (event) => {
-                event.stopImmediatePropagation();
-                leaveQ.style.display = "none";
-                peersContainer.style.display = "block";
-              });
-
+  
+  
+  
+  
+          data = mssg_response;
+          var conf = false;
+          console.log("Received: ", data);
+          console.log(`Username:${username}  Queue Front:${data.front}`);
+          if (data && data.front == username) {
+            console.log('Its your turn');
+            if (count == 1)
+              // conf = confirm('Host is inviting you inside. Are you ready?');
+              confCont.style.display = "flex";
+            const confBtn = document.getElementById('confirm-btn');
+            confBtn.addEventListener('click', () => {
+              --count;
+              confCont.style.display = "none";
+              hmsStore.subscribe(renderPeers, selectPeers);
             });
-            if (username == data.next) {
-              leftBtn1.style.display = "block";
-              rightBtn.innerHTML = "You are next. The room will open soon...";
+          }
+          if (data && data.next == username) {
+            console.log('You are next');
+            if (nextcount == 1)
+              alert('You are next!');
+            --nextcount;
+          }
+  
+          queueContainer.innerHTML = "";
+  
+          if (data) {
+            queue = data.queue;
+            var colors = ['#36F599', '#ff3b4e', '#4c67f4', '#ffad0e', '#8f3eb5', '#faf25d'];
+            for (var i = 0; i < queue.length; ++i) {
+  
+              if(queue[i]!='<start>'){
+  
+                let x = Math.floor(Math.random() * colors.length);
+                console.log(colors[x]);
+                var ith_guest = queue[i];
+    
+                console.log(ith_guest);
+                const queueEle = h(
+                  "div",
+                  {
+                    class: "queue-ele",
+                    style: "background-color:" + colors[x] + ";"
+                  },
+                  h(
+                    "span",
+                    {
+    
+                    },
+                    ith_guest[0].toUpperCase()
+                  )
+                );
+    
+                queueContainer.append(queueEle);
+              }
+  
             }
-            else if (username == data.queue[2]) {
-              leftBtn1.style.display = "block";
-              rightBtn.innerHTML = "You are 2<sup>nd</sup> in the Q now.";
+          }
+  
+  
+          if (!isHostHere) {
+            queueBtns.style.display = "flex";
+            queueBtns2.style.display = "none";
+            const leftBtn1 = document.getElementById('left-btn1');
+            const leftBtn2 = document.getElementById('left-btn2');
+            const rightBtn = document.getElementById('right-btn');
+            rightBtn.style.backgroundColor = "#4c67f4";
+            rightBtn.style.color = "#ffffff";
+            if (inQueue && !isGuesthere) {
+              leftBtn2.style.display = "none";
+              leftBtn1.addEventListener('click', (event) => {
+                event.stopImmediatePropagation();
+                screenOverlay = true;
+                peersContainer.style.display = "none";
+                leaveQ.style.display = "flex";
+                var yesBtn = document.getElementById('leave-yes');
+                var noBtn = document.getElementById('leave-no');
+                yesBtn.addEventListener('click', (event) => {
+                  event.stopImmediatePropagation();
+                  var index = data.queue.indexOf(username);
+                  webSocketClient.send(`<leave>/${index}/${roomSelect}`);
+                  inQueue = false;
+                  username = "<none>";
+                  leaveQ.style.display = "none";
+                  peersContainer.style.display = "block";
+                });
+                noBtn.addEventListener('click', (event) => {
+                  event.stopImmediatePropagation();
+                  leaveQ.style.display = "none";
+                  peersContainer.style.display = "block";
+                });
+  
+              });
+              if (username == data.next) {
+                leftBtn1.style.display = "block";
+                rightBtn.innerHTML = "You are next. The room will open soon...";
+              }
+              else if (username == data.queue[2]) {
+                leftBtn1.style.display = "block";
+                rightBtn.innerHTML = "You are 2<sup>nd</sup> in the Q now.";
+              }
+              else {
+                leftBtn1.style.display = "block";
+                rightBtn.innerHTML = "Please wait. You are in the queue";
+              }
+  
+            }
+            else if (isGuesthere) {
+              leftBtn1.style.display = "none";
+              rightBtn.style.display = "none";
             }
             else {
-              leftBtn1.style.display = "block";
-              rightBtn.innerHTML = "Please wait. You are in the queue";
+              if (data.closed) {
+                leftBtn1.style.display = "none";
+                rightBtn.innerHTML = "Interviewer is not taking any more Walk-In at this moment";
+                rightBtn.style.backgroundColor = "#ff3b4e";
+                rightBtn.style.color = "#ffffff";
+              }
+              else if (!isGuesthere) {
+                queueBtns.style.display = "none";
+                queueBtns2.style.display = "flex";
+                const rightBtn2 = document.getElementById('right-btn2');
+                rightBtn2.style.cursor = 'pointer';
+                rightBtn2.addEventListener('click', (event) => {
+                  event.stopImmediatePropagation();
+                  joinBtnGuest.click();
+                });
+              }
             }
-
+  
           }
-          else if (isGuesthere) {
-            leftBtn1.style.display = "none";
-            rightBtn.style.display = "none";
-          }
-          else {
-            if (data.closed) {
-              leftBtn1.style.display = "none";
-              rightBtn.innerHTML = "Interviewer is not taking any more Walk-In at this moment";
-              rightBtn.style.backgroundColor = "#ff3b4e";
-              rightBtn.style.color = "#ffffff";
-            }
-            else if (!isGuesthere) {
-              queueBtns.style.display = "none";
-              queueBtns2.style.display = "flex";
-              const rightBtn2 = document.getElementById('right-btn2');
-              rightBtn2.style.cursor = 'pointer';
-              rightBtn2.addEventListener('click', (event) => {
-                event.stopImmediatePropagation();
-                joinBtnGuest.click();
-              });
-            }
-          }
-
+  
+  
         }
-
-
       }
     }
+
+
 
 
 
@@ -545,13 +576,13 @@ webSocketClient.onopen = function () {
   // Joining the room
 
 
-
-  joinBtn.addEventListener("click", (event) => {
-    event.stopImmediatePropagation();
+  function joinAsHost(token){
+    // event.stopImmediatePropagation();
     hmsActions.join({
       userName: document.getElementById("name").value,
       // authToken: host_key,
-      authToken: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3Nfa2V5IjoiNjMxMmVmZjdiMWU3ODBlNzhjM2NlZDI0IiwidHlwZSI6ImFwcCIsInZlcnNpb24iOjIsInJvb21faWQiOiI2MzE2ZTFjM2IxZTc4MGU3OGMzZDFkY2YiLCJ1c2VyX2lkIjoidTEiLCJyb2xlIjoiaG9zdCIsImp0aSI6IjQ1ZDUxMmQ4LTNjNzItNGYyYy1hY2Y2LTQzMTU2ZWU4Mzg0ZiIsImV4cCI6MTY2NTg0ODU3MiwiaWF0IjoxNjY1NzYyMTcyLCJuYmYiOjE2NjU3NjIxNzJ9.3P6oeA4RavSjKpfh1Y4sPHNGkx0obUr5EhO8Nvw7nIg",
+      // authToken: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3Nfa2V5IjoiNjMxMmVmZjdiMWU3ODBlNzhjM2NlZDI0IiwidHlwZSI6ImFwcCIsInZlcnNpb24iOjIsInJvb21faWQiOiI2MzE2ZTFjM2IxZTc4MGU3OGMzZDFkY2YiLCJ1c2VyX2lkIjoidTEiLCJyb2xlIjoiaG9zdCIsImp0aSI6IjQ1ZDUxMmQ4LTNjNzItNGYyYy1hY2Y2LTQzMTU2ZWU4Mzg0ZiIsImV4cCI6MTY2NTg0ODU3MiwiaWF0IjoxNjY1NzYyMTcyLCJuYmYiOjE2NjU3NjIxNzJ9.3P6oeA4RavSjKpfh1Y4sPHNGkx0obUr5EhO8Nvw7nIg",
+      authToken:token,
       settings: {
         isAudioMuted: true,
         isVideoMuted: false
@@ -568,10 +599,10 @@ webSocketClient.onopen = function () {
       cameraScreenStart.style.display = "none";
       peersContainer.style.display = "block";
       hmsStore.subscribe(renderPeers, selectPeers);
-      if(!allowInitialQueueFront){
-        allowInitialQueueFront = true
-        webSocketClient.send(JSON.stringify({ 'enqueue': "<start>" }));
-      }
+      // if(!allowInitialQueueFront){
+      //   allowInitialQueueFront = true
+      //   webSocketClient.send(JSON.stringify({ 'enqueue': "<start>","room":roomSelect }));
+      // }
       // webSocketClient.send('/startRecording');
     }, 5000);
 
@@ -600,21 +631,21 @@ webSocketClient.onopen = function () {
         blobs_recorded.push(e.data);
       });
       media_recorder.addEventListener('stop', async function () {
-        // let video_local = URL.createObjectURL(new Blob(blobs_recorded, { type: 'video/webm' }));
-        // console.log("video url: ", video_local);
-        // // recVideo.src=video_local;
-        // webSocketClient.send(JSON.stringify({ 'blobData': video_local }));
-        var myblob = new Blob(blobs_recorded, { type: 'video/webm' });
+        let video_local = URL.createObjectURL(new Blob(blobs_recorded, { type: 'video/webm' }));
+        console.log("video url: ", video_local);
+        // recVideo.src=video_local;
+        webSocketClient.send(JSON.stringify({ 'blobData': video_local ,"room":roomSelect}));
+        // var myblob = new Blob(blobs_recorded, { type: 'video/webm' });
 
-        var reader = new FileReader();
-        reader.readAsDataURL(myblob);
-        reader.onloadend = function () {
-          var base64String = reader.result;
-          // console.log('Base64 String - ', base64String);
-          // console.log("Blob data before sending: ",myblob);
-          webSocketClient.send(base64String);
+        // var reader = new FileReader();
+        // reader.readAsDataURL(myblob);
+        // reader.onloadend = function () {
+        //   var base64String = reader.result;
+        //   // console.log('Base64 String - ', base64String);
+        //   // console.log("Blob data before sending: ",myblob);
+        //   webSocketClient.send(base64String);
 
-        }
+        // }
 
 
       });
@@ -624,7 +655,22 @@ webSocketClient.onopen = function () {
         recordLoop();
       }, 2000);
     })();
+  }
 
+
+  joinBtn.addEventListener("click", (event) => {
+    event.stopImmediatePropagation();
+    console.log("Host button clicked");
+    roomSelect = document.getElementById('room-name').value;
+    const asHostCont = document.getElementById('as-host-key');
+    asHostCont.style.display = "block";
+    const hostName = document.getElementById('name').value;
+
+    document.getElementById('host-join').addEventListener('click',(event)=>{
+      event.stopImmediatePropagation();
+      var key = document.getElementById('room-key').value;
+      webSocketClient.send(JSON.stringify({'cred':{'room':roomSelect,'key':key,'host':hostName}}));
+    });
 
 
   });
@@ -660,7 +706,17 @@ webSocketClient.onopen = function () {
       //   headers: { "Content-Type": "application/json"},
       //   body: JSON.stringify({'user':username})
       // });
-      webSocketClient.send(JSON.stringify({ 'enqueue': username }));
+
+      console.log("Guest button clicked");
+    roomSelect = document.getElementById('room-name').value;
+
+    // document.getElementById('host-join').addEventListener('click',(event)=>{
+    //   event.stopImmediatePropagation();
+    //   var key = document.getElementById('room-key').value;
+    //   webSocketClient.send(JSON.stringify({'cred':{'room':roomSelect,'key':key}}));
+    // });
+
+      webSocketClient.send(JSON.stringify({ 'enqueue': username,'room':roomSelect }));
       inQueue = true;
     }
 
@@ -695,7 +751,7 @@ webSocketClient.onopen = function () {
         inQueue = false;
         // if(mssg_response['next']==null)
         //   webSocketClient.send('pop');
-        webSocketClient.send(`<feedback>/${feedback_check_username}`);
+        webSocketClient.send(`<feedback>/${feedback_check_username}/${roomSelect}`);
 
       }
       else {
@@ -718,6 +774,7 @@ webSocketClient.onopen = function () {
           const leaveNo = document.getElementById('close-no');
           leaveYes.addEventListener('click', (event) => {
             event.stopImmediatePropagation();
+            webSocketClient.send(`roomActive/${roomSelect}`);
             hmsActions.leave();
             // webSocketClient.send('/stopRecording');
             try {
@@ -732,7 +789,8 @@ webSocketClient.onopen = function () {
               event.stopImmediatePropagation();
               closeAlert2.style.display = "none";
               peersContainer.style.display = "none";
-              joinBtn.click();
+              // joinBtn.click();
+              joinAsHost(hostKey);
               setTimeout(() => {
                 screenOverlay = false;
               }, 1000);
@@ -970,6 +1028,19 @@ webSocketClient.onopen = function () {
   );
 
 
+  function joinAsGuest(token){
+    hmsActions.join({
+      userName: username,
+      // authToken: guest_key,
+      // authToken: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3Nfa2V5IjoiNjMxMmVmZjdiMWU3ODBlNzhjM2NlZDI0IiwidHlwZSI6ImFwcCIsInZlcnNpb24iOjIsInJvb21faWQiOiI2MzE2ZTFjM2IxZTc4MGU3OGMzZDFkY2YiLCJ1c2VyX2lkIjoidTIiLCJyb2xlIjoiZ3Vlc3QiLCJqdGkiOiIzZWM0ZGU4Zi02YWJhLTQ1NmQtODY2YS1jYzZlOGRmM2E4NWMiLCJleHAiOjE2NjYwMjM3ODQsImlhdCI6MTY2NTkzNzM4NCwibmJmIjoxNjY1OTM3Mzg0fQ.M5jyU7t5G54ncP9wtjjUg4nJJTsrnnBZPFFSws8TrUs',
+      authToken:token,
+      settings: {
+        isAudioMuted: true,
+        isVideoMuted: false
+      },
+      rememberDeviceSelection: false,
+    });
+  }
 
 
   async function renderPeers(peers) {
@@ -987,16 +1058,9 @@ webSocketClient.onopen = function () {
     // q_next=resp_data.next;
     // console.log('Current Queue: ',q);
     if (data != undefined && username == data.front) {
-      hmsActions.join({
-        userName: username,
-        // authToken: guest_key,
-        authToken: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3Nfa2V5IjoiNjMxMmVmZjdiMWU3ODBlNzhjM2NlZDI0IiwidHlwZSI6ImFwcCIsInZlcnNpb24iOjIsInJvb21faWQiOiI2MzE2ZTFjM2IxZTc4MGU3OGMzZDFkY2YiLCJ1c2VyX2lkIjoidTIiLCJyb2xlIjoiZ3Vlc3QiLCJqdGkiOiI2NmQ2NzQ1Yi03MjU5LTQwNWMtOTdlMy1iNjkyMTU1ODc2N2EiLCJleHAiOjE2NjU4NDg1NzIsImlhdCI6MTY2NTc2MjE3MiwibmJmIjoxNjY1NzYyMTcyfQ.9HZ1T13WCosMIDQdF6IFjtJcW-GuKJqIn2oG89S4svs',
-        settings: {
-          isAudioMuted: true,
-          isVideoMuted: false
-        },
-        rememberDeviceSelection: false,
-      });
+      var guestToken = data.guestKey;
+      joinAsGuest(guestToken);
+      // webSocketClient.send(`guestToken/${roomSelect}`);
       isGuesthere = true;
       mssg = undefined;
       console.log('joined in as Guest also!!!');
@@ -1429,7 +1493,7 @@ webSocketClient.onopen = function () {
               removeYes.addEventListener('click', async (event) => {
                 event.stopImmediatePropagation();
                 await hmsActions.removePeer(ele.id, '');
-                webSocketClient.send(`<feedback>/${ele.name}`);
+                webSocketClient.send(`<feedback>/${ele.name}/${roomSelect}`);
                 tooltipActive = false;
 
 
@@ -1552,7 +1616,7 @@ webSocketClient.onopen = function () {
                 const removeYes = document.getElementById('remove-yes');
                 removeYes.addEventListener('click', async (event) => {
                   event.stopImmediatePropagation();
-                  webSocketClient.send('/closeQueue');
+                  webSocketClient.send(`/closeQueue/${roomSelect}`);
                   document.getElementById('q-close-para').innerText = "Allow";
                   queueOpen = false;
                   tooltipActive = false;
@@ -1649,7 +1713,7 @@ webSocketClient.onopen = function () {
                 const removeYes = document.getElementById('remove-yes');
                 removeYes.addEventListener('click', async (event) => {
                   event.stopImmediatePropagation();
-                  webSocketClient.send('/openQueue');
+                  webSocketClient.send(`/openQueue/${roomSelect}`);
                   document.getElementById('q-close-para').innerText = "Halt";
                   queueOpen = true;
                   tooltipActive = false;
@@ -1686,7 +1750,7 @@ webSocketClient.onopen = function () {
               event.stopImmediatePropagation();
               var mssg = document.getElementById('announcement');
               console.log(mssg.value);
-              webSocketClient.send('broadcast/' + mssg.value);
+              webSocketClient.send('broadcast/' + mssg.value+`/${roomSelect}`);
               peersContainer.style.display = "none";
               announcementScreen.style.display = "none";
               announcementReview.style.display = "flex";
@@ -2109,7 +2173,7 @@ webSocketClient.onopen = function () {
               const removeYes = document.getElementById('remove-yes');
               removeYes.addEventListener('click', async (event) => {
                 event.stopImmediatePropagation();
-                webSocketClient.send('/closeQueue');
+                webSocketClient.send(`/closeQueue/${roomSelect}`);
                 document.getElementById('q-close-para').innerText = "Allow";
                 queueOpen = false;
                 tooltipActive = false;
@@ -2206,7 +2270,7 @@ webSocketClient.onopen = function () {
               const removeYes = document.getElementById('remove-yes');
               removeYes.addEventListener('click', async (event) => {
                 event.stopImmediatePropagation();
-                webSocketClient.send('/openQueue');
+                webSocketClient.send(`/openQueue/${roomSelect}`);
                 document.getElementById('q-close-para').innerText = "Halt";
                 queueOpen = true;
                 tooltipActive = false;
@@ -2232,7 +2296,7 @@ webSocketClient.onopen = function () {
         addPer.setAttribute('disabled', false);
         addPer.addEventListener('click', (event) => {
           event.stopImmediatePropagation();
-          webSocketClient.send('pop');
+          webSocketClient.send(`pop/${roomSelect}`);
 
           if (!tooltipActive) {
             console.log("Yahan bhi aa gaya!");
@@ -2309,7 +2373,7 @@ webSocketClient.onopen = function () {
             event.stopImmediatePropagation();
             var mssg = document.getElementById('announcement');
             console.log(mssg.value);
-            webSocketClient.send('broadcast/' + mssg.value);
+            webSocketClient.send('broadcast/' + mssg.value+`/${roomSelect}`);
             peersContainer.style.display = "none";
             announcementScreen.style.display = "none";
             announcementReview.style.display = "flex";
@@ -2366,7 +2430,7 @@ webSocketClient.onopen = function () {
           const takeBreak = document.getElementById('take-break')
           takeBreak.addEventListener('click', (event) => {
             event.stopImmediatePropagation();
-            webSocketClient.send(`/coffeeBreak/${currentVal}`);
+            webSocketClient.send(`/coffeeBreak/${currentVal}/${roomSelect}`);
             coffee1.style.display = "none";
             coffee2.style.display = "flex";
             var countdown = document.getElementById('countdown');
@@ -2404,9 +2468,10 @@ webSocketClient.onopen = function () {
               // timeInSeconds = 0;
               coffee2.style.display = "none";
               peersContainer.style.display = "none";
-              webSocketClient.send('/breakOver');
+              webSocketClient.send(`/breakOver/${roomSelect}`);
               isBreak = false;
-              joinBtn.click();
+              // joinBtn.click();
+              joinAsHost(hostKey);
               setTimeout(() => {
                 screenOverlay = false;
               }, 1000);
@@ -2415,6 +2480,10 @@ webSocketClient.onopen = function () {
           });
         });
       }
+
+
+
+
     }
 
 
