@@ -710,7 +710,7 @@ webSocketClient.onopen = function () {
         // });
   
         console.log("Guest button clicked");
-      roomSelect = document.getElementById('room-name').value;
+        roomSelect = document.getElementById('room-name').value;
   
       // document.getElementById('host-join').addEventListener('click',(event)=>{
       //   event.stopImmediatePropagation();
@@ -723,6 +723,7 @@ webSocketClient.onopen = function () {
       }
     }
     else{
+      username = "<none>";
       alert("Enter name (only for testing purposes. Would be taken care in deployment by login credentials");
     }
 
