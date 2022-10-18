@@ -722,6 +722,9 @@ webSocketClient.onopen = function () {
         inQueue = true;
       }
     }
+    else{
+      alert("Enter name (only for testing purposes. Would be taken care in deployment by login credentials");
+    }
 
     // console.log(resp_data);
   });
