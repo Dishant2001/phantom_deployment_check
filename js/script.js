@@ -833,10 +833,18 @@ webSocketClient.onopen = function () {
   }
 
   // Cleanup if user refreshes the tab or navigates away
-  window.onunload = window.onbeforeunload = () => {
+  // window.onunload = window.onbeforeunload = () => {
+  //   if (leave_count > 0)
+  //     leaveRoom();
+  // };
+
+  window.addEventListener('beforeunload', function (e) {
+    e.preventDefault();
+    e.returnValue = '';
     if (leave_count > 0)
       leaveRoom();
-  };
+});
+
   leaveBtn.addEventListener("click", leaveRoom);
 
 
