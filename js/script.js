@@ -699,25 +699,28 @@ webSocketClient.onopen = function () {
     event.stopImmediatePropagation();
     if(username=="<none>"){
       username = document.getElementById("name").value;
-      feedback_check_username = username;
-      // const response = await fetch('http://127.0.0.1:5000/enqueue',{
-      //   mode:'cors',
-      //   method:'POST',
-      //   headers: { "Content-Type": "application/json"},
-      //   body: JSON.stringify({'user':username})
+      if(username!=''){
+
+        feedback_check_username = username;
+        // const response = await fetch('http://127.0.0.1:5000/enqueue',{
+        //   mode:'cors',
+        //   method:'POST',
+        //   headers: { "Content-Type": "application/json"},
+        //   body: JSON.stringify({'user':username})
+        // });
+  
+        console.log("Guest button clicked");
+      roomSelect = document.getElementById('room-name').value;
+  
+      // document.getElementById('host-join').addEventListener('click',(event)=>{
+      //   event.stopImmediatePropagation();
+      //   var key = document.getElementById('room-key').value;
+      //   webSocketClient.send(JSON.stringify({'cred':{'room':roomSelect,'key':key}}));
       // });
-
-      console.log("Guest button clicked");
-    roomSelect = document.getElementById('room-name').value;
-
-    // document.getElementById('host-join').addEventListener('click',(event)=>{
-    //   event.stopImmediatePropagation();
-    //   var key = document.getElementById('room-key').value;
-    //   webSocketClient.send(JSON.stringify({'cred':{'room':roomSelect,'key':key}}));
-    // });
-
-      webSocketClient.send(JSON.stringify({ 'enqueue': username,'room':roomSelect }));
-      inQueue = true;
+  
+        webSocketClient.send(JSON.stringify({ 'enqueue': username,'room':roomSelect }));
+        inQueue = true;
+      }
     }
 
     // console.log(resp_data);
