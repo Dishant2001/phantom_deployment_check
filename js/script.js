@@ -103,9 +103,11 @@ import {
     var queue;
     var count = 1, nextcount = 1, inQueue = false;
   
-    var mssg;
+    var mssg = null;
   
     var hostKey = undefined;
+    var base64String = null;
+    var duration = null;
   
   // async function apiCall(){
   //     const response = await fetch("http://localhost/phantom/api/roomDetail",{
@@ -126,10 +128,474 @@ import {
           const response  = await fetch('http://localhost/phantom/api/roomDetail',{
             method:'post',
             headers: { "Content-Type": "application/json",'Accept': 'application/json'},
-            body: JSON.stringify({'roomId':roomId}),
+            body: JSON.stringify({'roomId':roomId,'blobData':base64String,'breakDuration':duration}),
           });
-          const data = await response.json();
-          console.log(data);
+          const mssg_response = await response.json();
+          console.log(mssg_response);
+
+          
+  
+      // if(!isHostHere&&mssg_response.hasOwnProperty('guestToken')){
+      //   console.log("Entered in Guest Join message box");
+      //   var guestToken = mssg_response['guestToken'];
+      //   joinAsGuest(guestToken);
+      // }
+  
+      if(mssg_response.hasOwnProperty('auth')){
+        if(mssg_response['auth']){
+          console.log(mssg_response['room_tokens']);
+          hostKey = mssg_response['room_tokens'][roomSelect]["host_key"];
+          joinAsHost(hostKey);
+          console.log("Joining again!");
+        }
+        else{
+          alert("Wrong Key!");
+        }
+      }
+  
+      else{
+  
+        if ((mssg_response['queueFront'] != null || mssg_response['queueFront'] != undefined) && checkTurn == 1) {
+          console.log("Someone is giving interview or had his interview done");
+          someoneInQueue = true;
+          checkTurn = 2;
+        }
+    
+        if (!isHostHere && mssg_response['feedback'] == feedback_check_username) {
+          screenOverlay = true;
+          feedback_check_username = "<none>";
+          username = "<none>";
+          peersContainer.style.display = "none";
+          feedbackCont.style.display = "flex";
+          const submitFeedbackBtn = document.getElementById('submit-feedback');
+          submitFeedbackBtn.addEventListener('click', async(event) => {
+            event.stopImmediatePropagation();
+            var feedbackCont2 = document.getElementById('candidate-feedback-2');
+            feedbackCont.style.display = "none";
+            feedbackCont2.style.display = "flex";
+            const response  = await fetch('http://localhost/phantom/api/feedback',{
+                    method:'post',
+                    headers: { "Content-Type": "application/json",'Accept': 'application/json'},
+                    body: JSON.stringify({'roomId':roomId,'candidate':null}),
+                  });
+          });
+        }
+    
+        // if (mssg_response['closed'] && !mssg_response['queue'].includes(username) && !isHostHere) {
+        //   console.log("Queue has been closed! Sorry!");
+        //   // queueClosedMssg.style.display = "block";
+        //   // peersContainer.style.display = "none";
+        //   queueBtns.style.display="none";
+        //           queueBtns2.style.display="flex";
+        // }
+    
+        if (true) {
+    
+          queueClosedMssg.style.display = "none";
+          if (!screenOverlay)
+            peersContainer.style.display = "block";
+    
+          if (!mssg_response['breakStatus'] && recentBreak) {
+            // peersContainer.style.display = "block";
+            screenOverlay = false;
+            breakNotice.style.display = "none";
+            recentBreak = false;
+          }
+    
+          if (mssg_response['breakStatus'] && !isHostHere) {
+            peersContainer.style.display = "none";
+            screenOverlay = true;
+            breakNotice.style.display = "flex";
+            if(duration==null){
+              duration = mssg_response['breakDuration'];
+              recentBreak = true;
+            }
+    
+            const timeRemaining = document.getElementById('time-remaining');
+            var timeInSeconds = duration * 60;
+            (async function timer() {
+              if (timeInSeconds > 0) {
+                setTimeout(() => {
+                  var minutes = Math.floor(timeInSeconds / 60);
+                  var seconds = timeInSeconds % 60;
+                  if (seconds >= 10)
+                    timeRemaining.innerText = `${minutes}:${seconds}`;
+                  else
+                    timeRemaining.innerText = `${minutes}:0${seconds}`;
+                  timeInSeconds--;
+                  duration = timeInSeconds/60;
+                  timer();
+                }, 1000);
+              }
+              else {
+                console.log("Timer over!");
+                // currentVal = 0;
+                // timeInSeconds = 0;
+                // readyToOpenRoom = false;
+                timeRemaining.innerText = "";
+              }
+            })();
+    
+          }
+    
+          else if (mssg==null && mssg_response['broadcastMssg'] != 'message' && !isGuesthere && !isHostHere) {
+            console.log(mssg_response['broadcastMssg']);
+            mssg = mssg_response['broadcastMssg'];
+    
+            // peersContainer.append(mssgCont);
+            // mssgCont.style.display="flex";
+    
+          }
+          // else if (mssg_response['blobData']!='') {
+          //   var recData = mssg_response['blobData']
+          //   console.log(recData);
+          //   if (!isHostHere && !isGuesthere) {
+          //     peersContainer.innerHTML = "";
+    
+          //     var mssgCont = h(
+          //       "div",
+          //       {
+          //         id: "announcement-mssg",
+          //         style:"background-color:#F1F4FB;display: flex;padding: min(15px,1.5vw);z-index: 200;flex-direction: row;justify-content: space-evenly;border-radius: 20px;width: 50%;aspect-ratio: 20/3;margin: auto;margin-top: -20%;font-family: 'Manrope', sans-serif;font-style: normal;font-weight: 500;text-align: center;font-size: min(15px,1.5vw);"
+          //       },
+          //       h(
+          //         "div",
+          //         {
+          //           id: "mssg-img"
+          //         },
+          //         h(
+          //           "img",
+          //           {
+          //             src: "img/hand.png"
+          //           },
+          //           ""
+          //         ),
+          //       ),
+          //       h(
+          //         "div",
+          //         {
+          //           id: "mssg-mssg"
+          //         },
+          //         mssg
+          //       )
+          //     );
+    
+          //     var video_rec = h(
+          //       "video",
+          //       {
+          //         style: "width:100%;aspect-ratio:16/9;border-radius:24px;",
+          //         src: recData,
+          //         autoplay: true,
+          //         muted: true,
+          //         playsinline: true,
+          //       }
+          //     );
+          //     // recVideo.src=recData['blobData'];
+          //     peersContainer.append(video_rec);
+          //     if(mssg!=undefined)
+          //       peersContainer.append(mssgCont);
+          //   }
+          // }
+    
+          else {
+    
+    
+    
+            // if(mssg_response.hasOwnProperty('videoBlob')){
+            //   // const reader = new FileReader();
+    
+            //   // var arrayBuff = reader.readAsArrayBuffer(mssg_response['videoBlob']);
+            //   var byteCharacters = mssg_response['videoBlob']; 
+            //   console.log('Base64 string received: ',byteCharacters);
+            //   // var byteCharacters = atob(vidBlob);
+    
+            //   // const byteNumbers = new Array(byteCharacters.length);
+            //   // for (let i = 0; i < byteCharacters.length; i++) {
+            //   //     byteNumbers[i] = byteCharacters.charCodeAt(i);
+            //   // }
+    
+            //   // const byteArray = new Uint8Array(byteNumbers);
+    
+            //   // const blob = new Blob([byteArray], {type: 'video/webm'});
+    
+            //   // // var myReceivedBlob = new Blob(vidBlob, { type: 'video/webm' })
+            //   // console.log("Video Blob: ",blob); 
+    
+            // }
+    
+            // var recData = mssg_response['blobData'];
+            var b64 = mssg_response['blobData'];
+            var recData = '';
+    
+            if(b64!=''&&b64!=null){
+              const byteCharacters = atob(b64.replace(/^data:video\/(webm|mp4|mpeg);base64,/, ''));
+              const byteNumbers = new Array(byteCharacters.length);
+              for (let i = 0; i < byteCharacters.length; i++) {
+                byteNumbers[i] = byteCharacters.charCodeAt(i);
+              }
+              const byteArray = new Uint8Array(byteNumbers);
+              const blob = new Blob([byteArray], {type: 'video/webm'});
+              recData = URL.createObjectURL(blob);
+            }
+    
+            // (async function recordStream() {
+            //   if (byteCharacters != '') {
+            //     // console.log("Byte Data: ",byteCharacters);
+    
+            //     const base64Response = await fetch(`${byteCharacters}`);
+            //     const blob = await base64Response.blob();
+    
+            //     var recData = URL.createObjectURL(blob);
+            //     console.log("Received video: ", blob);
+            //     if (!isHostHere && !isGuesthere) {
+            //       peersContainer.innerHTML = "";
+    
+            //       var mssgCont = h(
+            //         "div",
+            //         {
+            //           id: "announcement-mssg",
+            //           style: "background-color:#F1F4FB;display: flex;padding: min(15px,1.5vw);z-index: 200;flex-direction: row;justify-content: space-evenly;border-radius: 20px;width: 50%;aspect-ratio: 20/3;margin: auto;margin-top: -20%;font-family: 'Manrope', sans-serif;font-style: normal;font-weight: 500;text-align: center;font-size: min(15px,1.5vw);"
+            //         },
+            //         h(
+            //           "div",
+            //           {
+            //             id: "mssg-img"
+            //           },
+            //           h(
+            //             "img",
+            //             {
+            //               src: "img/hand.png"
+            //             },
+            //             ""
+            //           ),
+            //         ),
+            //         h(
+            //           "div",
+            //           {
+            //             id: "mssg-mssg"
+            //           },
+            //           mssg
+            //         )
+            //       );
+    
+            //       var video_rec = h(
+            //         "video",
+            //         {
+            //           style: "width:100%;aspect-ratio:16/9;border-radius:24px;",
+            //           src: recData,
+            //           autoplay: true,
+            //           muted: true,
+            //           playsinline: true,
+            //         }
+            //       );
+            //       // recVideo.src=recData['blobData'];
+            //       peersContainer.append(video_rec);
+            //       if (mssg != undefined)
+            //         peersContainer.append(mssgCont);
+            //     }
+            //   }
+            // })();
+    
+            if(recData!=''){
+              console.log(recData);
+              if (!isHostHere && !isGuesthere) {
+                peersContainer.innerHTML = "";
+    
+                var mssgCont = h(
+                  "div",
+                  {
+                    id: "announcement-mssg",
+                    style:"background-color:#F1F4FB;display: flex;padding: min(15px,1.5vw);z-index: 200;flex-direction: row;justify-content: space-evenly;border-radius: 20px;width: 50%;aspect-ratio: 20/3;margin: auto;margin-top: -20%;font-family: 'Manrope', sans-serif;font-style: normal;font-weight: 500;text-align: center;font-size: min(15px,1.5vw);"
+                  },
+                  h(
+                    "div",
+                    {
+                      id: "mssg-img"
+                    },
+                    h(
+                      "img",
+                      {
+                        src: "img/hand.png"
+                      },
+                      ""
+                    ),
+                  ),
+                  h(
+                    "div",
+                    {
+                      id: "mssg-mssg"
+                    },
+                    mssg
+                  )
+                );
+    
+                var video_rec = h(
+                  "video",
+                  {
+                    style: "width:100%;aspect-ratio:16/9;border-radius:24px;",
+                    src: recData,
+                    autoplay: true,
+                    muted: true,
+                    playsinline: true,
+                  }
+                );
+                // recVideo.src=recData['blobData'];
+                peersContainer.append(video_rec);
+                if(mssg!=undefined)
+                  peersContainer.append(mssgCont);
+              }
+            }
+    
+    
+    
+    
+            data = mssg_response;
+            var conf = false;
+            console.log("Received: ", data);
+            console.log(`Username:${username}  Queue Front:${data.queueFront}`);
+            if (data && data.queueFront!=null && data.queueFront['name'] == username) {
+              console.log('Its your turn');
+              if (count == 1)
+                // conf = confirm('Host is inviting you inside. Are you ready?');
+                confCont.style.display = "flex";
+              const confBtn = document.getElementById('confirm-btn');
+              confBtn.addEventListener('click', () => {
+                --count;
+                confCont.style.display = "none";
+                hmsStore.subscribe(renderPeers, selectPeers);
+              });
+            }
+            if (data && data.nextInQueue!=null && data.nextInQueue['name'] == username) {
+              console.log('You are next');
+              if (nextcount == 1)
+                alert('You are next!');
+              --nextcount;
+            }
+    
+            queueContainer.innerHTML = "";
+    
+            if (data) {
+              queue = data.queue;
+              var colors = ['#36F599', '#ff3b4e', '#4c67f4', '#ffad0e', '#8f3eb5', '#faf25d'];
+              for (var i = 0; i < queue.length; ++i) {
+    
+                if(queue[i]['name']!='<start>'){
+    
+                  let x = Math.floor(Math.random() * colors.length);
+                  console.log(colors[x]);
+                  var ith_guest = queue[i];
+      
+                  console.log(ith_guest);
+                  const queueEle = h(
+                    "div",
+                    {
+                      class: "queue-ele",
+                      style: "background-color:" + colors[x] + ";"
+                    },
+                    h(
+                      "span",
+                      {
+      
+                      },
+                      ith_guest['name'][0].toUpperCase()
+                    )
+                  );
+      
+                  queueContainer.append(queueEle);
+                }
+    
+              }
+            }
+    
+    
+            if (!isHostHere) {
+              queueBtns.style.display = "flex";
+              queueBtns2.style.display = "none";
+              const leftBtn1 = document.getElementById('left-btn1');
+              const leftBtn2 = document.getElementById('left-btn2');
+              const rightBtn = document.getElementById('right-btn');
+              rightBtn.style.backgroundColor = "#4c67f4";
+              rightBtn.style.color = "#ffffff";
+              if (inQueue && !isGuesthere) {
+                leftBtn2.style.display = "none";
+                leftBtn1.addEventListener('click', (event) => {
+                  event.stopImmediatePropagation();
+                  screenOverlay = true;
+                  peersContainer.style.display = "none";
+                  leaveQ.style.display = "flex";
+                  var yesBtn = document.getElementById('leave-yes');
+                  var noBtn = document.getElementById('leave-no');
+                  yesBtn.addEventListener('click', async(event) => {
+                    event.stopImmediatePropagation();
+                    // var index = data.queue.indexOf(username);
+                    var index = null;
+                    for(index=0;index<data.queue.length;++index){
+                      if(data.queue[index]['name']==username)
+                        break;
+                    }
+                    // webSocketClient.send(`<leave>/${index}/${roomSelect}`);
+                    const resp = await fetch('http://localhost/phantom/api/leave',{
+                      method:'post',
+                      headers: { "Content-Type": "application/json",'Accept': 'application/json'},
+                      body: JSON.stringify({'roomId':roomId,'leave':index}),
+                    });
+                    inQueue = false;
+                    username = "<none>";
+                    leaveQ.style.display = "none";
+                    peersContainer.style.display = "block";
+                  });
+                  noBtn.addEventListener('click', (event) => {
+                    event.stopImmediatePropagation();
+                    leaveQ.style.display = "none";
+                    peersContainer.style.display = "block";
+                  });
+    
+                });
+                if (data.nextInQueue && username == data.nextInQueue['name']) {
+                  leftBtn1.style.display = "block";
+                  rightBtn.innerHTML = "You are next. The room will open soon...";
+                }
+                else if (data.queue[2] && username == data.queue[2]['name']) {
+                  leftBtn1.style.display = "block";
+                  rightBtn.innerHTML = "You are 2<sup>nd</sup> in the Q now.";
+                }
+                else {
+                  leftBtn1.style.display = "block";
+                  rightBtn.innerHTML = "Please wait. You are in the queue";
+                }
+    
+              }
+              else if (isGuesthere) {
+                leftBtn1.style.display = "none";
+                rightBtn.style.display = "none";
+              }
+              else {
+                if (data.closed) {
+                  leftBtn1.style.display = "none";
+                  rightBtn.innerHTML = "Interviewer is not taking any more Walk-In at this moment";
+                  rightBtn.style.backgroundColor = "#ff3b4e";
+                  rightBtn.style.color = "#ffffff";
+                }
+                else if (!isGuesthere) {
+                  queueBtns.style.display = "none";
+                  queueBtns2.style.display = "flex";
+                  const rightBtn2 = document.getElementById('right-btn2');
+                  rightBtn2.style.cursor = 'pointer';
+                  rightBtn2.addEventListener('click', (event) => {
+                    event.stopImmediatePropagation();
+                    joinBtnGuest.click();
+                  });
+                }
+              }
+    
+            }
+    
+    
+          }
+        }
+      }
+
+
         }
         setTimeout(()=>{
             polling();
@@ -599,8 +1065,8 @@ import {
       const response = await fetch('http://localhost/phantom/api/rooms',{
         method:'POST',
         body:JSON.stringify({'roomId':"63554fcee08863a3f2f9a34a",
-        "hostKey":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3Nfa2V5IjoiNjMxMmVmZjdiMWU3ODBlNzhjM2NlZDI0IiwidHlwZSI6ImFwcCIsInZlcnNpb24iOjIsInJvb21faWQiOiI2MzU1NGZjZWUwODg2M2EzZjJmOWEzNGEiLCJ1c2VyX2lkIjoidTEiLCJyb2xlIjoiaG9zdCIsImp0aSI6ImRhZjJiYTIyLWQzZDAtNDRiZS1hMDkxLWUyZjJjMjQwZTQ4YiIsImV4cCI6MTY2Njc2Mjc1OCwiaWF0IjoxNjY2Njc2MzU4LCJuYmYiOjE2NjY2NzYzNTh9.PxGTs97SF89hxN-Pj8xauZCEReog6wHuScrOCXDkib0",
-        "guestKey":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3Nfa2V5IjoiNjMxMmVmZjdiMWU3ODBlNzhjM2NlZDI0IiwidHlwZSI6ImFwcCIsInZlcnNpb24iOjIsInJvb21faWQiOiI2MzU1NGZjZWUwODg2M2EzZjJmOWEzNGEiLCJ1c2VyX2lkIjoidTIiLCJyb2xlIjoiZ3Vlc3QiLCJqdGkiOiJkMDJlYmVmYS1iYWMwLTRjOWMtOWNhZS1kOTJiZjVkNzZlYmEiLCJleHAiOjE2NjY3NjI3NTgsImlhdCI6MTY2NjY3NjM1OCwibmJmIjoxNjY2Njc2MzU4fQ.XbxP3wHVw1lccTtKZrGTdJMqbH_X3LtwWlFn_7es48Y",
+        "hostKey":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3Nfa2V5IjoiNjMxMmVmZjdiMWU3ODBlNzhjM2NlZDI0IiwidHlwZSI6ImFwcCIsInZlcnNpb24iOjIsInJvb21faWQiOiI2MzU1NGZjZWUwODg2M2EzZjJmOWEzNGEiLCJ1c2VyX2lkIjoidTEiLCJyb2xlIjoiaG9zdCIsImp0aSI6IjBlZTBlYjA4LWVmMTgtNGU0NC1hYmI4LWQxNjU2N2QxNzM2YSIsImV4cCI6MTY2Njg1MjA4NSwiaWF0IjoxNjY2NzY1Njg1LCJuYmYiOjE2NjY3NjU2ODV9.IbP-qB8I6k3TtJaBNJKhTZnNL64ntNWUjFXlZE15UKM",
+        "guestKey":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3Nfa2V5IjoiNjMxMmVmZjdiMWU3ODBlNzhjM2NlZDI0IiwidHlwZSI6ImFwcCIsInZlcnNpb24iOjIsInJvb21faWQiOiI2MzU1NGZjZWUwODg2M2EzZjJmOWEzNGEiLCJ1c2VyX2lkIjoidTIiLCJyb2xlIjoiZ3Vlc3QiLCJqdGkiOiJlZWYyZWM3NS03MTEwLTQ2ZmUtYWU1MC0yMGNkMmRiNzIyZDQiLCJleHAiOjE2NjY4NTIwODUsImlhdCI6MTY2Njc2NTY4NSwibmJmIjoxNjY2NzY1Njg1fQ.O-ESHRQjSSgDgBQGta5979OWWY5Q1JJRORPCr9oMj8g",
         "hostName":"Dishant"
       }),
       });
@@ -674,17 +1140,17 @@ import {
           console.log("video url: ", video_local);
           // recVideo.src=video_local;
           // webSocketClient.send(JSON.stringify({ 'blobData': video_local ,"room":roomSelect}));
-          // var myblob = new Blob(blobs_recorded, { type: 'video/webm' });
+          var myblob = new Blob(blobs_recorded, { type: 'video/webm' });
   
-          // var reader = new FileReader();
-          // reader.readAsDataURL(myblob);
-          // reader.onloadend = function () {
-          //   var base64String = reader.result;
-          //   // console.log('Base64 String - ', base64String);
-          //   // console.log("Blob data before sending: ",myblob);
-          //   webSocketClient.send(base64String);
+          var reader = new FileReader();
+          reader.readAsDataURL(myblob);
+          reader.onloadend = function () {
+            base64String = reader.result;
+            // console.log('Base64 String - ', base64String);
+            // console.log("Blob data before sending: ",myblob);
+            // webSocketClient.send(base64String);
   
-          // }
+          }
   
   
         });
@@ -692,7 +1158,7 @@ import {
         setTimeout(() => {
           media_recorder.stop();
           recordLoop();
-        }, 2000);
+        }, 5000);
       })();
     }
   
@@ -1148,7 +1614,7 @@ import {
       // q_top=resp_data.top;
       // q_next=resp_data.next;
       // console.log('Current Queue: ',q);
-      if (data != undefined && username == data.front) {
+      if (data != undefined && data.queueFront!=null && username == data.queueFront['name']) {
         var guestToken = data.guestKey;
         joinAsGuest(guestToken);
         // webSocketClient.send(`guestToken/${roomSelect}`);
@@ -2569,7 +3035,7 @@ import {
               const response  = await fetch('http://localhost/phantom/api/breakStatus',{
                     method:'post',
                     headers: { "Content-Type": "application/json",'Accept': 'application/json'},
-                    body: JSON.stringify({'roomId':roomId}),
+                    body: JSON.stringify({'roomId':roomId,'breakDuration':currentVal}),
                   });
               coffee1.style.display = "none";
               coffee2.style.display = "flex";
