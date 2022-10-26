@@ -121,15 +121,21 @@ import {
   // apiCall();
 
 
-    // (async function polling(){
-    //     if(roomId!=null){
-            
-    //     }
-    //     setTimeout(()=>{
-    //         polling();
-    //     },6000);
+    (async function polling(){
+        if(roomId!=null){
+          const response  = await fetch('http://localhost/phantom/api/roomDetail',{
+            method:'post',
+            headers: { "Content-Type": "application/json",'Accept': 'application/json'},
+            body: JSON.stringify({'roomId':roomId}),
+          });
+          const data = await response.json();
+          console.log(data);
+        }
+        setTimeout(()=>{
+            polling();
+        },6000);
 
-    // })();
+    })();
 
   
     // webSocketClient.onmessage = function (message) {
@@ -767,11 +773,12 @@ import {
         // });
     
           // webSocketClient.send(JSON.stringify({ 'enqueue': username,'room':roomSelect }));
+          roomId = "63554fcee08863a3f2f9a34a";
 
           const response = await fetch('http://localhost/phantom/api/enqueue',{
             method:'post',
             headers: { "Content-Type": "application/json",'Accept': 'application/json'},
-            body: JSON.stringify({'roomId':"63554fcee08863a3f2f9a34a",'candidate':username}),
+            body: JSON.stringify({'roomId':roomId,'candidate':username}),
           });
           const data = await response.json();
           console.log(data);
@@ -1577,7 +1584,12 @@ import {
                 removeYes.addEventListener('click', async (event) => {
                   event.stopImmediatePropagation();
                   await hmsActions.removePeer(ele.id, '');
-                  webSocketClient.send(`<feedback>/${ele.name}/${roomSelect}`);
+                  // webSocketClient.send(`<feedback>/${ele.name}/${roomSelect}`);
+                  const response  = await fetch('http://localhost/phantom/api/feedback',{
+                    method:'post',
+                    headers: { "Content-Type": "application/json",'Accept': 'application/json'},
+                    body: JSON.stringify({'roomId':roomId,'candidate':ele.name}),
+                  });
                   tooltipActive = false;
   
   
@@ -1840,11 +1852,16 @@ import {
               peersContainer.style.display = "none";
               announcementScreen.style.display = "flex";
   
-              document.getElementById('announce').addEventListener('click', (event) => {
+              document.getElementById('announce').addEventListener('click', async(event) => {
                 event.stopImmediatePropagation();
                 var mssg = document.getElementById('announcement');
                 console.log(mssg.value);
-                webSocketClient.send('broadcast/' + mssg.value+`/${roomSelect}`);
+                // webSocketClient.send('broadcast/' + mssg.value+`/${roomSelect}`);
+                const response  = await fetch('http://localhost/phantom/api/broadcast',{
+                    method:'post',
+                    headers: { "Content-Type": "application/json",'Accept': 'application/json'},
+                    body: JSON.stringify({'roomId':roomId,'message':mssg.value}),
+                  });
                 peersContainer.style.display = "none";
                 announcementScreen.style.display = "none";
                 announcementReview.style.display = "flex";
@@ -2482,11 +2499,16 @@ import {
             peersContainer.style.display = "none";
             announcementScreen.style.display = "flex";
   
-            document.getElementById('announce').addEventListener('click', (event) => {
+            document.getElementById('announce').addEventListener('click', async(event) => {
               event.stopImmediatePropagation();
               var mssg = document.getElementById('announcement');
               console.log(mssg.value);
-              webSocketClient.send('broadcast/' + mssg.value+`/${roomSelect}`);
+              // webSocketClient.send('broadcast/' + mssg.value+`/${roomSelect}`);
+              const response  = await fetch('http://localhost/phantom/api/broadcast',{
+                    method:'post',
+                    headers: { "Content-Type": "application/json",'Accept': 'application/json'},
+                    body: JSON.stringify({'roomId':roomId,'message':mssg.value}),
+                  });
               peersContainer.style.display = "none";
               announcementScreen.style.display = "none";
               announcementReview.style.display = "flex";
@@ -2541,9 +2563,14 @@ import {
   
   
             const takeBreak = document.getElementById('take-break')
-            takeBreak.addEventListener('click', (event) => {
+            takeBreak.addEventListener('click', async(event) => {
               event.stopImmediatePropagation();
-              webSocketClient.send(`/coffeeBreak/${currentVal}/${roomSelect}`);
+              // webSocketClient.send(`/coffeeBreak/${currentVal}/${roomSelect}`);
+              const response  = await fetch('http://localhost/phantom/api/breakStatus',{
+                    method:'post',
+                    headers: { "Content-Type": "application/json",'Accept': 'application/json'},
+                    body: JSON.stringify({'roomId':roomId}),
+                  });
               coffee1.style.display = "none";
               coffee2.style.display = "flex";
               var countdown = document.getElementById('countdown');
@@ -2572,7 +2599,7 @@ import {
               isBreak = true;
               leaveRoom();
               var openRoom = document.getElementById('open-room');
-              openRoom.addEventListener('click', (event) => {
+              openRoom.addEventListener('click', async(event) => {
                 event.stopImmediatePropagation();
                 readyToOpenRoom = true;
                 tooltipActive = false;
@@ -2581,7 +2608,11 @@ import {
                 // timeInSeconds = 0;
                 coffee2.style.display = "none";
                 peersContainer.style.display = "none";
-                webSocketClient.send(`/breakOver/${roomSelect}`);
+                const response  = await fetch('http://localhost/phantom/api/breakStatus',{
+                    method:'post',
+                    headers: { "Content-Type": "application/json",'Accept': 'application/json'},
+                    body: JSON.stringify({'roomId':roomId}),
+                  });
                 isBreak = false;
                 // joinBtn.click();
                 joinAsHost(hostKey);
