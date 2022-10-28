@@ -570,7 +570,7 @@ import {
                 rightBtn.style.display = "none";
               }
               else {
-                if (data.closed) {
+                if (data.queueStatus) {
                   leftBtn1.style.display = "none";
                   rightBtn.innerHTML = "Interviewer is not taking any more Walk-In at this moment";
                   rightBtn.style.backgroundColor = "#ff3b4e";
@@ -610,16 +610,24 @@ import {
     var host_key = '', guest_key = '', token = '', room_id = '6316e1c3b1e780e78c3d1dcf';
   
     startRoomBtn.addEventListener("click",async() => {
-      const response = await fetch('http://localhost/phantom/api/rooms',{
+
+      let room = prompt("Please enter room name", null);
+  if (room != null) {
+    // document.getElementById("demo").innerHTML =
+    // "Hello " + person + "! How are you today?";
+
+    let host_name = prompt("Please enter Host Name", null);
+
+    if(host_name!=null){
+      const response = await fetch('http://localhost/phantom/api/room',{
         method:'POST',
-        body:JSON.stringify({'roomId':"63554fcee08863a3f2f9a34a",
-        "hostKey":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3Nfa2V5IjoiNjMxMmVmZjdiMWU3ODBlNzhjM2NlZDI0IiwidHlwZSI6ImFwcCIsInZlcnNpb24iOjIsInJvb21faWQiOiI2MzU1NGZjZWUwODg2M2EzZjJmOWEzNGEiLCJ1c2VyX2lkIjoidTEiLCJyb2xlIjoiaG9zdCIsImp0aSI6IjBlZTBlYjA4LWVmMTgtNGU0NC1hYmI4LWQxNjU2N2QxNzM2YSIsImV4cCI6MTY2Njg1MjA4NSwiaWF0IjoxNjY2NzY1Njg1LCJuYmYiOjE2NjY3NjU2ODV9.IbP-qB8I6k3TtJaBNJKhTZnNL64ntNWUjFXlZE15UKM",
-        "guestKey":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3Nfa2V5IjoiNjMxMmVmZjdiMWU3ODBlNzhjM2NlZDI0IiwidHlwZSI6ImFwcCIsInZlcnNpb24iOjIsInJvb21faWQiOiI2MzU1NGZjZWUwODg2M2EzZjJmOWEzNGEiLCJ1c2VyX2lkIjoidTIiLCJyb2xlIjoiZ3Vlc3QiLCJqdGkiOiJlZWYyZWM3NS03MTEwLTQ2ZmUtYWU1MC0yMGNkMmRiNzIyZDQiLCJleHAiOjE2NjY4NTIwODUsImlhdCI6MTY2Njc2NTY4NSwibmJmIjoxNjY2NzY1Njg1fQ.O-ESHRQjSSgDgBQGta5979OWWY5Q1JJRORPCr9oMj8g",
-        "hostName":"Dishant"
-      }),
+        body:JSON.stringify({'roomName':room,'hostName':host_name}),
       });
       const data = await response.json();
       console.log(data);
+    }
+
+  }
       
     });
   
@@ -761,7 +769,42 @@ import {
           // });
     
           console.log("Guest button clicked");
-          roomSelect = document.getElementById('room-name').value;
+          document.getElementById('room-name').style.display = "block";
+          const guestBtn = document.getElementById('guest-join');
+          guestBtn.style.display = "block";
+
+          const resp = await fetch('http://localhost/phantom/api/allRooms');
+          const d = await resp.json();
+          console.log(d);
+          const dropdown = document.getElementById('room-name');
+          for(let j = 0;j<d.length;++j){
+            const allRooms = h(
+              "option",
+              {
+                "value":d[j]['roomId']
+              },
+              d[j]['roomName']
+            );
+            dropdown.append(allRooms);
+          }
+
+          guestBtn.addEventListener('click',async(event)=>{
+            event.stopImmediatePropagation();
+            roomSelect = document.getElementById('room-name').value;
+            roomId = roomSelect;
+            const response = await fetch('http://localhost/phantom/api/enqueue',{
+            method:'post',
+            headers: { "Content-Type": "application/json",'Accept': 'application/json'},
+            body: JSON.stringify({'roomId':roomSelect,'candidate':username}),
+            });
+            const data = await response.json();
+            console.log(data);
+
+            inQueue = true;
+          });
+          
+
+          // roomSelect = document.getElementById('room-name').value;
     
         // document.getElementById('host-join').addEventListener('click',(event)=>{
         //   event.stopImmediatePropagation();
@@ -770,17 +813,17 @@ import {
         // });
     
           // webSocketClient.send(JSON.stringify({ 'enqueue': username,'room':roomSelect }));
-          roomId = "63554fcee08863a3f2f9a34a";
+          // roomId = "63554fcee08863a3f2f9a34a";
 
-          const response = await fetch('http://localhost/phantom/api/enqueue',{
-            method:'post',
-            headers: { "Content-Type": "application/json",'Accept': 'application/json'},
-            body: JSON.stringify({'roomId':roomId,'candidate':username}),
-          });
-          const data = await response.json();
-          console.log(data);
+          // const response = await fetch('http://localhost/phantom/api/enqueue',{
+          //   method:'post',
+          //   headers: { "Content-Type": "application/json",'Accept': 'application/json'},
+          //   body: JSON.stringify({'roomId':roomId,'candidate':username}),
+          // });
+          // const data = await response.json();
+          // console.log(data);
 
-          inQueue = true;
+          // inQueue = true;
         }
       }
       else{

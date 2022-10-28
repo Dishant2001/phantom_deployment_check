@@ -352,16 +352,18 @@
         <!-- <div class="input-container">
             <input id="token" type="text" name="token" placeholder="Auth token" />
         </div> -->
-        <div class="join-as" id="as-host" >
-            <select name="room-name" id="room-name">
-                <option value="jayshree">Jayshree's Room</option>
-                <option value="rajesh">Rajesh's Room</option>
-                <option value="deepak">Deepak's Room</option>
-                <option value="dishant">Dishant's Room</option>
-            </select>
-        </div>
         <button type="button" class="btn-primary" id="join-btn">Join as Host</button>
         <button type="button" class="btn-primary" id="join-btn-guest">Join as Guest</button>
+        <div class="join-as" id="as-host" >
+            <select name="room-name" id="room-name" style="display: none;">
+                <!-- <option value="jayshree">Jayshree's Room</option>
+                <option value="rajesh">Rajesh's Room</option>
+                <option value="deepak">Deepak's Room</option>
+                <option value="dishant">Dishant's Room</option> -->
+            </select>
+            <button id="guest-join" style="display:none;">Join</button>
+        </div>
+
 
         <div class="join-as" id="as-host-key" style="display: none;">
             <input type="text" name="room-key" id="room-key" placeholder="Enter Room Key">
