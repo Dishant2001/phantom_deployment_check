@@ -104,7 +104,7 @@
     <div id="candidate-review-1" class="candidate-review-1">
        <div class="review-conts">
         <p class="review-question">1. What is your decision for this candidate ?</p>
-        <p><span>Shortlisted | </span><span>Rejected | </span><span>On-Hold | </span><span>I will share the feedback later</span></p>
+        <p><span value="Shortlisted" id="shortlist">Shortlisted | </span><span value="Rejected" id="reject">Rejected | </span><span value="On-Hold" id="hold">On-Hold | </span><span value="Later" id="later">I will share the feedback later</span></p>
        </div>
        <div class="review-conts">
         <p class="review-question">2. How do you rate this candidate, on the Scale of 1-5 ?</p>
@@ -123,7 +123,7 @@
        </div>
        <div class="review-conts">
         <p class="review-question">3. Can we share your decision (Question 1 and 2) with the candidate ?</p>
-        <p><span>Yes | </span><span>No</span></p>
+        <p><span value="Yes" id="share-yes">Yes | </span><span value="No" id="share-no">No</span></p>
        </div>
        <div class="review-conts">
         <button id="review-next">Next</button>
@@ -138,12 +138,12 @@
         </div>
         <div class="review-conts">
          <p class="review-question">5. Can this candidate give interview again for this position ?</p>
-         <p><span>Yes | </span><span>Not for 6 months | </span><span>Not for a Year | </span><span>Never</span></p>
+         <p><span value="Yes" id="give-yes">Yes | </span><span value="Not for 6 months" id="give-6-months">Not for 6 months | </span><span value="Not for a Year" id="give-year">Not for a Year | </span><span value="Never" id="give-never">Never</span></p>
         </div>
         <div class="review-conts">
          <p class="review-question">6. Can we share the video recordings of the interview with the candidate ?</p>
          <p><span>Candidates use this to prepare for the future</span></p>
-         <p><span>Yes, with unlimited replays | </span><span>Yes with one replay only | </span><span>No</span></p>
+         <p><span value="Yes-unlimited-replays" id="recording-yes">Yes, with unlimited replays | </span><span value="Yes-one-replay" id="recording-yes-one">Yes with one replay only | </span><span value="No" id="recording-no">No</span></p>
         </div>
         <div class="review-conts">
          <button id="review-submit">Submit Feedback</button>
@@ -159,15 +159,15 @@
         <div class="feedback-conts">
          <p class="feedback-question">1. How do you rate this interviewer, on the Scale of 1-5 ?</p>
          <p class="rate">
-             <input type="radio" id="star5" name="rate" value="5" />
+             <input type="radio" id="cstar5" name="rate" value="5" />
              <label for="star5" title="text">5 stars</label>
-             <input type="radio" id="star4" name="rate" value="4" />
+             <input type="radio" id="cstar4" name="rate" value="4" />
              <label for="star4" title="text">4 stars</label>
-             <input type="radio" id="star3" name="rate" value="3" />
+             <input type="radio" id="cstar3" name="rate" value="3" />
              <label for="star3" title="text">3 stars</label>
-             <input type="radio" id="star2" name="rate" value="2" />
+             <input type="radio" id="cstar2" name="rate" value="2" />
              <label for="star2" title="text">2 stars</label>
-             <input type="radio" id="star1" name="rate" value="1" />
+             <input type="radio" id="cstar1" name="rate" value="1" />
              <label for="star1" title="text">1 star</label>
          </p>
         </div>

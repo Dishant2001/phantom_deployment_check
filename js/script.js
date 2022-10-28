@@ -108,6 +108,8 @@ import {
     var hostKey = undefined;
     var base64String = null;
     var duration = null;
+
+    var joinedIn = false;
   
   // async function apiCall(){
   //     const response = await fetch("http://localhost/phantom/api/roomDetail",{
@@ -124,7 +126,7 @@ import {
 
 
     (async function polling(){
-        if(roomId!=null){
+        if(roomId!=null&&joinedIn){
           const response  = await fetch('http://localhost/phantom/api/roomDetail',{
             method:'post',
             headers: { "Content-Type": "application/json",'Accept': 'application/json'},
@@ -167,16 +169,48 @@ import {
           username = "<none>";
           peersContainer.style.display = "none";
           feedbackCont.style.display = "flex";
+
+          var companyRating = null;
+          const feedBackText = document.getElementById('feedback-textarea');
+
+          const star1 = document.getElementById('cstar1');
+                  const star2 = document.getElementById('cstar2');
+                  const star3 = document.getElementById('cstar3');
+                  const star4 = document.getElementById('cstar4');
+                  const star5 = document.getElementById('cstar5');
+
+                  star1.addEventListener('click',(event)=>{
+                    event.stopImmediatePropagation();
+                    companyRating = star1.value;
+                  });
+                  star2.addEventListener('click',(event)=>{
+                    event.stopImmediatePropagation();
+                    companyRating = star2.value;
+                  });
+                  star3.addEventListener('click',(event)=>{
+                    event.stopImmediatePropagation();
+                    companyRating = star3.value;
+                  });
+                  star4.addEventListener('click',(event)=>{
+                    event.stopImmediatePropagation();
+                    companyRating = star4.value;
+                  });
+                  star5.addEventListener('click',(event)=>{
+                    event.stopImmediatePropagation();
+                    companyRating = star5.value;
+                  });
+
           const submitFeedbackBtn = document.getElementById('submit-feedback');
           submitFeedbackBtn.addEventListener('click', async(event) => {
             event.stopImmediatePropagation();
+            joinedIn = false;
             var feedbackCont2 = document.getElementById('candidate-feedback-2');
             feedbackCont.style.display = "none";
             feedbackCont2.style.display = "flex";
-            const response  = await fetch('http://localhost/phantom/api/feedback',{
+            const response  = await fetch('http://localhost/phantom/api/companyFeedback',{
                     method:'post',
                     headers: { "Content-Type": "application/json",'Accept': 'application/json'},
-                    body: JSON.stringify({'roomId':roomId,'candidate':null}),
+                    body: JSON.stringify({'roomId':roomId,'candidate':null,'feedback':{'rating':companyRating,'remarks':feedBackText.value}}),
                   });
           });
         }
@@ -625,6 +659,7 @@ import {
       });
       const data = await response.json();
       console.log(data);
+      roomId = data['roomId'];
     }
 
   }
@@ -704,6 +739,7 @@ import {
   
     joinBtn.addEventListener("click", (event) => {
       event.stopImmediatePropagation();
+      joinedIn = true;
       console.log("Host button clicked");
       roomSelect = document.getElementById('room-name').value;
       const asHostCont = document.getElementById('as-host-key');
@@ -729,6 +765,14 @@ import {
         hostKey = data['hostKey'];
         console.log(hostKey);
         joinAsHost(hostKey);
+
+        const response2 = await fetch("http://localhost/phantom/api/startRecording",{
+          method:'POST',
+          headers: { "Content-Type": "application/json",'Accept': 'application/json'},
+          body: JSON.stringify({'roomId':roomId}),
+      });
+      console.log(response2);
+
       });
   
   
@@ -790,6 +834,7 @@ import {
 
           guestBtn.addEventListener('click',async(event)=>{
             event.stopImmediatePropagation();
+            joinedIn = true;
             roomSelect = document.getElementById('room-name').value;
             roomId = roomSelect;
             const response = await fetch('http://localhost/phantom/api/enqueue',{
@@ -865,8 +910,9 @@ import {
   
   
         // console.log('Data.front: ', data.front);
-        if (data && username == data.front) {
+        if (data && data.queueFront && username == data.queueFront['name']) {
           hmsActions.leave();
+          joinedIn = false;
           feedback_check_username = username
           username = '<none>';
           inQueue = false;
@@ -897,7 +943,17 @@ import {
               event.stopImmediatePropagation();
               // webSocketClient.send(`roomActive/${roomSelect}`);
               await roomActiveStatus();
+
+              const response2 = await fetch("http://localhost/phantom/api/stopRecording",{
+                  method:'POST',
+                  headers: { "Content-Type": "application/json",'Accept': 'application/json'},
+                  body: JSON.stringify({'roomId':roomId}),
+              });
+              console.log(response2);
+              joinedIn = false;
               hmsActions.leave();
+
+
               // webSocketClient.send('/stopRecording');
               try {
                 media_recorder.stop();
@@ -1590,7 +1646,7 @@ import {
                   const response  = await fetch('http://localhost/phantom/api/feedback',{
                     method:'post',
                     headers: { "Content-Type": "application/json",'Accept': 'application/json'},
-                    body: JSON.stringify({'roomId':roomId,'candidate':ele.name}),
+                    body: JSON.stringify({'roomId':roomId,'candidate':ele.name,'feedback':null}),
                   });
                   tooltipActive = false;
   
@@ -1600,13 +1656,124 @@ import {
                   peersContainer.style.display = "none";
                   // peersContainer.innerHTML = "";
                   reviewPage1.style.display = "flex";
+
+                  var candidateDecision = null;
+                  var rating = null;
+                  var shareDecisionWithCandidate = null;
+                  const shortlist = document.getElementById('shortlist');
+                  const reject = document.getElementById('reject');
+                  const hold = document.getElementById('hold');
+                  const later = document.getElementById('later');
+
+                  const star1 = document.getElementById('star1');
+                  const star2 = document.getElementById('star2');
+                  const star3 = document.getElementById('star3');
+                  const star4 = document.getElementById('star4');
+                  const star5 = document.getElementById('star5');
+
+                  const shareYes = document.getElementById('share-yes');
+                  const shareNo = document.getElementById('share-no');
+
+
+                  shortlist.addEventListener('click',(event)=>{
+                    event.stopImmediatePropagation();
+                    candidateDecision = "shortlisted";
+                  });
+                  reject.addEventListener('click',(event)=>{
+                    event.stopImmediatePropagation();
+                    candidateDecision = "rejected";
+                  });
+                  hold.addEventListener('click',(event)=>{
+                    event.stopImmediatePropagation();
+                    candidateDecision = "on hold";
+                  });
+                  later.addEventListener('click',(event)=>{
+                    event.stopImmediatePropagation();
+                    candidateDecision = "later";
+                  });
+
+                  star1.addEventListener('click',(event)=>{
+                    event.stopImmediatePropagation();
+                    rating = star1.value;
+                  });
+                  star2.addEventListener('click',(event)=>{
+                    event.stopImmediatePropagation();
+                    rating = star2.value;
+                  });
+                  star3.addEventListener('click',(event)=>{
+                    event.stopImmediatePropagation();
+                    rating = star3.value;
+                  });
+                  star4.addEventListener('click',(event)=>{
+                    event.stopImmediatePropagation();
+                    rating = star4.value;
+                  });
+                  star5.addEventListener('click',(event)=>{
+                    event.stopImmediatePropagation();
+                    rating = star5.value;
+                  });
+
+                  shareYes.addEventListener('click',(event)=>{
+                    event.stopImmediatePropagation();
+                    shareDecisionWithCandidate = true;
+                  });
+                  shareNo.addEventListener('click',(event)=>{
+                    event.stopImmediatePropagation();
+                    shareDecisionWithCandidate = false;
+                  });
+
+
+
                   var nextButton = document.getElementById('review-next');
                   nextButton.addEventListener('click', (event) => {
                     event.stopImmediatePropagation();
                     reviewPage1.style.display = "none";
                     reviewPage2.style.display = "flex";
+
+                    var nextInterview = null;
+                    var giveRecording = null;
+
+                    const remarks = document.getElementById('remarks');
+                    const giveInterview = document.getElementById('give-yes');
+                    const give6months = document.getElementById('give-6-months');
+                    const giveYear = document.getElementById('give-year');
+                    const giveNever = document.getElementById('give-never');
+                    const recordingYes = document.getElementById('recording-yes');
+                    const recordingOneReplay = document.getElementById('recording-yes-one');
+                    const recordingNo = document.getElementById('recording-no');
+
+                    giveInterview.addEventListener('click',(event)=>{
+                      event.stopImmediatePropagation();
+                      nextInterview ="Yes";
+                    });
+                    give6months.addEventListener('click',(event)=>{
+                      event.stopImmediatePropagation();
+                      nextInterview = "After 6 months";
+                    });
+                    giveYear.addEventListener('click',(event)=>{
+                      event.stopImmediatePropagation();
+                      nextInterview = "After 1 year";
+                    });
+                    giveNever.addEventListener('click',(event)=>{
+                      event.stopImmediatePropagation();
+                      nextInterview = "No";
+                    });
+
+                    recordingYes.addEventListener('click',(event)=>{
+                      event.stopImmediatePropagation();
+                      giveRecording = "Yes, unlimited replays";
+                    });
+                    recordingOneReplay.addEventListener('click',(event)=>{
+                      event.stopImmediatePropagation();
+                      giveRecording = "Yes, one replay";
+                    });
+                    recordingNo.addEventListener('click',(event)=>{
+                      event.stopImmediatePropagation();
+                      giveRecording = "No";
+                    });
+
                     var submitFeed = document.getElementById('review-submit');
-                    submitFeed.addEventListener('click', (event) => {
+                    submitFeed.addEventListener('click', async(event) => {
                       event.stopImmediatePropagation();
                       reviewPage2.style.display = "none";
                       screenOverlay = false;
@@ -1614,6 +1781,20 @@ import {
                       peersContainer.style.display = "block";
                       // peersContainer.append(peerContainer);
                       // webSocketClient.send('pop');
+                      const feedBack = {
+                        "candidateDecision":candidateDecision,
+                        "rating":rating,
+                        "remarks":remarks.value,
+                        "shareDecision":shareDecisionWithCandidate,
+                        "nextInterview":nextInterview,
+                        "giveRecording":giveRecording
+                      }
+                      const response  = await fetch('http://localhost/phantom/api/feedback',{
+                        method:'post',
+                        headers: { "Content-Type": "application/json",'Accept': 'application/json'},
+                        body: JSON.stringify({'roomId':roomId,'candidate':ele.name,"feedback":feedBack}),
+                      });
+
                       console.log("Yahan tak aa gaya!!");
                       hmsStore.subscribe(renderPeers, selectPeers);
                     });
