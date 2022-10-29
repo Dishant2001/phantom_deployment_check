@@ -969,6 +969,7 @@ import {
                 peersContainer.style.display = "none";
                 // joinBtn.click();
                 await roomActiveStatus();
+                joinedIn = true;
                 joinAsHost(hostKey);
                 setTimeout(() => {
                   screenOverlay = false;
