@@ -674,6 +674,7 @@ import {
   
     // Joining the room
   
+    var recordPreviousState = 1;
   
     function joinAsHost(token){
       // event.stopImmediatePropagation();
@@ -708,35 +709,40 @@ import {
   
   
       (async function recordLoop() {
-        var blobs_recorded = [];
-        camera_stream = await navigator.mediaDevices.getUserMedia({ video: { width: 1070, height: 600 } });
-        media_recorder = new MediaRecorder(camera_stream, { mimeType: 'video/webm' });
-        media_recorder.addEventListener('dataavailable', async function (e) {
-          console.log("Recording: ", new Blob([e.data], { type: 'video/webm' }));
-          blobs_recorded.push(e.data);
-        });
-        media_recorder.addEventListener('stop', async function () {
-          let video_local = URL.createObjectURL(new Blob(blobs_recorded, { type: 'video/webm' }));
-          console.log("video url: ", video_local);
-          // recVideo.src=video_local;
-          // webSocketClient.send(JSON.stringify({ 'blobData': video_local ,"room":roomSelect}));
-          var myblob = new Blob(blobs_recorded, { type: 'video/webm' });
-  
-          var reader = new FileReader();
-          reader.readAsDataURL(myblob);
-          reader.onloadend = function () {
-            base64String = reader.result;
-            // console.log('Base64 String - ', base64String);
-            // console.log("Blob data before sending: ",myblob);
-            // webSocketClient.send(base64String);
-  
-          }
-  
-  
-        });
-        media_recorder.start();
+        if(recordPreviousState==1){
+          console.log("Starting recording again!!");
+          var blobs_recorded = [];
+          camera_stream = await navigator.mediaDevices.getUserMedia({ video: { width: 1070, height: 600 } });
+          media_recorder = new MediaRecorder(camera_stream, { mimeType: 'video/webm' });
+          media_recorder.addEventListener('dataavailable', async function (e) {
+            console.log("Recording: ", new Blob([e.data], { type: 'video/webm' }));
+            blobs_recorded.push(e.data);
+          });
+          media_recorder.addEventListener('stop', async function () {
+            let video_local = URL.createObjectURL(new Blob(blobs_recorded, { type: 'video/webm' }));
+            console.log("video url: ", video_local);
+            // recVideo.src=video_local;
+            // webSocketClient.send(JSON.stringify({ 'blobData': video_local ,"room":roomSelect}));
+            var myblob = new Blob(blobs_recorded, { type: 'video/webm' });
+    
+            var reader = new FileReader();
+            reader.readAsDataURL(myblob);
+            reader.onloadend = function () {
+              base64String = reader.result;
+              // console.log('Base64 String - ', base64String);
+              // console.log("Blob data before sending: ",myblob);
+              // webSocketClient.send(base64String);
+    
+            }
+    
+    
+          });
+          media_recorder.start();
+        }
         setTimeout(() => {
-          media_recorder.stop();
+          if(recordPreviousState==1){
+            media_recorder.stop();
+          }
           recordLoop();
         }, 5000);
       })();
@@ -1072,6 +1078,12 @@ import {
           hmsActions.setLocalVideoEnabled(videoEnabled);
           const cam_img = document.getElementById('cam-img');
           cam_img.src = videoEnabled ? "img/cam.png" : "img/cam_red.png";
+          if(!videoEnabled){
+            recordPreviousState = 0;
+          }
+          else if(videoEnabled){
+            recordPreviousState = 1;
+          }
           // cam.style.backgroundColor = videoEnabled ? "#fafafb" : "#ff3459";
           // var color = cam.style.backgroundColor;
           // if(color=="#fafafb")
