@@ -110,6 +110,8 @@ import {
     var duration = null;
 
     var joinedIn = false;
+
+    var blobSizeMinimum = 1000000,blobSizeMaximum = -1;
   
   // async function apiCall(){
   //     const response = await fetch("http://localhost/phantom/api/roomDetail",{
@@ -363,6 +365,10 @@ import {
     
             if(b64!=''&&b64!=null){
               const byteCharacters = atob(b64.replace(/^data:video\/(webm|mp4|mpeg);base64,/, ''));
+              blobSizeMinimum = Math.min(blobSizeMinimum,byteCharacters.length);
+              blobSizeMaximum = Math.max(blobSizeMaximum,byteCharacters.length);
+              console.log("Blob size minimum: ",blobSizeMinimum/1024);
+              console.log("Blob size maximum: ",blobSizeMaximum/1024);
               const byteNumbers = new Array(byteCharacters.length);
               for (let i = 0; i < byteCharacters.length; i++) {
                 byteNumbers[i] = byteCharacters.charCodeAt(i);
@@ -703,7 +709,7 @@ import {
   
       (async function recordLoop() {
         var blobs_recorded = [];
-        camera_stream = await navigator.mediaDevices.getUserMedia({ video: { width: 1024, height: 576 } });
+        camera_stream = await navigator.mediaDevices.getUserMedia({ video: { width: 1070, height: 600 } });
         media_recorder = new MediaRecorder(camera_stream, { mimeType: 'video/webm' });
         media_recorder.addEventListener('dataavailable', async function (e) {
           console.log("Recording: ", new Blob([e.data], { type: 'video/webm' }));
