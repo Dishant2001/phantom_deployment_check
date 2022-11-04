@@ -1,19 +1,19 @@
 import {
-    HMSReactiveStore,
-    selectIsConnectedToRoom,
-    selectIsLocalAudioEnabled,
-    selectIsLocalVideoEnabled,
-    selectPeers,
-    selectLocalPeerRole
-} from "https://cdn.skypack.dev/@100mslive/hms-video-store";
-
-// Initialize HMS Store
-const hmsManager = new HMSReactiveStore();
-hmsManager.triggerOnSubscribe();
-const hmsStore = hmsManager.getStore();
-const hmsActions = hmsManager.getHMSActions();
+    joinRoom,
+    attachVideoToContainer,
+    leave,
+    audioState,
+    videoState,
+    getRoomState,
+    removePeer,
+    subscribeToChange
+} from "./100ms.js";
 
 
+const form = document.getElementById("join");
+  const joinBtn = document.getElementById("join-btn");
+  const joinBtnGuest = document.getElementById('join-btn-guest');
+  const roomName = document.getElementById('room-name');
 
 // const conference = document.getElementById("conference");
 const peersContainer = document.getElementById("hostContainer"); //container to render both host video and guestContainer
@@ -319,7 +319,8 @@ var blobSizeMinimum = 1000000, blobSizeMaximum = -1; //just for blob max and min
                             --count;
                             confCont.style.display = "none";
                             //100ms api function to tell that current user is ready to join, start access to camera to current user and call function renderPeers defined below
-                            hmsStore.subscribe(renderPeers, selectPeers);
+                            
+                            subscribeToChange(renderPeers);
                         });
                     }
                     //if user on current browser tab is next in Queue, alert him/her
@@ -498,15 +499,7 @@ startRoomBtn.addEventListener("click", async () => {
 var recordPreviousState = 1;
 //joining as host
 function joinAsHost(token) {
-    hmsActions.join({
-        userName: document.getElementById("name").value,
-        authToken: token,
-        settings: {
-            isAudioMuted: true,
-            isVideoMuted: false
-        },
-        rememberDeviceSelection: true,
-    });
+    joinRoom(document.getElementById("name").value,token,true,false,true);
     //user on current browser tab is the host
     isHostHere = true;
     peersContainer.style.display = "none";
@@ -515,7 +508,8 @@ function joinAsHost(token) {
         cameraScreenStart.style.display = "none";
         peersContainer.style.display = "block";
         //starting the video of host, and calling the renderPeers function using 100ms API
-        hmsStore.subscribe(renderPeers, selectPeers);
+        
+        subscribeToChange(renderPeers);
         
     }, 5000);
 
@@ -675,7 +669,7 @@ function leaveRoom() {
         //checking if the guest who is on top of queue presses the leave button
         if (data && data.queueFront && username == data.queueFront['name']) {
             //100ms function to leave a video call room
-            hmsActions.leave();
+            leave();
             joinedIn = false;
             feedback_check_username = username
             username = '<none>';
@@ -685,7 +679,7 @@ function leaveRoom() {
         else {
             //check if host has asked for break, then close the room, and stop the recording
             if (isBreak) {
-                hmsActions.leave();
+                leave();
                 try {
                     media_recorder.stop();
                 } catch (error) {
@@ -711,7 +705,7 @@ function leaveRoom() {
                     });
                     console.log(response2);
                     joinedIn = false;
-                    hmsActions.leave();
+                    leave();
 
 
                     try {
@@ -797,8 +791,7 @@ function buttonControl() {
     if (mic.getAttribute('listener') !== 'true') {
         mic.addEventListener('click', (event) => {
             event.stopImmediatePropagation();
-            const audioEnabled = !hmsStore.getState(selectIsLocalAudioEnabled);
-            hmsActions.setLocalAudioEnabled(audioEnabled);
+            const audioEnabled = audioState();
             console.log('Audio: ', audioEnabled);
             const mic_img = document.getElementById('mic-img');
             mic_img.src = audioEnabled ? "img/mic.png" : "img/mic_red.png";
@@ -810,8 +803,7 @@ function buttonControl() {
     if (cam.getAttribute('listener') !== 'true') {
         cam.addEventListener('click', (event) => {
             event.stopImmediatePropagation();
-            const videoEnabled = !hmsStore.getState(selectIsLocalVideoEnabled);
-            hmsActions.setLocalVideoEnabled(videoEnabled);
+            const videoEnabled = videoState();
             const cam_img = document.getElementById('cam-img');
             cam_img.src = videoEnabled ? "img/cam.png" : "img/cam_red.png";
             //setting recordPreviousState as per video on/off
@@ -909,15 +901,7 @@ const controlContainer = h(
 function joinAsGuest(token) {
     //100ms api to join video call
     //here token is the guest Key for the room
-    hmsActions.join({
-        userName: username,
-        authToken: token,
-        settings: {
-            isAudioMuted: true,
-            isVideoMuted: false
-        },
-        rememberDeviceSelection: false,
-    });
+    joinRoom(username,token,true,false,false);
 }
 
 //this function handles all the video calling
@@ -940,7 +924,7 @@ async function renderPeers(peers) {
 
     if (!peers) {
         // this allows us to make peer list an optional argument
-        peers = hmsStore.getState(selectPeers);
+        peers = getRoomState();
     }
 
 
@@ -1127,7 +1111,7 @@ async function renderPeers(peers) {
 
             // this method takes a track ID and attaches that video track to a given
             // <video> element
-            hmsActions.attachVideo(peer.videoTrack, video);
+            attachVideoToContainer(peer,video);
             if (peer.isLocal) {
                 checkIfHost = true;
             }
@@ -1156,7 +1140,8 @@ async function renderPeers(peers) {
             }
 
 
-            hmsActions.attachVideo(ele.videoTrack, video_guest);
+            
+            attachVideoToContainer(ele,video_guest);
             var temp_arr = [];
             if (ele.isLocal) {
                 temp_arr = [video, video_guest];
@@ -1325,7 +1310,7 @@ async function renderPeers(peers) {
                         const removeYes = document.getElementById('remove-yes');
                         removeYes.addEventListener('click', async (event) => {
                             event.stopImmediatePropagation();
-                            await hmsActions.removePeer(ele.id, '');
+                            await removePeer(ele,'');
                             // webSocketClient.send(`<feedback>/${ele.name}/${roomSelect}`);
                             const response = await fetch('http://localhost/phantom/api/feedback', {
                                 method: 'post',
@@ -1480,7 +1465,7 @@ async function renderPeers(peers) {
                                     });
 
                                     console.log("Yahan tak aa gaya!!");
-                                    hmsStore.subscribe(renderPeers, selectPeers);
+                                    subscribeToChange(renderPeers);
                                 });
                             });
 
@@ -2067,9 +2052,6 @@ async function renderPeers(peers) {
                         tooltipActive = false;
                     });
                 }
-                // await hmsActions.removePeer(ele.id, '');
-                // // webSocketClient.send('pop');
-                // webSocketClient.send(`remove/${ele.name}`);
 
             });
 
