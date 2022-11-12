@@ -6,7 +6,9 @@ import {
     videoState,
     getRoomState,
     removePeer,
-    subscribeToChange
+    subscribeToChange,
+    sendMessage,
+    subscribetoMessages
 } from "./100ms.js";
 
 
@@ -75,6 +77,7 @@ var readyToOpenRoom = false;
 var recentBreak = false; //checking if was a break taken recently or not
 
 var roomId = null;
+var sendMessageTo = null;
 
 
 
@@ -107,6 +110,22 @@ var joinedIn = false;
 
 var blobSizeMinimum = 1000000, blobSizeMaximum = -1; //just for blob max and min size testing purpose
 
+
+function renderMessages(messages){
+    console.log('messages - ', messages);
+}
+
+function initialiseChat(peer,ele,isHostHere){
+    if(isHostHere){
+        sendMessageTo = ele;
+        sendMessage(`${peer.name} joined the chat`,sendMessageTo);
+    }
+    else{
+        sendMessageTo = peer
+        sendMessage(`${ele.name} joined the chat`,sendMessageTo);
+    }
+    subscribetoMessages(renderMessages,sendMessageTo);
+}
 
 
 (async function polling() {
@@ -786,7 +805,7 @@ function buttonControl() {
     const mic = document.getElementById('mic');
     // const call = document.getElementById('call');
     const cam = document.getElementById('video');
-    const chat = document.getElementById('chat');
+    const chat = document.getElementById('chat-1');
 
     if (mic.getAttribute('listener') !== 'true') {
         mic.addEventListener('click', (event) => {
@@ -818,6 +837,14 @@ function buttonControl() {
             renderPeers();
         });
     }
+
+    chat.addEventListener('click',(event)=>{
+        event.stopImmediatePropagation();
+        console.log('Chat btn clicked!');
+        if(sendMessageTo!=null){
+            sendMessage('Test Internal Message',sendMessageTo);
+        }
+    });
 
 
 }
@@ -1118,6 +1145,8 @@ async function renderPeers(peers) {
         }
 
         if (ele != undefined && ele.videoTrack && video != undefined) {
+
+            initialiseChat(peer,ele,isHostHere);
 
             var video_guest;
             if (ele.isLocal) {
@@ -2481,4 +2510,6 @@ async function renderPeers(peers) {
 
 
 }
+
+
 

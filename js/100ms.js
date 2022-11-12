@@ -4,7 +4,8 @@ import {
     selectIsLocalAudioEnabled,
     selectIsLocalVideoEnabled,
     selectPeers,
-    selectLocalPeerRole
+    selectLocalPeerRole,
+    selectMessagesByPeerID,
 } from "https://cdn.skypack.dev/@100mslive/hms-video-store";
 
 // Initialize HMS Store
@@ -55,6 +56,18 @@ async function removePeer(ele,mssg){
     await hmsActions.removePeer(ele.id, mssg);
 }
 
+function sendMessage(mssg,peer){
+    console.log("Mssg to be sent: ",mssg);
+    console.log("sending to: ",peer.name);
+    hmsActions.sendDirectMessage(mssg,peer.id);
+}
+
+function subscribetoMessages(renderMessages,peer){
+    if(peer!=null){
+        hmsStore.subscribe(renderMessages,selectMessagesByPeerID(peer.id));
+    }
+}
+
 function subscribeToChange(renderPeers){
     hmsStore.subscribe(renderPeers, selectPeers);
 }
@@ -67,7 +80,9 @@ export {
     videoState,
     getRoomState,
     removePeer,
-    subscribeToChange
+    subscribeToChange,
+    sendMessage,
+    subscribetoMessages
 };
 
 //renderPeers is a function which is used to render video Room on browser. It has been implemented in the temp.js file
