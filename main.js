@@ -182,7 +182,7 @@ async function setBackgroundColor() {
         let processor = await getProcessorInstance();
 
         try {
-            processor.setOptions({ type: 'color', color: '#00ff00' });
+            processor.setOptions({ type: 'color', color: '#ffffff' });
             await processor.enable();
             document.getElementById('color-btn').innerText = "Remove Color";
         } catch (e) {
