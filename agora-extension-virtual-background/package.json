@@ -1,0 +1,43 @@
+{
+  "_from": "agora-extension-virtual-background",
+  "_id": "agora-extension-virtual-background@1.1.2",
+  "_inBundle": false,
+  "_integrity": "sha512-4LbvdQdNHZCbq/V0rmvBoNDkPT7vsj3c4FoFi3hGbe3jBNwFkOpgt5hs57tla9fBNYOYKfP2ZXJ9Okxj72Uu8Q==",
+  "_location": "/agora-extension-virtual-background",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "agora-extension-virtual-background",
+    "name": "agora-extension-virtual-background",
+    "escapedName": "agora-extension-virtual-background",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/agora-extension-virtual-background/-/agora-extension-virtual-background-1.1.2.tgz",
+  "_shasum": "9270732c3d2bc41b5fdc492b7c451181d3057230",
+  "_spec": "agora-extension-virtual-background",
+  "_where": "D:\\projects\\Heyhere\\backend",
+  "author": {
+    "name": "agora"
+  },
+  "bundleDependencies": false,
+  "declaration": true,
+  "declarationMap": true,
+  "deprecated": false,
+  "description": "",
+  "keywords": [],
+  "license": "",
+  "main": "agora-extension-virtual-background.js",
+  "name": "agora-extension-virtual-background",
+  "peerDependencies": {
+    "agora-rtc-sdk-ng": ">=4.15.0"
+  },
+  "typings": "index.d.ts",
+  "version": "1.1.2"
+}
