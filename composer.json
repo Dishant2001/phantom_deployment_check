@@ -1,0 +1,5 @@
+{
+    "require": {
+        "yasserbelhimer/agora-access-token-generator": "^1.0"
+    }
+}
