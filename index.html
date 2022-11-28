@@ -7,27 +7,41 @@
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     <link rel='stylesheet' type='text/css' media='screen' href='main.css'>
     <script src="agora-extension-virtual-background.js"></script>
+    <script src="Agora-chat.js"></script>
 </head>
 <body>
 
     <button id="join-btn">Join Stream</button>
+    <button id="chat">Chat Box</button>
 
-    <div id="stream-wrapper">
-        <div id="video-streams"></div>
-
-        <div id="stream-controls">
-            <button id="leave-btn">Leave</button>
-            <button id="mic-btn">Mute</button>
-            <button id="camera-btn">Camera switch off</button>
-            <button id="screen-share-btn">Share Screen</button>
-            <button id="blur-btn">Blur Background</button>
-            <button id="color-btn">Color Background</button>
-            <button id="bgimg-btn">Background Image</button>
+    <div id="main">
+        <div id="stream-wrapper">
+            <div id="video-streams"></div>
+    
+            <div id="stream-controls">
+                <button id="leave-btn">Leave</button>
+                <button id="mic-btn">Mute</button>
+                <button id="camera-btn">Camera switch off</button>
+                <button id="screen-share-btn">Share Screen</button>
+                <button id="blur-btn">Blur Background</button>
+                <button id="color-btn">Color Background</button>
+                <button id="bgimg-btn">Background Image</button>
+            </div>
+        </div>
+        <div id="chatbox">
+            <div class="chats" id="chats">
+                Old chats
+            </div>
+            <div id="sendMssg">
+                <input type="text" name="mssg" id="mssg">
+                <button id="send">Send</button>
+            </div>
         </div>
     </div>
+
     
 </body>
-<script src="AgoraRTC_N-4.15.0.js"></script>
+<script src="AgoraRTC_N-production.js"></script>
 <script src='main.js'></script>
 <script src="agora-extension-virtual-background.js"></script>
 </html>

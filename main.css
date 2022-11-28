@@ -8,6 +8,12 @@
     padding:20px 40px;
 }
 
+#chat{
+    display: none;
+    margin-left: auto;
+    width: 30%;
+}
+
 #video-streams{
     display:grid;
     grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
@@ -17,7 +23,8 @@
 }
 
 .video-container{
-    width: 100%;
+    width: 90%;
+    margin: auto;
     aspect-ratio: 16/9;
     border: 2px solid black;
     background-color: #203A49;
@@ -39,9 +46,40 @@ button{
 }
 
 #stream-controls{
-    display: none;
+    display: flex;
     justify-content: center;
-    margin-top:0.5em;
+    margin: auto;
+}
+
+#main{
+    display: none;
+    flex-direction: row;
+    justify-content: center;
+    /* margin-top:0.5em; */
+    margin: auto;
+}
+
+
+#stream-wrapper{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin: auto;
+}
+
+#chatbox{
+    display: none;
+    flex-direction: column;
+    width: 20%;
+    height: 100%;
+    margin: auto;
+    /* background-color: black; */
+}
+
+.chats{
+    display: block;
+    height: 60vh;
+    overflow-y: scroll;
 }
 
 @media screen and (max-width:1400px){

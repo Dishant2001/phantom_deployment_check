@@ -1,6 +1,7 @@
 const APP_ID = "229f7b2123034802a9bc71c29c097fe1"
-const TOKEN = "006229f7b2123034802a9bc71c29c097fe1IACnCDSjQEMYy7WrJEbnzI+ISCMQKGhvSS0MciFJF9KHsi4VsiUAAAAAIgDUyAAATy9/YwQAAQBPL39jAwBPL39jAgBPL39jBABPL39j"
+const TOKEN = "006229f7b2123034802a9bc71c29c097fe1IADE/0pc4U+qirSbJOAUH/2HJtPg24AAJt1yYtX76aNlgC4VsiUAAAAAIgAnggAAZ5iFYwQAAQBnmIVjAwBnmIVjAgBnmIVjBABnmIVj"
 const CHANNEL = "Room1"
+
 
 const client = AgoraRTC.createClient({ mode: 'rtc', codec: 'vp8' });
 
@@ -16,6 +17,50 @@ let UID = null;
 let processor = null;
 let virtualBackgroundEnabled = false;
 let imgElement = null;
+
+
+WebIM.conn = new WebIM.connection({
+    appKey: "71833649#1034879",
+})
+
+
+WebIM.conn.addEventHandler('connection&message', {
+    onConnected: () => {
+        // document.getElementById("log").appendChild(document.createElement('div')).append("Connect success !")
+        console.log("Connect success!");
+    },
+    onDisconnected: () => {
+        // document.getElementById("log").appendChild(document.createElement('div')).append("Logout success !")
+        console.log("Logout success!");
+    },
+    onTextMessage: (message) => {
+        console.log(message)
+        document.getElementById('chats').insertAdjacentHTML("beforeend",`<p>${message['msg']}</p>`);
+        // document.getElementById("log").appendChild(document.createElement('div')).append("Message from: " + message.from + " Message: " + message.msg)
+    },
+    onTokenWillExpire: (params) => {
+        // document.getElementById("log").appendChild(document.createElement('div')).append("Token is about to expire")
+        // refreshToken(username, password)
+    },
+    onTokenExpired: (params) => {
+        // document.getElementById("log").appendChild(document.createElement('div')).append("The token has expired")
+        // refreshToken(username, password)
+    },
+    onError: (error) => {
+        console.log('on error', error)
+    }
+})
+
+function openChatConn(){
+    WebIM.conn.open({
+        user: "dishant2001",
+        agoraToken: "007eJxTYDiYf18iZL9Zgd6EBde/N3R98HwYnGrQseuKg5zFig3XQ9QVGIyMLNPMk4wMjYwNjE0sDIwSLZOSzQ2TjSyTDSzN01INo3RakhsCGRkU5k9hZGRgZWAEQhBfhcHcxMIo1TTZQNcsNTlF19AwNUXXMsnETNfA0iw51cDU0CI1yRIAeoEm5g==",
+    });
+}
+
+function closeChatConn(){
+    WebIM.conn.close();
+}
 
 function htmlForVideo(UID) {
     let player = `<div class="video-container" id="user-container-${UID}">
@@ -39,6 +84,8 @@ async function joinAndDisplayLocalStream() {
 
     UID = await client.join(APP_ID, CHANNEL, TOKEN, null)
 
+    openChatConn();
+
     localTracks = await AgoraRTC.createMicrophoneAndCameraTracks()
 
 
@@ -52,10 +99,16 @@ async function joinAndDisplayLocalStream() {
 async function joinStream() {
     await joinAndDisplayLocalStream()
     document.getElementById('join-btn').style.display = 'none'
-    document.getElementById('stream-controls').style.display = 'flex'
+    document.getElementById('main').style.display = 'flex'
+    document.getElementById('chat').style.display = 'block';
+}
+
+function chatBoxPop(){
+    document.getElementById('chatbox').style.display = document.getElementById('chatbox').style.display == 'flex'?'none':'flex';
 }
 
 async function handleUserJoined(user, mediaType) {
+    peerId = user.uid;
     remoteUsers[user.uid] = user
     await client.subscribe(user, mediaType)
 
@@ -86,10 +139,15 @@ async function leaveAndRemoveLocalStream() {
         localTracks[i].close()
     }
 
-    await client.leave()
+    await client.leave();
+
+    closeChatConn();
+
     document.getElementById('join-btn').style.display = 'block'
-    document.getElementById('stream-controls').style.display = 'none'
+    document.getElementById('main').style.display = 'none'
     document.getElementById('video-streams').innerHTML = ''
+    document.getElementById('chat').style.display = 'none';
+    document.getElementById('chats').innerHTML = '';
 }
 
 async function toggleMic(e) {
@@ -110,9 +168,9 @@ async function toggleCamera(e) {
         e.target.innerText = 'Camera switch off'
         e.target.style.backgroundColor = 'cadetblue'
     } else {
-        await localTracks[1].setMuted(true)
-        e.target.innerText = 'Camera switch on'
-        e.target.style.backgroundColor = '#EE4B2B'
+        await localTracks[1].setMuted(true);
+        e.target.innerText = 'Camera switch on';
+        e.target.style.backgroundColor = '#EE4B2B';
     }
 }
 
@@ -226,14 +284,33 @@ async function setBackgroundImage() {
 }
 
 
+function sendMssg(){
+    let option = {
+        chatType: 'singleChat',    // Set it to single chat
+        type: 'txt',               // Message type
+        to: 'dishant2001',                // The user receiving the message (user ID)
+        msg: UID + ' : ' + document.getElementById('mssg').value           // The message content
+    }
+
+    let msg = WebIM.message.create(option); 
+    WebIM.conn.send(msg).then((res) => {
+        console.log('send private text success');
+        document.getElementById('chats').insertAdjacentHTML("beforeend",`<p>${option['msg']}</p>`);
+    }).catch((err) => {
+        console.log('send private text fail', err);
+    })
+}
 
 
 
-document.getElementById('join-btn').addEventListener('click', joinStream)
-document.getElementById('leave-btn').addEventListener('click', leaveAndRemoveLocalStream)
-document.getElementById('mic-btn').addEventListener('click', toggleMic)
-document.getElementById('camera-btn').addEventListener('click', toggleCamera)
+
+document.getElementById('join-btn').addEventListener('click', joinStream);
+document.getElementById('chat').addEventListener('click',chatBoxPop);
+document.getElementById('leave-btn').addEventListener('click', leaveAndRemoveLocalStream);
+document.getElementById('mic-btn').addEventListener('click', toggleMic);
+document.getElementById('camera-btn').addEventListener('click', toggleCamera);
 document.getElementById('screen-share-btn').addEventListener('click', screenShare);
 document.getElementById('blur-btn').addEventListener('click', setBackgroundBlurring);
 document.getElementById('color-btn').addEventListener('click', setBackgroundColor);
 document.getElementById('bgimg-btn').addEventListener('click', setBackgroundImage);
+document.getElementById('send').addEventListener('click',sendMssg);
