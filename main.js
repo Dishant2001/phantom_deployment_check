@@ -261,7 +261,7 @@ async function setBackgroundImage() {
     if (!virtualBackgroundEnabled) {
         imgElement = document.createElement('img');
 
-        imgElement.src = '/images/background.jpg';
+        imgElement.src = 'background.jpg';
 
         let processor = await getProcessorInstance();
 
