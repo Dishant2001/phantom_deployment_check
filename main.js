@@ -261,19 +261,24 @@ async function setBackgroundImage() {
     if (!virtualBackgroundEnabled) {
         imgElement = document.createElement('img');
 
+        imgElement.onload = async() => {
+      
+            let processor = await getProcessorInstance();
+      
+            try {
+              processor.setOptions({type: 'img', source: imgElement});
+              await processor.enable();
+              document.getElementById('bgimg-btn').innerText = "Remove Image";
+            }  catch(e) {
+                console.log(e);
+            }
+      
+            virtualBackgroundEnabled = true;
+          }
+
         imgElement.src = 'background.jpg';
 
-        let processor = await getProcessorInstance();
-
-        try {
-            processor.setOptions({ type: 'img', source: imgElement });
-            await processor.enable();
-            document.getElementById('bgimg-btn').innerText = "Remove Image";
-        } catch(e) {
-            console.log(e);
-        }
-
-        virtualBackgroundEnabled = true;
+        
     }
     else {
         await processor.disable();
