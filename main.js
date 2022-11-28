@@ -261,7 +261,7 @@ async function setBackgroundImage() {
     if (!virtualBackgroundEnabled) {
         imgElement = document.createElement('img');
 
-        imgElement.src = 'background.jpg';
+        imgElement.src = 'https://raw.githubusercontent.com/Dishant2001/phantom_deployment_check/using-Agora-SDK/background.jpg';
 
         let processor = await getProcessorInstance();
 
