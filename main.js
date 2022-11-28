@@ -179,7 +179,7 @@ async function screenShare() {
 
     if (isSharingEnabled == false) {
         screenTrack = await AgoraRTC.createScreenVideoTrack();
-        await client.unpublish([localTracks[0], localTracks[1]]);
+        await client.unpublish([localTracks[1]]);
         await client.publish(screenTrack);
         htmlForScreenShare();
         screenTrack.play(`screen-cont`);
@@ -189,7 +189,7 @@ async function screenShare() {
         screenTrack.stop();
         await client.unpublish(screenTrack);
         document.getElementById('screen-share-cont').remove();
-        await client.publish([localTracks[0], localTracks[1]]);
+        await client.publish([localTracks[1]]);
         localTracks[1].play(`user-${UID}`);
         document.getElementById(`screen-share-btn`).innerHTML = "Share Screen";
 
