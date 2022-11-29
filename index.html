@@ -11,8 +11,10 @@
 </head>
 <body>
 
+    <p>UpLink Net Quality: <span id="upLinkIndicator"></span>  DownLink Net Quality: <span id="downLinkIndicator"></span> <button id="chat">Chat Box</button></p>
+    
+    <input type="text" name="user" id="user">
     <button id="join-btn">Join Stream</button>
-    <button id="chat">Chat Box</button>
 
     <div id="main">
         <div id="stream-wrapper">
@@ -42,6 +44,7 @@
     
 </body>
 <script src="AgoraRTC_N-production.js"></script>
+<script src="agora-rtm-sdk-1.5.1.js"></script>
 <script src='main.js'></script>
 <script src="agora-extension-virtual-background.js"></script>
 </html>

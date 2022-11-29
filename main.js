@@ -1,9 +1,15 @@
 const APP_ID = "229f7b2123034802a9bc71c29c097fe1"
-const TOKEN = "006229f7b2123034802a9bc71c29c097fe1IADE/0pc4U+qirSbJOAUH/2HJtPg24AAJt1yYtX76aNlgC4VsiUAAAAAIgAnggAAZ5iFYwQAAQBnmIVjAwBnmIVjAgBnmIVjBABnmIVj"
-const CHANNEL = "Room1"
+const TOKEN = "006229f7b2123034802a9bc71c29c097fe1IACrnZYZA/5/7ehXPvTU/kBCy7TlXYY96Lc1/tjs2NVOX5REu7wAAAAAIgDqggAAVi6HYwQAAQBWLodjAwBWLodjAgBWLodjBABWLodj"
+const CHANNEL = "Room2"
+
+const CHAT_TOKEN = "006229f7b2123034802a9bc71c29c097fe1IAAxFo39EX+WpX8cPz31vgshjztt1r41y5Sh/7612IkPq/Wz5I8AAAAAEACFHwAAAS+HYwEA6AMBL4dj";
+var chat_UID = "dishant2001";
 
 
 const client = AgoraRTC.createClient({ mode: 'rtc', codec: 'vp8' });
+const chatClient = AgoraRTM.createInstance(APP_ID);
+
+let channel = chatClient.createChannel(CHANNEL);
 
 const extension = new VirtualBackgroundExtension();
 
@@ -17,50 +23,18 @@ let UID = null;
 let processor = null;
 let virtualBackgroundEnabled = false;
 let imgElement = null;
+let UserID = null;
+
+const notifySound = new Audio('notify.mp3');
 
 
-WebIM.conn = new WebIM.connection({
-    appKey: "71833649#1034879",
-})
 
 
-WebIM.conn.addEventHandler('connection&message', {
-    onConnected: () => {
-        // document.getElementById("log").appendChild(document.createElement('div')).append("Connect success !")
-        console.log("Connect success!");
-    },
-    onDisconnected: () => {
-        // document.getElementById("log").appendChild(document.createElement('div')).append("Logout success !")
-        console.log("Logout success!");
-    },
-    onTextMessage: (message) => {
-        console.log(message)
-        document.getElementById('chats').insertAdjacentHTML("beforeend",`<p>${message['msg']}</p>`);
-        // document.getElementById("log").appendChild(document.createElement('div')).append("Message from: " + message.from + " Message: " + message.msg)
-    },
-    onTokenWillExpire: (params) => {
-        // document.getElementById("log").appendChild(document.createElement('div')).append("Token is about to expire")
-        // refreshToken(username, password)
-    },
-    onTokenExpired: (params) => {
-        // document.getElementById("log").appendChild(document.createElement('div')).append("The token has expired")
-        // refreshToken(username, password)
-    },
-    onError: (error) => {
-        console.log('on error', error)
-    }
-})
 
-function openChatConn(){
-    WebIM.conn.open({
-        user: "dishant2001",
-        agoraToken: "007eJxTYDiYf18iZL9Zgd6EBde/N3R98HwYnGrQseuKg5zFig3XQ9QVGIyMLNPMk4wMjYwNjE0sDIwSLZOSzQ2TjSyTDSzN01INo3RakhsCGRkU5k9hZGRgZWAEQhBfhcHcxMIo1TTZQNcsNTlF19AwNUXXMsnETNfA0iw51cDU0CI1yRIAeoEm5g==",
-    });
+function beepSound(){
+    notifySound.play(); 
 }
 
-function closeChatConn(){
-    WebIM.conn.close();
-}
 
 function htmlForVideo(UID) {
     let player = `<div class="video-container" id="user-container-${UID}">
@@ -78,15 +52,30 @@ function htmlForScreenShare() {
 
 async function joinAndDisplayLocalStream() {
 
+    client.on("connection-state-change", (curState, prevState, reason) => {
+
+        // The sample code uses debug console to show the connection state. In a real-world application, you can add
+        // a label or a icon to the user interface to show the connection state. 
+        
+        // Display the current connection state.
+        console.log("Connection state has changed to :" + curState);
+        // Display the previous connection state.
+        console.log("Connection state was : "+ prevState);
+        // Display the connection state change reason.
+        console.log("Connection state change reason : "+ reason);
+        });
+
     client.on('user-published', handleUserJoined)
 
     client.on('user-left', handleUserLeft)
 
+    client.enableDualStream();
+
     UID = await client.join(APP_ID, CHANNEL, TOKEN, null)
 
-    openChatConn();
+    beepSound();
 
-    localTracks = await AgoraRTC.createMicrophoneAndCameraTracks()
+    localTracks = await AgoraRTC.createMicrophoneAndCameraTracks({optimizationMode: "detail"})
 
 
     htmlForVideo(UID);
@@ -94,12 +83,23 @@ async function joinAndDisplayLocalStream() {
     localTracks[1].play(`user-${UID}`)
 
     await client.publish([localTracks[0], localTracks[1]])
+
+    if(UserID == "dishant2001"){
+        await chatClient.login({"uid":chat_UID,"token":CHAT_TOKEN});
+    }else{
+        await chatClient.login({"uid":"2001dishant","token":"006229f7b2123034802a9bc71c29c097fe1IADTxHhjJ0a43n5Lhn6zjVKZaoPNxtPhWxWzldWQeGFOWrRzxeEAAAAAEABHrwAA1muHYwEA6APWa4dj"});
+    }
+    await channel.join();
+
 }
 
 async function joinStream() {
+    UserID = document.getElementById('user').value;
     await joinAndDisplayLocalStream()
-    document.getElementById('join-btn').style.display = 'none'
-    document.getElementById('main').style.display = 'flex'
+
+    document.getElementById('join-btn').style.display = 'none';
+    document.getElementById('user').style.display = "none";
+    document.getElementById('main').style.display = 'flex';
     document.getElementById('chat').style.display = 'block';
 }
 
@@ -111,6 +111,8 @@ async function handleUserJoined(user, mediaType) {
     peerId = user.uid;
     remoteUsers[user.uid] = user
     await client.subscribe(user, mediaType)
+
+    beepSound();
 
     if (mediaType === 'video') {
         let player = document.getElementById(`user-container-${user.uid}`)
@@ -130,6 +132,9 @@ async function handleUserJoined(user, mediaType) {
 
 async function handleUserLeft(user) {
     delete remoteUsers[user.uid]
+
+    beepSound();
+
     document.getElementById(`user-container-${user.uid}`).remove()
 }
 
@@ -140,10 +145,15 @@ async function leaveAndRemoveLocalStream() {
     }
 
     await client.leave();
+    if(channel!=null){
+        await channel.leave();
+    }
+    await chatClient.logout();
 
-    closeChatConn();
+    beepSound();
 
     document.getElementById('join-btn').style.display = 'block'
+    document.getElementById('user').style.display = 'block';
     document.getElementById('main').style.display = 'none'
     document.getElementById('video-streams').innerHTML = ''
     document.getElementById('chat').style.display = 'none';
@@ -289,22 +299,81 @@ async function setBackgroundImage() {
 }
 
 
-function sendMssg(){
-    let option = {
-        chatType: 'singleChat',    // Set it to single chat
-        type: 'txt',               // Message type
-        to: 'dishant2001',                // The user receiving the message (user ID)
-        msg: UID + ' : ' + document.getElementById('mssg').value           // The message content
-    }
+async function sendMssg() {
 
-    let msg = WebIM.message.create(option); 
-    WebIM.conn.send(msg).then((res) => {
-        console.log('send private text success');
-        document.getElementById('chats').insertAdjacentHTML("beforeend",`<p>${option['msg']}</p>`);
-    }).catch((err) => {
-        console.log('send private text fail', err);
-    })
+    let channelMessage = document.getElementById("mssg").value
+
+        if (channel != null) {
+            await channel.sendMessage({ text: channelMessage }).then(() => {
+
+                document.getElementById("chats").insertAdjacentHTML('afterbegin',`<p>${UserID + channelMessage}</p>`);
+
+            }
+
+            )
+        }
 }
+
+
+
+
+client.on("network-quality", (quality) => {
+    if(quality.uplinkNetworkQuality == 1)
+    {
+        document.getElementById("upLinkIndicator").innerHTML = "Excellent";
+        document.getElementById("upLinkIndicator").style.color = "green";
+    }
+    else if(quality.uplinkNetworkQuality == 2)
+    {
+        document.getElementById("upLinkIndicator").innerHTML = "Good";
+        document.getElementById("upLinkIndicator").style.color = "yellow";
+    }
+    else (quality.uplinkNetworkQuality >= 4)
+    {
+        document.getElementById("upLinkIndicator").innerHTML = "Poor";
+        document.getElementById("upLinkIndicator").style.color = "red";
+    }
+    });
+    
+    // Get the downlink network condition
+    client.on("network-quality", (quality) => {
+    if(quality.downlinkNetworkQuality == 1)
+    {
+        document.getElementById("downLinkIndicator").innerHTML = "Excellent";
+        document.getElementById("downLinkIndicator").style.color = "green";
+    }
+    else if(quality.downlinkNetworkQuality == 2)
+    {
+        document.getElementById("downLinkIndicator").innerHTML = "Good";
+        document.getElementById("downLinkIndicator").style.color = "yellow";
+    }
+    else if(quality.downlinkNetworkQuality >= 4)
+    {
+        document.getElementById("downLinkIndicator").innerHTML = "Poor";
+        document.getElementById("downLinkIndicator").style.color = "red";
+    }
+    });
+
+
+    channel.on('ChannelMessage', function (message, memberId) {
+
+        console.log("Message received from: " + memberId + " Message: " + message['text']);
+        console.log(message)
+        document.getElementById("chats").insertAdjacentHTML('afterbegin',`<p>${memberId + message['text']}</p>`);
+    
+    })
+    // Display channel member stats
+    channel.on('MemberJoined', function (memberId) {
+    
+        console.log(memberId + " joined the channel")
+    
+    })
+    // Display channel member stats
+    channel.on('MemberLeft', function (memberId) {
+    
+        console.log(memberId + " left the channel")
+    
+    })
 
 
 
