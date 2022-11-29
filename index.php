@@ -2,6 +2,7 @@
 
 require './vendor/autoload.php';
 use Yasser\Agora\RtcTokenBuilder;
+use Yasser\Agora\RtmTokenBuilder;
 
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json");
@@ -31,6 +32,18 @@ function generateToken($channelName,$user,$expTimeInHrs){
     return $rtcToken;
 }
 
+function generateChatToken($user,$expTimeInHrs){
+    $appID = "229f7b2123034802a9bc71c29c097fe1";
+    $appCertificate = "298fff9cabd649df89736820d18d8140"; 
+    $role = RtmTokenBuilder::RoleRtmUser;
+    $expireTimeInSeconds = $expTimeInHrs*60*60;
+    $currentTimestamp = time();
+    $privilegeExpiredTs = $currentTimestamp + $expireTimeInSeconds;
+    
+    $rtmToken = RtmTokenBuilder::buildToken($appID, $appCertificate,$user,$role, $privilegeExpiredTs);
+    return $rtmToken;
+}
+
 function tokenEndpoint(){
     $json = file_get_contents('php://input');
     $data = json_decode($json,true);
@@ -38,10 +51,21 @@ function tokenEndpoint(){
     echo json_encode(array("token"=>$token));
 }
 
+function chatEndpoint(){
+    $json = file_get_contents('php://input');
+    $data = json_decode($json,true);
+    $token = generateChatToken($data['user'],$data['expTimeInHrs']);
+    echo json_encode(array("token"=>$token));
+}
+
 function apiEndpoints($endpoint){
     switch($endpoint){
         case "token":{
             tokenEndpoint();
+            break;
+        }
+        case "chat":{
+            chatEndpoint();
             break;
         }
     }
