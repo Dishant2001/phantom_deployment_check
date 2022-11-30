@@ -44,14 +44,14 @@ function generateChatToken($user,$expTimeInHrs){
     return $rtmToken;
 }
 
-function tokenEndpoint(){
+function callTokenEndpoint(){
     $json = file_get_contents('php://input');
     $data = json_decode($json,true);
     $token = generateToken($data['channelName'],$data['user'],$data['expTimeInHrs']);
     echo json_encode(array("token"=>$token));
 }
 
-function chatEndpoint(){
+function chatTokenEndpoint(){
     $json = file_get_contents('php://input');
     $data = json_decode($json,true);
     $token = generateChatToken($data['user'],$data['expTimeInHrs']);
@@ -61,11 +61,11 @@ function chatEndpoint(){
 function apiEndpoints($endpoint){
     switch($endpoint){
         case "token":{
-            tokenEndpoint();
+            callTokenEndpoint();
             break;
         }
         case "chat":{
-            chatEndpoint();
+            chatTokenEndpoint();
             break;
         }
     }
