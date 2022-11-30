@@ -1,9 +1,7 @@
 const APP_ID = "229f7b2123034802a9bc71c29c097fe1"
-const TOKEN = "006229f7b2123034802a9bc71c29c097fe1IACrnZYZA/5/7ehXPvTU/kBCy7TlXYY96Lc1/tjs2NVOX5REu7wAAAAAIgDqggAAVi6HYwQAAQBWLodjAwBWLodjAgBWLodjBABWLodj"
+const TOKEN = "006229f7b2123034802a9bc71c29c097fe1IACJKRDIn72+bbsD3ZaxJEEuqh2GaoD8jWkX1odjypkEwpREu7wAAAAAIgA76wAABTGIYwQAAQAFMYhjAwAFMYhjAgAFMYhjBAAFMYhj"
 const CHANNEL = "Room2"
 
-const CHAT_TOKEN = "006229f7b2123034802a9bc71c29c097fe1IAAxFo39EX+WpX8cPz31vgshjztt1r41y5Sh/7612IkPq/Wz5I8AAAAAEACFHwAAAS+HYwEA6AMBL4dj";
-var chat_UID = "dishant2001";
 
 
 const client = AgoraRTC.createClient({ mode: 'rtc', codec: 'vp8' });
@@ -29,10 +27,8 @@ const notifySound = new Audio('notify.mp3');
 
 
 
-
-
-function beepSound(){
-    notifySound.play(); 
+function beepSound() {
+    notifySound.play();
 }
 
 
@@ -50,20 +46,42 @@ function htmlForScreenShare() {
     document.getElementById('video-streams').insertAdjacentHTML('beforeend', player);
 }
 
-async function joinAndDisplayLocalStream() {
+async function chatLogin(user, token) {
+    await chatClient.login({ "uid": user, "token": token });
+}
 
+async function userChatLogin(userId) {
+    if (userId.toLowerCase().includes("dishant")) {
+        await chatLogin("dishant2001", "006229f7b2123034802a9bc71c29c097fe1IAB6kIc07O2XO3/nbNYoPyzFG6qOk1EcNszzj/R9aZUtQ/Wz5I8AAAAAEADOgwAAMzGIYwEA6AMzMYhj");
+    }
+    else if (userId.toLowerCase().includes("deepak")) {
+        await chatLogin("deepak1", "006229f7b2123034802a9bc71c29c097fe1IAA+1g7tRFbT5ACLSxwZHfBeSgrVRA2G5BkeQQ9/+weUxYFigx4AAAAAEAAo3gAAWjGIYwEA6ANaMYhj");
+    }
+    else if (userId.toLowerCase().includes("jayshree")) {
+        await chatLogin("jayshree1", "006229f7b2123034802a9bc71c29c097fe1IABfno5zdyp8Q9lnoVvt1Dr3aRRZx8ZS/r63x35yjOI30q6Xf6gAAAAAEAAPGwAAgjGIYwEA6AOCMYhj");
+    }
+    else if (userId.toLowerCase().includes("rajesh")) {
+        await chatLogin("rajesh1", "006229f7b2123034802a9bc71c29c097fe1IACnYBD/vu9h2iU8kgkx4gw16uf4dIWhY9pTNZISZFx61cKdBFAAAAAAEABeGgEAmjGIYwEA6AOaMYhj");
+    }
+}
+
+function connectionStatus(){
     client.on("connection-state-change", (curState, prevState, reason) => {
 
         // The sample code uses debug console to show the connection state. In a real-world application, you can add
         // a label or a icon to the user interface to show the connection state. 
-        
         // Display the current connection state.
         console.log("Connection state has changed to :" + curState);
         // Display the previous connection state.
-        console.log("Connection state was : "+ prevState);
+        console.log("Connection state was : " + prevState);
         // Display the connection state change reason.
-        console.log("Connection state change reason : "+ reason);
-        });
+        console.log("Connection state change reason : " + reason);
+    });
+}
+
+async function joinAndDisplayLocalStream() {
+
+    connectionStatus();
 
     client.on('user-published', handleUserJoined)
 
@@ -75,7 +93,7 @@ async function joinAndDisplayLocalStream() {
 
     beepSound();
 
-    localTracks = await AgoraRTC.createMicrophoneAndCameraTracks({optimizationMode: "detail"})
+    localTracks = await AgoraRTC.createMicrophoneAndCameraTracks({ optimizationMode: "detail" })
 
 
     htmlForVideo(UID);
@@ -84,11 +102,8 @@ async function joinAndDisplayLocalStream() {
 
     await client.publish([localTracks[0], localTracks[1]])
 
-    if(UserID == "dishant2001"){
-        await chatClient.login({"uid":chat_UID,"token":CHAT_TOKEN});
-    }else{
-        await chatClient.login({"uid":"2001dishant","token":"006229f7b2123034802a9bc71c29c097fe1IADTxHhjJ0a43n5Lhn6zjVKZaoPNxtPhWxWzldWQeGFOWrRzxeEAAAAAEABHrwAA1muHYwEA6APWa4dj"});
-    }
+    await userChatLogin(UserID);
+
     await channel.join();
 
 }
@@ -103,8 +118,8 @@ async function joinStream() {
     document.getElementById('chat').style.display = 'block';
 }
 
-function chatBoxPop(){
-    document.getElementById('chatbox').style.display = document.getElementById('chatbox').style.display == 'flex'?'none':'flex';
+function chatBoxPop() {
+    document.getElementById('chatbox').style.display = document.getElementById('chatbox').style.display == 'flex' ? 'none' : 'flex';
 }
 
 async function handleUserJoined(user, mediaType) {
@@ -145,7 +160,7 @@ async function leaveAndRemoveLocalStream() {
     }
 
     await client.leave();
-    if(channel!=null){
+    if (channel != null) {
         await channel.leave();
     }
     await chatClient.logout();
@@ -271,24 +286,24 @@ async function setBackgroundImage() {
     if (!virtualBackgroundEnabled) {
         imgElement = document.createElement('img');
 
-        imgElement.onload = async() => {
-      
+        imgElement.onload = async () => {
+
             let processor = await getProcessorInstance();
-      
+
             try {
-              processor.setOptions({type: 'img', source: imgElement});
-              await processor.enable();
-              document.getElementById('bgimg-btn').innerText = "Remove Image";
-            }  catch(e) {
+                processor.setOptions({ type: 'img', source: imgElement });
+                await processor.enable();
+                document.getElementById('bgimg-btn').innerText = "Remove Image";
+            } catch (e) {
                 console.log(e);
             }
-      
+
             virtualBackgroundEnabled = true;
-          }
+        }
 
         imgElement.src = 'background.jpg';
 
-        
+
     }
     else {
         await processor.disable();
@@ -303,83 +318,82 @@ async function sendMssg() {
 
     let channelMessage = document.getElementById("mssg").value
 
-        if (channel != null) {
-            await channel.sendMessage({ text: channelMessage }).then(() => {
+    if (channel != null) {
+        await channel.sendMessage({ text: channelMessage }).then(() => {
 
-                document.getElementById("chats").insertAdjacentHTML('afterbegin',`<p>${UserID + channelMessage}</p>`);
+            document.getElementById("chats").insertAdjacentHTML('beforeend', `<p>${UserID + ' : ' + channelMessage}</p>`);
 
-            }
-
-            )
         }
+
+        )
+    }
+}
+
+
+function upLinkNetworkQuality() {
+    client.on("network-quality", (quality) => {
+        if (quality.uplinkNetworkQuality == 1) {
+            document.getElementById("upLinkIndicator").innerHTML = "Excellent";
+            document.getElementById("upLinkIndicator").style.color = "green";
+        }
+        else if (quality.uplinkNetworkQuality == 2) {
+            document.getElementById("upLinkIndicator").innerHTML = "Good";
+            document.getElementById("upLinkIndicator").style.color = "yellow";
+        }
+        else (quality.uplinkNetworkQuality >= 4)
+        {
+            document.getElementById("upLinkIndicator").innerHTML = "Poor";
+            document.getElementById("upLinkIndicator").style.color = "red";
+        }
+    });
+}
+
+
+function downLinkNetworkQuality() {
+    client.on("network-quality", (quality) => {
+        if (quality.downlinkNetworkQuality == 1) {
+            document.getElementById("downLinkIndicator").innerHTML = "Excellent";
+            document.getElementById("downLinkIndicator").style.color = "green";
+        }
+        else if (quality.downlinkNetworkQuality == 2) {
+            document.getElementById("downLinkIndicator").innerHTML = "Good";
+            document.getElementById("downLinkIndicator").style.color = "yellow";
+        }
+        else if (quality.downlinkNetworkQuality >= 4) {
+            document.getElementById("downLinkIndicator").innerHTML = "Poor";
+            document.getElementById("downLinkIndicator").style.color = "red";
+        }
+    });
 }
 
 
 
+channel.on('ChannelMessage', function (message, memberId) {
 
-client.on("network-quality", (quality) => {
-    if(quality.uplinkNetworkQuality == 1)
-    {
-        document.getElementById("upLinkIndicator").innerHTML = "Excellent";
-        document.getElementById("upLinkIndicator").style.color = "green";
-    }
-    else if(quality.uplinkNetworkQuality == 2)
-    {
-        document.getElementById("upLinkIndicator").innerHTML = "Good";
-        document.getElementById("upLinkIndicator").style.color = "yellow";
-    }
-    else (quality.uplinkNetworkQuality >= 4)
-    {
-        document.getElementById("upLinkIndicator").innerHTML = "Poor";
-        document.getElementById("upLinkIndicator").style.color = "red";
-    }
-    });
-    
-    // Get the downlink network condition
-    client.on("network-quality", (quality) => {
-    if(quality.downlinkNetworkQuality == 1)
-    {
-        document.getElementById("downLinkIndicator").innerHTML = "Excellent";
-        document.getElementById("downLinkIndicator").style.color = "green";
-    }
-    else if(quality.downlinkNetworkQuality == 2)
-    {
-        document.getElementById("downLinkIndicator").innerHTML = "Good";
-        document.getElementById("downLinkIndicator").style.color = "yellow";
-    }
-    else if(quality.downlinkNetworkQuality >= 4)
-    {
-        document.getElementById("downLinkIndicator").innerHTML = "Poor";
-        document.getElementById("downLinkIndicator").style.color = "red";
-    }
-    });
+    console.log("Message received from: " + memberId + " Message: " + message['text']);
+    console.log(message)
+    document.getElementById("chats").insertAdjacentHTML('beforeend', `<p>${memberId + ' : ' + message['text']}</p>`);
 
+})
+// Display channel member stats
+channel.on('MemberJoined', function (memberId) {
 
-    channel.on('ChannelMessage', function (message, memberId) {
+    console.log(memberId + " joined the channel")
 
-        console.log("Message received from: " + memberId + " Message: " + message['text']);
-        console.log(message)
-        document.getElementById("chats").insertAdjacentHTML('afterbegin',`<p>${memberId + message['text']}</p>`);
-    
-    })
-    // Display channel member stats
-    channel.on('MemberJoined', function (memberId) {
-    
-        console.log(memberId + " joined the channel")
-    
-    })
-    // Display channel member stats
-    channel.on('MemberLeft', function (memberId) {
-    
-        console.log(memberId + " left the channel")
-    
-    })
+})
+// Display channel member stats
+channel.on('MemberLeft', function (memberId) {
 
+    console.log(memberId + " left the channel")
 
+})
+
+upLinkNetworkQuality();
+downLinkNetworkQuality();
 
 
 document.getElementById('join-btn').addEventListener('click', joinStream);
-document.getElementById('chat').addEventListener('click',chatBoxPop);
+document.getElementById('chat').addEventListener('click', chatBoxPop);
 document.getElementById('leave-btn').addEventListener('click', leaveAndRemoveLocalStream);
 document.getElementById('mic-btn').addEventListener('click', toggleMic);
 document.getElementById('camera-btn').addEventListener('click', toggleCamera);
@@ -387,4 +401,4 @@ document.getElementById('screen-share-btn').addEventListener('click', screenShar
 document.getElementById('blur-btn').addEventListener('click', setBackgroundBlurring);
 document.getElementById('color-btn').addEventListener('click', setBackgroundColor);
 document.getElementById('bgimg-btn').addEventListener('click', setBackgroundImage);
-document.getElementById('send').addEventListener('click',sendMssg);
+document.getElementById('send').addEventListener('click', sendMssg);
