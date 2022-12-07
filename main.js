@@ -2,16 +2,6 @@ const APP_ID = "229f7b2123034802a9bc71c29c097fe1"
 const TOKEN = "006229f7b2123034802a9bc71c29c097fe1IAD19E2UZIDq90Wtay9wvNbBSu8UXZllwndAmRd7d0kewAJ0vMsAAAAAIgAHbwAAZLCQYwQAAQBksJBjAwBksJBjAgBksJBjBABksJBj"
 const CHANNEL = "Room3"
 
-const customerKey = "caa7d97c9fce44669f294c401f363449";
-    // Customer secret
-const customerSecret = "950f2d98f7bb49e1afa508335a13ed17";
-    // Concatenate customer key and customer secret
-const credentials = customerKey + ":" + customerSecret;
-const base64_cred = btoa(credentials);
-
-var allUsers = new Array();
-
-
 
 const client = AgoraRTC.createClient({ mode: 'rtc', codec: 'vp8' });
 const chatClient = AgoraRTM.createInstance(APP_ID);
@@ -101,8 +91,6 @@ async function joinAndDisplayLocalStream() {
     UID = await client.join(APP_ID, CHANNEL, TOKEN, null)
 
     console.log("joined: ",UID);
-    allUsers.push(UID.toString());
-    console.log(allUsers);
 
     beepSound();
 
@@ -138,11 +126,6 @@ function chatBoxPop() {
 async function handleUserJoined(user, mediaType) {
     peerId = user.uid;
 
-    if(allUsers.indexOf(peerId.toString())==-1)
-        allUsers.push(peerId.toString());
-
-    console.log(allUsers);
-
     remoteUsers[user.uid] = user
     await client.subscribe(user, mediaType)
 
@@ -167,9 +150,6 @@ async function handleUserJoined(user, mediaType) {
 async function handleUserLeft(user) {
     delete remoteUsers[user.uid]
 
-    allUsers.splice(allUsers.indexOf(user.uid.toString()),1);
-    console.log(allUsers);
-
     beepSound();
 
     document.getElementById(`user-container-${user.uid}`).remove()
@@ -186,9 +166,6 @@ async function leaveAndRemoveLocalStream() {
         await channel.leave();
     }
     await chatClient.logout();
-
-    allUsers.splice(allUsers.indexOf(UID.toString()),1);
-    console.log(allUsers);
 
     beepSound();
 
@@ -392,108 +369,6 @@ function downLinkNetworkQuality() {
 }
 
 
-async function getResourceId(){
-    const response  = await fetch('https://api.agora.io/v1/apps/' + APP_ID + '/cloud_recording/acquire',
-    {
-        method:'post',
-        headers: { "Content-Type": "application/json",'Authorization': 'Basic ' + base64_cred},
-        body: JSON.stringify({
-            'cname':CHANNEL,
-            "uid":'12345678',
-            'clientRequest':{}
-        })
-    }
-    );
-    const data = await response.json();
-    var rId = data['resourceId'];
-    return rId;
-}
-
-
-async function startRecording(){
-    var rId = getResourceId();
-    const recordingFileConfig = {
-        "maxIdleTime": 30,
-            "streamTypes": 2,
-            "channelType": 0,
-            "videoStreamType": 0,
-            "subscribeVideoUids": allUsers,
-            "subscribeAudioUids": allUsers,
-            "subscribeUidGroup": 0
-            };
-
-        const storageConfig = {
-            "vendor": 1,
-            "region": 1,
-            "bucket": "phantom-aws-bucket",
-            "accessKey": "AKIA6PGGFQGTQ33YYMYP",
-            "secretKey": "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",
-            "fileNamePrefix": [
-                "directory1",
-                "directory2"
-            ]
-        };
-
-    const clientRequest = {
-        "token":TOKEN,
-        // "extensionServiceConfig"=>$extensionServiceConfig,
-        "recordingFileConfig":recordingFileConfig,
-        "storageConfig":storageConfig
-    };
-
-    const content = {
-        "cname":CHANNEL,
-        "uid":"12345678",
-        "clientRequest":clientRequest
-    };
-
-    const response  = await fetch('https://api.agora.io/v1/apps/' + APP_ID + '/cloud_recording/resourceid/' + rId + '/mode/individual/start',
-    {
-        method:'post',
-        headers: { "Content-Type": "application/json",'Authorization': 'Basic ' + base64_cred},
-        body: JSON.stringify(content)
-    }
-    );
-    const data = await response.json();
-    var sid = data['sid'];
-
-    return [rId,sid];
-}
-
-async function stopRecording(RID,sid){
-    const response  = await fetch('https://api.agora.io/v1/apps/' + APP_ID + '/cloud_recording/resourceid/' + RID + '/sid/' + sid + '/mode/individual/stop',
-    {
-        method:'post',
-        headers: { "Content-Type": "application/json",'Authorization': 'Basic ' + base64_cred},
-        body: JSON.stringify({
-            "cname":CHANNEL,
-            "uid":"12345678",
-            "clientRequest":{}
-        })
-    }
-    );
-    const data = await response.json();
-    console.log(data);
-}
-
-var recStatus = false;
-
-async function handleRecording(){
-    var rId,sid;
-    if(!recStatus){
-        document.getElementById('rec-btn').innerText = 'Stop Recording';
-        var arr = await startRecording();
-        rId = arr[0];
-        sid = arr[1];
-        recStatus = true;
-    }
-    else{
-        document.getElementById('rec-btn').innerText = 'Start Recording';
-        await stopRecording(rId,sid);
-        recStatus = false;
-    }
-}
-
 
 
 channel.on('ChannelMessage', function (message, memberId) {
@@ -530,4 +405,3 @@ document.getElementById('blur-btn').addEventListener('click', setBackgroundBlurr
 document.getElementById('color-btn').addEventListener('click', setBackgroundColor);
 document.getElementById('bgimg-btn').addEventListener('click', setBackgroundImage);
 document.getElementById('send').addEventListener('click', sendMssg);
-document.getElementById('rec-btn').addEventListener('click',handleRecording);
