@@ -1,6 +1,15 @@
 const APP_ID = "229f7b2123034802a9bc71c29c097fe1"
-const TOKEN = "006229f7b2123034802a9bc71c29c097fe1IACJKRDIn72+bbsD3ZaxJEEuqh2GaoD8jWkX1odjypkEwpREu7wAAAAAIgA76wAABTGIYwQAAQAFMYhjAwAFMYhjAgAFMYhjBAAFMYhj"
-const CHANNEL = "Room2"
+const TOKEN = "006229f7b2123034802a9bc71c29c097fe1IAD19E2UZIDq90Wtay9wvNbBSu8UXZllwndAmRd7d0kewAJ0vMsAAAAAIgAHbwAAZLCQYwQAAQBksJBjAwBksJBjAgBksJBjBABksJBj"
+const CHANNEL = "Room3"
+
+const customerKey = "caa7d97c9fce44669f294c401f363449";
+    // Customer secret
+const customerSecret = "950f2d98f7bb49e1afa508335a13ed17";
+    // Concatenate customer key and customer secret
+const credentials = customerKey + ":" + customerSecret;
+const base64_cred = btoa(credentials);
+
+var allUsers = new Array();
 
 
 
@@ -28,7 +37,7 @@ const notifySound = new Audio('notify.mp3');
 
 
 function beepSound() {
-    notifySound.play();
+    // notifySound.play();
 }
 
 
@@ -52,16 +61,16 @@ async function chatLogin(user, token) {
 
 async function userChatLogin(userId) {
     if (userId.toLowerCase().includes("dishant")) {
-        await chatLogin("dishant2001", "006229f7b2123034802a9bc71c29c097fe1IAB6kIc07O2XO3/nbNYoPyzFG6qOk1EcNszzj/R9aZUtQ/Wz5I8AAAAAEADOgwAAMzGIYwEA6AMzMYhj");
+        await chatLogin("dishant2001", "006229f7b2123034802a9bc71c29c097fe1IACiVHwKgbqoVU4FGPevXbNbyH/C7b5Q/FTOYuY1LxDGm/Wz5I8AAAAAEAC2cgEAabOQYwEA6ANps5Bj");
     }
     else if (userId.toLowerCase().includes("deepak")) {
-        await chatLogin("deepak1", "006229f7b2123034802a9bc71c29c097fe1IAA+1g7tRFbT5ACLSxwZHfBeSgrVRA2G5BkeQQ9/+weUxYFigx4AAAAAEAAo3gAAWjGIYwEA6ANaMYhj");
+        await chatLogin("deepak1", "006229f7b2123034802a9bc71c29c097fe1IAD05QlbaBl/M1Uy4lMXbIJFI3e1uRwBOxilnXKVpJavRIFigx4AAAAAEAA0AwAAU7OQYwEA6ANTs5Bj");
     }
     else if (userId.toLowerCase().includes("jayshree")) {
-        await chatLogin("jayshree1", "006229f7b2123034802a9bc71c29c097fe1IABfno5zdyp8Q9lnoVvt1Dr3aRRZx8ZS/r63x35yjOI30q6Xf6gAAAAAEAAPGwAAgjGIYwEA6AOCMYhj");
+        await chatLogin("jayshree1", "006229f7b2123034802a9bc71c29c097fe1IAD2oqxg8F21QDFMnKRlO4W0BY8sgO5ma2aqD+dBcwE7+a6Xf6gAAAAAEABlIQAAPLOQYwEA6AM8s5Bj");
     }
     else if (userId.toLowerCase().includes("rajesh")) {
-        await chatLogin("rajesh1", "006229f7b2123034802a9bc71c29c097fe1IACnYBD/vu9h2iU8kgkx4gw16uf4dIWhY9pTNZISZFx61cKdBFAAAAAAEABeGgEAmjGIYwEA6AOaMYhj");
+        await chatLogin("rajesh1", "006229f7b2123034802a9bc71c29c097fe1IAAwrFAnMUD8gUhw14fsnD/FKJTmOAl9FKeXg2d0/0MP2MKdBFAAAAAAEABqdAEAH7OQYwEA6AMfs5Bj");
     }
 }
 
@@ -90,6 +99,10 @@ async function joinAndDisplayLocalStream() {
     client.enableDualStream();
 
     UID = await client.join(APP_ID, CHANNEL, TOKEN, null)
+
+    console.log("joined: ",UID);
+    allUsers.push(UID);
+    console.log(allUsers);
 
     beepSound();
 
@@ -124,6 +137,12 @@ function chatBoxPop() {
 
 async function handleUserJoined(user, mediaType) {
     peerId = user.uid;
+
+    if(allUsers.indexOf(peerId)>-1)
+        allUsers.push(peerId);
+
+    console.log(allUsers);
+
     remoteUsers[user.uid] = user
     await client.subscribe(user, mediaType)
 
@@ -148,6 +167,9 @@ async function handleUserJoined(user, mediaType) {
 async function handleUserLeft(user) {
     delete remoteUsers[user.uid]
 
+    allUsers.splice(allUsers.indexOf(user.uid),1);
+    console.log(allUsers);
+
     beepSound();
 
     document.getElementById(`user-container-${user.uid}`).remove()
@@ -164,6 +186,9 @@ async function leaveAndRemoveLocalStream() {
         await channel.leave();
     }
     await chatClient.logout();
+
+    allUsers.splice(allUsers.indexOf(UID),1);
+    console.log(allUsers);
 
     beepSound();
 
@@ -367,6 +392,109 @@ function downLinkNetworkQuality() {
 }
 
 
+async function getResourceId(){
+    const response  = await fetch('https://api.agora.io/v1/apps/' + APP_ID + '/cloud_recording/acquire',
+    {
+        method:'post',
+        headers: { "Content-Type": "application/json",'Authorization': 'Basic ' + base64_cred},
+        body: JSON.stringify({
+            'cname':CHANNEL,
+            "uid":'12345678',
+            'clientRequest':{}
+        })
+    }
+    );
+    const data = await response.json();
+    var rId = data['resourceId'];
+    return rId;
+}
+
+
+async function startRecording(){
+    var rId = getResourceId();
+    const recordingFileConfig = {
+        "maxIdleTime": 30,
+            "streamTypes": 2,
+            "channelType": 0,
+            "videoStreamType": 0,
+            "subscribeVideoUids": allUsers,
+            "subscribeAudioUids": allUsers,
+            "subscribeUidGroup": 0
+            };
+
+        const storageConfig = {
+            "vendor": 1,
+            "region": 1,
+            "bucket": "phantom-aws-bucket",
+            "accessKey": "AKIA6PGGFQGTQ33YYMYP",
+            "secretKey": "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",
+            "fileNamePrefix": [
+                "directory1",
+                "directory2"
+            ]
+        };
+
+    const clientRequest = {
+        "token":TOKEN,
+        // "extensionServiceConfig"=>$extensionServiceConfig,
+        "recordingFileConfig":recordingFileConfig,
+        "storageConfig":storageConfig
+    };
+
+    const content = {
+        "cname":CHANNEL,
+        "uid":"12345678",
+        "clientRequest":clientRequest
+    };
+
+    const response  = await fetch('https://api.agora.io/v1/apps/' + APP_ID + '/cloud_recording/resourceid/' + rId + '/mode/individual/start',
+    {
+        method:'post',
+        headers: { "Content-Type": "application/json",'Authorization': 'Basic ' + base64_cred},
+        body: JSON.stringify(content)
+    }
+    );
+    const data = await response.json();
+    var sid = data['sid'];
+
+    return [rId,sid];
+}
+
+async function stopRecording(RID,sid){
+    const response  = await fetch('https://api.agora.io/v1/apps/' + APP_ID + '/cloud_recording/resourceid/' + RID + '/sid/' + sid + '/mode/individual/stop',
+    {
+        method:'post',
+        headers: { "Content-Type": "application/json",'Authorization': 'Basic ' + base64_cred},
+        body: JSON.stringify({
+            "cname":CHANNEL,
+            "uid":"12345678",
+            "clientRequest":{}
+        })
+    }
+    );
+    const data = await response.json();
+    console.log(data);
+}
+
+var recStatus = false;
+
+async function handleRecording(){
+    var rId,sid;
+    if(!recStatus){
+        document.getElementById('rec-btn').innerText = 'Stop Recording';
+        var arr = await startRecording();
+        rId = arr[0];
+        sid = arr[1];
+        recStatus = true;
+    }
+    else{
+        document.getElementById('rec-btn').innerText = 'Start Recording';
+        await stopRecording(rId,sid);
+        recStatus = false;
+    }
+}
+
+
 
 channel.on('ChannelMessage', function (message, memberId) {
 
@@ -402,3 +530,4 @@ document.getElementById('blur-btn').addEventListener('click', setBackgroundBlurr
 document.getElementById('color-btn').addEventListener('click', setBackgroundColor);
 document.getElementById('bgimg-btn').addEventListener('click', setBackgroundImage);
 document.getElementById('send').addEventListener('click', sendMssg);
+document.getElementById('rec-btn').addEventListener('click',handleRecording);
