@@ -138,7 +138,7 @@ function chatBoxPop() {
 async function handleUserJoined(user, mediaType) {
     peerId = user.uid;
 
-    if(allUsers.indexOf(peerId)>-1)
+    if(allUsers.indexOf(peerId)==-1)
         allUsers.push(peerId);
 
     console.log(allUsers);
