@@ -101,7 +101,7 @@ async function joinAndDisplayLocalStream() {
     UID = await client.join(APP_ID, CHANNEL, TOKEN, null)
 
     console.log("joined: ",UID);
-    allUsers.push(UID);
+    allUsers.push(UID.toString());
     console.log(allUsers);
 
     beepSound();
@@ -138,8 +138,8 @@ function chatBoxPop() {
 async function handleUserJoined(user, mediaType) {
     peerId = user.uid;
 
-    if(allUsers.indexOf(peerId)==-1)
-        allUsers.push(peerId);
+    if(allUsers.indexOf(peerId.toString())==-1)
+        allUsers.push(peerId.toString());
 
     console.log(allUsers);
 
@@ -167,7 +167,7 @@ async function handleUserJoined(user, mediaType) {
 async function handleUserLeft(user) {
     delete remoteUsers[user.uid]
 
-    allUsers.splice(allUsers.indexOf(user.uid),1);
+    allUsers.splice(allUsers.indexOf(user.uid.toString()),1);
     console.log(allUsers);
 
     beepSound();
@@ -187,7 +187,7 @@ async function leaveAndRemoveLocalStream() {
     }
     await chatClient.logout();
 
-    allUsers.splice(allUsers.indexOf(UID),1);
+    allUsers.splice(allUsers.indexOf(UID.toString()),1);
     console.log(allUsers);
 
     beepSound();
