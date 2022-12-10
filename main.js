@@ -1,5 +1,5 @@
 const APP_ID = "229f7b2123034802a9bc71c29c097fe1"
-const TOKEN = "006229f7b2123034802a9bc71c29c097fe1IAD19E2UZIDq90Wtay9wvNbBSu8UXZllwndAmRd7d0kewAJ0vMsAAAAAIgAHbwAAZLCQYwQAAQBksJBjAwBksJBjAgBksJBjBABksJBj"
+const TOKEN = "006229f7b2123034802a9bc71c29c097fe1IAD0gOcYCctDa2B1F1wyv4sRJ/MPg9SWOh4B8z9u15opXAJ0vMsAAAAAIgDR6gAAJ7SUYwQAAQAntJRjAwAntJRjAgAntJRjBAAntJRj"
 const CHANNEL = "Room3"
 
 
@@ -51,16 +51,16 @@ async function chatLogin(user, token) {
 
 async function userChatLogin(userId) {
     if (userId.toLowerCase().includes("dishant")) {
-        await chatLogin("dishant2001", "006229f7b2123034802a9bc71c29c097fe1IACiVHwKgbqoVU4FGPevXbNbyH/C7b5Q/FTOYuY1LxDGm/Wz5I8AAAAAEAC2cgEAabOQYwEA6ANps5Bj");
+        await chatLogin("dishant2001", "006229f7b2123034802a9bc71c29c097fe1IABslKXZX49FOWJe4Etey/3J+XQnVd1GvLjuiT12KxrVwvWz5I8AAAAAEABoMwAAQrSUYwEA6ANCtJRj");
     }
     else if (userId.toLowerCase().includes("deepak")) {
-        await chatLogin("deepak1", "006229f7b2123034802a9bc71c29c097fe1IAD05QlbaBl/M1Uy4lMXbIJFI3e1uRwBOxilnXKVpJavRIFigx4AAAAAEAA0AwAAU7OQYwEA6ANTs5Bj");
+        await chatLogin("deepak1", "006229f7b2123034802a9bc71c29c097fe1IACi95RSBtPoUcEVZd9pRophMlIc5Ebojhm5mu7hsUK0hYFigx4AAAAAEAAzAQEAbLSUYwEA6ANstJRj");
     }
     else if (userId.toLowerCase().includes("jayshree")) {
-        await chatLogin("jayshree1", "006229f7b2123034802a9bc71c29c097fe1IAD2oqxg8F21QDFMnKRlO4W0BY8sgO5ma2aqD+dBcwE7+a6Xf6gAAAAAEABlIQAAPLOQYwEA6AM8s5Bj");
+        await chatLogin("jayshree1", "006229f7b2123034802a9bc71c29c097fe1IACGCnq+aeve/4S+i54+9S456RWd4Pw11M+wRNgS/wENlq6Xf6gAAAAAEAD+aAEAibSUYwEA6AOJtJRj");
     }
     else if (userId.toLowerCase().includes("rajesh")) {
-        await chatLogin("rajesh1", "006229f7b2123034802a9bc71c29c097fe1IAAwrFAnMUD8gUhw14fsnD/FKJTmOAl9FKeXg2d0/0MP2MKdBFAAAAAAEABqdAEAH7OQYwEA6AMfs5Bj");
+        await chatLogin("rajesh1", "006229f7b2123034802a9bc71c29c097fe1IADDmp8IcMwGECcVhTXxM5B3H602eTWb3EM3vamRTITjucKdBFAAAAAAEAAURAEAoLSUYwEA6AOgtJRj");
     }
 }
 
@@ -97,9 +97,12 @@ async function joinAndDisplayLocalStream() {
     localTracks = await AgoraRTC.createMicrophoneAndCameraTracks({ optimizationMode: "detail" })
 
 
+
     htmlForVideo(UID);
 
     localTracks[1].play(`user-${UID}`)
+
+    console.log("Your mic sound: ",localTracks[0]);
 
     await client.publish([localTracks[0], localTracks[1]])
 
@@ -367,6 +370,32 @@ function downLinkNetworkQuality() {
         }
     });
 }
+
+
+async function micTest(){
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+    const audioContext = new AudioContext();
+    const mediaStreamAudioSourceNode = audioContext.createMediaStreamSource(stream);
+    const analyserNode = audioContext.createAnalyser();
+    mediaStreamAudioSourceNode.connect(analyserNode);
+    
+    const pcmData = new Float32Array(analyserNode.fftSize);
+    const onFrame = () => {
+        analyserNode.getFloatTimeDomainData(pcmData);
+        let sumSquares = 0.0;
+        for (const amplitude of pcmData) { sumSquares += amplitude*amplitude; }
+        
+        var val = Math.sqrt(sumSquares / pcmData.length)
+
+        document.getElementById('volumeMeter').innerText = (val>0.05 && localTracks.length>0 && localTracks[0].muted)?"Are you speaking?":"";
+        
+        window.requestAnimationFrame(onFrame);
+    };
+    window.requestAnimationFrame(onFrame);
+}
+
+micTest();
+
 
 
 
