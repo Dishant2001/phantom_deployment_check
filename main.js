@@ -1,5 +1,5 @@
 const APP_ID = "229f7b2123034802a9bc71c29c097fe1"
-const TOKEN = "006229f7b2123034802a9bc71c29c097fe1IAD0gOcYCctDa2B1F1wyv4sRJ/MPg9SWOh4B8z9u15opXAJ0vMsAAAAAIgDR6gAAJ7SUYwQAAQAntJRjAwAntJRjAgAntJRjBAAntJRj"
+const TOKEN = "006229f7b2123034802a9bc71c29c097fe1IACW7LHBWfh+spnJXbDkx2XoQ436s9nX2YXfpifc6wGXIwJ0vMsAAAAAIgDq5AAA5NWaYwQAAQDk1ZpjAwDk1ZpjAgDk1ZpjBADk1Zpj"
 const CHANNEL = "Room3"
 
 
@@ -51,16 +51,16 @@ async function chatLogin(user, token) {
 
 async function userChatLogin(userId) {
     if (userId.toLowerCase().includes("dishant")) {
-        await chatLogin("dishant2001", "006229f7b2123034802a9bc71c29c097fe1IABslKXZX49FOWJe4Etey/3J+XQnVd1GvLjuiT12KxrVwvWz5I8AAAAAEABoMwAAQrSUYwEA6ANCtJRj");
+        await chatLogin("dishant2001", "006229f7b2123034802a9bc71c29c097fe1IAA7FJI96nIKhEeqMbYyVEp1ki1Z9GKbs7Z9IbcXFJI0CPWz5I8AAAAAEADbKQAAH9aaYwEA6AMf1ppj");
     }
     else if (userId.toLowerCase().includes("deepak")) {
-        await chatLogin("deepak1", "006229f7b2123034802a9bc71c29c097fe1IACi95RSBtPoUcEVZd9pRophMlIc5Ebojhm5mu7hsUK0hYFigx4AAAAAEAAzAQEAbLSUYwEA6ANstJRj");
+        await chatLogin("deepak1", "006229f7b2123034802a9bc71c29c097fe1IAD766c2/a1YXJ/rZ2argSGy7vOWJLd6S9oAwMgEcUu+5oFigx4AAAAAEACLIwAANdaaYwEA6AM11ppj");
     }
     else if (userId.toLowerCase().includes("jayshree")) {
-        await chatLogin("jayshree1", "006229f7b2123034802a9bc71c29c097fe1IACGCnq+aeve/4S+i54+9S456RWd4Pw11M+wRNgS/wENlq6Xf6gAAAAAEAD+aAEAibSUYwEA6AOJtJRj");
+        await chatLogin("jayshree1", "006229f7b2123034802a9bc71c29c097fe1IAAnwrGGoTKo0TJIr3nHizj8IchIfJ8Xd/SWlN8gyOfURq6Xf6gAAAAAEABfrwAATtaaYwEA6ANO1ppj");
     }
     else if (userId.toLowerCase().includes("rajesh")) {
-        await chatLogin("rajesh1", "006229f7b2123034802a9bc71c29c097fe1IADDmp8IcMwGECcVhTXxM5B3H602eTWb3EM3vamRTITjucKdBFAAAAAAEAAURAEAoLSUYwEA6AOgtJRj");
+        await chatLogin("rajesh1", "006229f7b2123034802a9bc71c29c097fe1IADKpdlEzMA0QXNyNDgPFI89VwrhPjSYT4khydP8ebPNssKdBFAAAAAAEAA36wAAdNaaYwEA6AN01ppj");
     }
 }
 
@@ -371,6 +371,21 @@ function downLinkNetworkQuality() {
     });
 }
 
+function remoteNetworkQuality(){
+    var networkQualities = client.getRemoteNetworkQuality();
+    console.log("Remote:  ",networkQualities);
+}
+
+function remoteVideo(){
+    var videos = client.getRemoteVideoStats();
+    console.log("Remote Video:  ",videos);
+}
+
+function remoteAudio(){
+    var audios = client.getRemoteAudioStats();
+    console.log("Remote Audio:  ",audios);
+}
+
 
 async function micTest(){
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
@@ -422,6 +437,15 @@ channel.on('MemberLeft', function (memberId) {
 
 upLinkNetworkQuality();
 downLinkNetworkQuality();
+
+(async function remoteQuality(){
+    remoteNetworkQuality();
+    remoteVideo();
+    remoteAudio();
+    setTimeout(()=>{
+        remoteQuality();
+    },10000)
+})();
 
 
 document.getElementById('join-btn').addEventListener('click', joinStream);
